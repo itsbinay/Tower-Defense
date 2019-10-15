@@ -60,7 +60,7 @@ public class MyController {
         newLabel.setMinHeight(GRID_WIDTH / 2);
         newLabel.setMaxHeight(GRID_WIDTH / 2);
         newLabel.setStyle("-fx-border-color: black;");
-        newLabel.setText("*");
+        newLabel.setText("|-|");
         newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
         paneArena.getChildren().addAll(newLabel);
     }

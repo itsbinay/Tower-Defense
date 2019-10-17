@@ -33,11 +33,17 @@ public abstract class Tower {
 	public int [] getCoord(){
 		return coord;
 	}
-	
+	public void setPower(int power) {
+		this.power = power;
+	}
+	public void setRange(int range) {
+		this.shootingRange = range;
+	}
 	public boolean isInRange(int [] coord) {
         int [] towerCoord = this.getCoord();
         double distance = Math.sqrt(Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2));
 
         return (distance<this.getRange())?true:false;
     }
+	public abstract void upgradeTower(boolean canUpgrade);
 }

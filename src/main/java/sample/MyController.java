@@ -52,7 +52,7 @@ public class MyController {
     @FXML
     private void play() {
         System.out.println("Play button clicked");
-        
+
         Label newLabel = new Label();
         newLabel.setLayoutX(GRID_WIDTH / 4);
         newLabel.setLayoutY(GRID_WIDTH / 4);
@@ -61,9 +61,10 @@ public class MyController {
         newLabel.setMinHeight(GRID_WIDTH / 2);
         newLabel.setMaxHeight(GRID_WIDTH / 2);
         newLabel.setStyle("-fx-border-color: black;");
-        newLabel.setText("*");
-        newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW,
-       CornerRadii.EMPTY, Insets.EMPTY)));
+
+        newLabel.setText("|-|");
+        newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+
         paneArena.getChildren().addAll(newLabel);
     }
 

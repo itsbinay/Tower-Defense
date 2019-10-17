@@ -6,6 +6,5 @@ public class basicTower extends Tower{
     public basicTower(int []Coord,int cost,int power,int range){
         super(Coord,cost,power,range);
     }
-    
-
+    //Made Some change here
 }

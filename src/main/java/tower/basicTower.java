@@ -22,6 +22,5 @@ public class basicTower extends Tower{
         this.setPower(this.getPower() + powerIncrement);
         this.setRange(this.getRange() + rangeIncrement);
     }
-    
-
+    //Made Some change here
 }

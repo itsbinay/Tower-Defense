@@ -2,10 +2,19 @@ package tower;
 import java.lang.Math;
 
 public abstract class Tower {
+	
+	public enum TowerState{
+		READY,
+		COOLDOWN,
+		ATTACK
+	}
+	
 	private int buildingCost;
 	private int power;
 	private int shootingRange;
 	private int[] coord;
+	private TowerState curState=TowerState.READY;
+	
 	
 	public Tower(int []Coord,int cost,int power, int range) {
 		this.buildingCost = cost;
@@ -45,5 +54,11 @@ public abstract class Tower {
 
         return (distance<this.getRange())?true:false;
     }
+	public TowerState getTowerState() {
+		return curState;
+	}
+	public void setTowerState(TowerState newState) {
+		this.curState=newState;
+	}
 	public abstract void upgradeTower(boolean canUpgrade);
 }

@@ -12,7 +12,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color; 
-
+import sample.Helper.*;
 public class MyController {
     @FXML
     private Button buttonNextFrame;
@@ -63,7 +63,7 @@ public class MyController {
         newLabel.setMaxHeight(GRID_WIDTH / 2);
         newLabel.setStyle("-fx-border-color: black;");
 
-        newLabel.setText("|-|");
+        newLabel.setText("M");
         newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
         paneArena.getChildren().addAll(newLabel);
@@ -93,6 +93,8 @@ public class MyController {
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel);
             }
+
+        
 
         setDragAndDrop();
     }
@@ -131,13 +133,7 @@ public class MyController {
         Label source3 = labelCatapult;
         Label source4 = labelLaserTower;
 
-        //source1.setStyle("-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('basicTower3.png');");
-        //source2.setStyle("-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('iceTower3.png');");
-        //source3.setStyle("-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('catapult3.png');");
-        //source4.setStyle("-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('laserTower3.png');");
-
-        String a=source1.getText();
-        System.out.println("Value of getText():"+a);
+        
         source1.setOnDragDetected(new DragEventHandler(source1));
         source2.setOnDragDetected(new DragEventHandler(source2));
         source3.setOnDragDetected(new DragEventHandler(source3));
@@ -149,10 +145,13 @@ public class MyController {
                 Label target = grids[i][j];
 
                 target.setOnDragDropped(new EventHandler <DragEvent>(){
-                    public void handle(DragEvent event){
-                        if(target.hasProperties()){
-
-                        }
+                    public void handle(DragEvent event) {
+                        /* the drag-and-drop gesture entered the target */
+                        System.out.println("onDragDropped");
+                        /* show to the user that it is an actual gesture target */
+                        target.setStyle("-fx-graphic:url('basicTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left;");
+                        System.out.println(target.getStyle());
+                        event.consume();
                     }
                 });
                 //well, you can also write anonymous class or even lambda
@@ -211,9 +210,10 @@ class DragEventHandler implements EventHandler<MouseEvent> {
         ClipboardContent content = new ClipboardContent();
         content.putString(source.getText());
         db.setContent(content);
-        String styleVal=source.getStyle();
-        System.out.println("Style:"+styleVal);
-        //db.setDragView(new Image("../resources.basicTower3.png",30.0,30.0,true,true));
+
+        String url = Helper.getURL(source.getStyle());  //This parses the style and extracts the url of the image
+        
+        db.setDragView(new Image(url,30.0,30.0,true,true)); //This creates a dragimage
         event.consume();
     }
 }
@@ -227,6 +227,7 @@ class DragDroppedEventHandler implements EventHandler<DragEvent> {
         System.out.println(db.getString());
         if (db.hasString()) {
             ((Label)event.getGestureTarget()).setText(db.getString());
+            
             success = true;
         }
         event.setDropCompleted(success);

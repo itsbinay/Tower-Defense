@@ -20,13 +20,9 @@ public abstract class Tower {
 		this.buildingCost = cost;
 		this.power = power;
 		this.shootingRange = range;
+		this.coord = new int[2];
 		this.coord[0] = Coord[0];
 		this.coord[1] = Coord[1];
-	}
-	public Tower() {
-		this.buildingCost = 0;
-		this.power = 0;
-		this.shootingRange = 0;
 	}
 	
 	public int getTowerCost () {

@@ -26,7 +26,7 @@
                   <Button fx:id="buttonNextFrame" layoutX="4.0" layoutY="24.0" mnemonicParsing="false" onAction="#nextFrame" text="Next Frame" />
                   <Button fx:id="buttonSimulate" layoutX="5.0" layoutY="65.0" mnemonicParsing="false" text="Simulate" />
                   <Button fx:id="buttonPlay" layoutX="6.0" layoutY="108.0" mnemonicParsing="false" onAction="#play" text="Play" />
-                  <Label fx:id="labelBasicTower" layoutX="17.0" layoutY="150.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('basicTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left; -fx-border-color: black;" >
+                  <Label fx:id="labelBasicTower" layoutX="17.0" layoutY="150.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('basicTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left;" >
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -37,7 +37,7 @@
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="labelIceTower" layoutX="17.0" layoutY="210.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('iceTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left; -fx-border-color: black;">
+                  <Label fx:id="labelIceTower" layoutX="17.0" layoutY="210.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('iceTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left;">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -45,7 +45,7 @@
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="labelCatapult" layoutX="17.0" layoutY="270.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('catapult3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left; -fx-border-color: black;">
+                  <Label fx:id="labelCatapult" layoutX="17.0" layoutY="270.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('catapult3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left; ">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -53,7 +53,7 @@
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="labelLaserTower" layoutX="17.0" layoutY="330.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('laserTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left; -fx-border-color: black;">
+                  <Label fx:id="labelLaserTower" layoutX="17.0" layoutY="330.0"  style="-fx-max-width:50; -fx-max-height:50; -fx-graphic:url('laserTower3.png'); -fx-graphic-vpos:center; -fx-graphic-hpos:left; ">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

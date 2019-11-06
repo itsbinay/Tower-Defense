@@ -1,15 +1,11 @@
 package sample;
 
 public class Helper {
-    
-    public static String getURL(String x){
-    	String url;
-        //boolean parseNow=false;
-        if(x.contains("url")){
-            String substr1=x.substring(x.indexOf("url"));
-            url=substr1.substring(substr1.indexOf('(')+2,substr1.indexOf(')')-1);
-            return url;
-        }
-        return x;
-    }
+	public static String preProcessing(String id) {
+		String url;
+		String removeLabel = id.substring(5,id.length());
+		String uncapitalizeF = removeLabel.substring(0,1).toLowerCase() + removeLabel.substring(1);
+		url = uncapitalizeF +".png";
+		return url;
+	}
 }

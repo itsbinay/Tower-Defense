@@ -51,7 +51,6 @@ public class MyController {
     private static final int MAX_V_NUM_GRID = 12;
 
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena
-    //private Boolean flagTower[][] = new Boolean[MAX_V_NUM_GRID][MAX_H_NUM_GRID];
     
     private int x = -1, y = 0; //where is my monster
     /**
@@ -81,8 +80,7 @@ public class MyController {
         if (grids[0][0] != null)
             return; //created already
         for (int i = 0; i < MAX_V_NUM_GRID; i++)
-            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-            	//flagTower[i][j] = false;    
+            for (int j = 0; j < MAX_H_NUM_GRID; j++) { 
                 Label newLabel = new Label();
                 if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
                     newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -138,19 +136,20 @@ public class MyController {
         
             	target.setOnDragDropped(new DragDroppedEventHandler() {
             		public void handle(DragEvent event) {
-            			//if(flagTower[i][j]== false) {
+
             	           Dragboard db = event.getDragboard();
             	           String id = db.getString();
-            			//System.out.println(Helper.preProcessing(imageName)); 
             	           String imageName = Helper.preProcessing(id);
             	           Image towerImage = new Image(imageName, 30.0, 30.0, true,true);
             	           ImageView towerImageView = new ImageView();
             	           towerImageView.setImage(towerImage);
-            	           target.setGraphic(towerImageView);
+            	           if(target.getGraphic()==null) {	//If there is no image there currently
+            	        	   target.setGraphic(towerImageView);
+            	           }else {
+            	        	   System.out.println("Cannot place tower here.");
+            	           }
             	           event.setDropCompleted(true);
-            	           //flagTower[i][j] = true;
             	           event.consume();
-            	          //}
             	     }        	                        		
             	});
        
@@ -159,10 +158,7 @@ public class MyController {
         //Anonymous class
             	target.setOnDragOver(new EventHandler <DragEvent>() {
             		public void handle(DragEvent event) {
-                /* data is dragged over the target */
             			System.out.println("onDragOver");
-                /* accept it only if it is not dragged from the same node
-                 * and if it has a string data */
             			if (event.getGestureSource() != target &&                	
             					event.getDragboard().hasString()) {
                     /* allow for both copying and moving, whatever user chooses */

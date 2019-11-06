@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <GridPane alignment="center" hgap="10" maxHeight="480.0" minHeight="480.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MyController">
    <columnConstraints>
       <ColumnConstraints />
@@ -26,7 +27,7 @@
                   <Button fx:id="buttonNextFrame" layoutX="4.0" layoutY="24.0" mnemonicParsing="false" onAction="#nextFrame" text="Next Frame" />
                   <Button fx:id="buttonSimulate" layoutX="5.0" layoutY="65.0" mnemonicParsing="false" text="Simulate" />
                   <Button fx:id="buttonPlay" layoutX="6.0" layoutY="108.0" mnemonicParsing="false" onAction="#play" text="Play" />
-                  <Label fx:id="labelBasicTower" layoutX="17.0" layoutY="257.0" minWidth="80.0" style="-fx-border-color: black;" text="Basic Tower">
+                  <Label fx:id="labelBasicTower" layoutX="17.0" layoutY="200.0" minWidth="60.0" style="-fx-border-color: black;">          
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -36,32 +37,60 @@
                      <padding>
                         <Insets left="10.0" />
                      </padding>
+                     <graphic>
+                     	<ImageView fitWidth="40" preserveRatio="true" smooth ="true">
+                     		<image>
+                     			<Image url="basicTower.png"></Image>
+                     		</image>
+                     	</ImageView>
+                     </graphic>   		
                   </Label>
-                  <Label fx:id="labelIceTower" layoutX="17.0" layoutY="283.0" minWidth="80.0" style="-fx-border-color: black;" text="Ice Tower">
+                  <Label fx:id="labelIceTower" layoutX="17.0" layoutY="240.0" minWidth="60.0" style="-fx-border-color: black;">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <padding>
                         <Insets left="10.0" />
                      </padding>
+                     <graphic>
+                     	<ImageView fitWidth="40" preserveRatio="true" smooth ="true">
+                     		<image>
+                     			<Image url="iceTower.png"></Image>
+                     		</image>
+                     	</ImageView>
+                     </graphic>
                   </Label>
-                  <Label fx:id="labelCatapult" layoutX="17.0" layoutY="311.0" minWidth="80.0" style="-fx-border-color: black;" text="Catapult">
+                  <Label fx:id="labelCatapult" layoutX="17.0" layoutY="280.0" minWidth="60.0" style="-fx-border-color: black;">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <padding>
                         <Insets left="10.0" />
                      </padding>
+                     <graphic>
+                     	<ImageView fitWidth="40" preserveRatio="true" smooth ="true">
+                     		<image>
+                     			<Image url="catapult.png"></Image>
+                     		</image>
+                     	</ImageView>
+                     </graphic>
                   </Label>
-                  <Label fx:id="labelLaserTower" layoutX="17.0" layoutY="339.0" minWidth="80.0" style="-fx-border-color: black;" text="Laser Tower">
+                  <Label fx:id="labelLaserTower" layoutX="17.0" layoutY="320.0" minWidth="60.0" style="-fx-border-color: black;">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <padding>
                         <Insets left="10.0" />
                      </padding>
+                     <graphic>
+                     	<ImageView fitWidth="40" preserveRatio="true" smooth ="true">
+                     		<image>
+                     			<Image url="laserTower.png"></Image>
+                     		</image>
+                     	</ImageView>
+                     </graphic>
                   </Label>
-                  <Label layoutX="17.0" layoutY="381.0" text="Money: " />
+                  <Label layoutX="17.0" layoutY="390.0" text="Money Left: " />
                </children>
                <padding>
                   <Insets left="10.0" />

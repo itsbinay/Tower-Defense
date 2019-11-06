@@ -4,6 +4,7 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.7'
 }
+
 javafx {
     version = "12.0.1"
     modules = ['javafx.controls','javafx.fxml' ]
@@ -43,10 +44,11 @@ dependencies {
 
     // https://mvnrepository.com/artifact/junit/junit
     testCompile group: 'junit', name: 'junit', version: '4.12'
+   	compile 'junit:junit:4.12'
 
     // testFX - https://github.com/TestFX/TestFX
     testCompile  group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
-
+	
 
 }
 
@@ -55,5 +57,10 @@ jacocoTestReport {
         xml.enabled false
         csv.enabled false
         html.destination file("${buildDir}/jacocoHTML")
+       
     }
+}
+
+jacoco{
+	toolVersion="0.8.2"
 }

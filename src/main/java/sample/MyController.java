@@ -1,5 +1,7 @@
 package sample;
 import sample.Helper;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
@@ -102,7 +104,9 @@ public class MyController {
 
         setDragAndDrop();
     }
-
+   /**
+    * A function that allows monster to move forward
+    */
     @FXML
     private void nextFrame() {
         if (x == -1) {
@@ -117,7 +121,8 @@ public class MyController {
     }
 
     /**
-     * A function that demo how drag and drop works
+     * A function that allows dragging of Towers 
+     * 
      */
     private void setDragAndDrop() {
          // where on the x by y grid to put the text "Drop Here"
@@ -146,7 +151,15 @@ public class MyController {
             	           Image towerImage = new Image(imageName, 30.0, 30.0, true,true);
             	           ImageView towerImageView = new ImageView();
             	           towerImageView.setImage(towerImage);
-            	           target.setGraphic(towerImageView);
+            	           if(target.getGraphic() == null) {
+            	        	   target.setGraphic(towerImageView);
+            	           } else {
+            	        	   Alert alert = new Alert(AlertType.ERROR);
+            	        	   alert.setTitle("Error");
+            	        	   alert.setHeaderText("Cannot place tower here");
+            	        	   alert.setContentText("A tower is already built here");
+            	        	   alert.show();
+            	           }
             	           event.setDropCompleted(true);
             	           //flagTower[i][j] = true;
             	           event.consume();
@@ -180,6 +193,7 @@ public class MyController {
         // When the mouse is dragged into the boundaries of potential drop target, the potential target gets a DRAG_ENTERED event. 
         // When the mouse is dragged outside of the potential target's bounds, it gets a DRAG_EXITED event.    
             	target.setOnDragEntered(new EventHandler <DragEvent>() {
+            		
             		public void handle(DragEvent event) {
                 /* the drag-and-drop gesture entered the target */
             			System.out.println("onDragEntered");
@@ -206,9 +220,16 @@ public class MyController {
 
 class DragEventHandler implements EventHandler<MouseEvent> {
     private Label source;
+    /**
+     *  
+     * @param e
+     */
     public DragEventHandler(Label e) {
         source = e;
     }
+    /**
+     * 
+     */
     @Override
     public void handle (MouseEvent event) {
         Dragboard db = source.startDragAndDrop(TransferMode.ANY);

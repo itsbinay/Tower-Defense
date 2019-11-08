@@ -1,6 +1,21 @@
 package sample;
 
 public class Helper {
+	private int help;
+	/**
+	 * Default constructor
+	 * This class is to hold helper functions for mycontroller
+	 * @param r integer variable
+	 */
+	public Helper(int r) {
+		this.help = r;
+		
+	}
+	/**
+	 * 
+	 * @param id
+	 * @return url
+	 */
 	public static String preProcessing(String id) {
 		String url;
 		String removeLabel = id.substring(5,id.length());

@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
 
-import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.shape.*;
 
 public class MyController {
@@ -59,7 +57,19 @@ public class MyController {
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
     private List<Tower> towers = new ArrayList<>();
     private int x = -1, y = 0; // where is my monster
-
+    
+    /**
+     * 
+     * @param coord The Coordinate of the s
+     * @return
+     */
+    private int getTowerIndex(int [] coord) {
+    	for(int i=0;i<towers.size();i++) {
+    		if(towers.get(i).getCoord()[0]==coord[0] && towers.get(i).getCoord()[1]==coord[1])
+    			return i;
+    	}
+    	return 0;
+    }
     /**
      * A dummy function to show how button click works
      */
@@ -123,13 +133,6 @@ public class MyController {
         grids[y++][x].setText("");
         grids[y][x].setText("M");
     }
-    private int getTowerIndex(int [] coord) {
-    	for(int i=0;i<towers.size();i++) {
-    		if(towers.get(i).getCoord()[0]==coord[0] && towers.get(i).getCoord()[1]==coord[1])
-    			return i;
-    	}
-    	return 0;
-    }
     /**
      * A function that demo how drag and drop works
      */
@@ -164,11 +167,12 @@ public class MyController {
                             ImageView towerImageView = new ImageView();
                             towerImageView.setImage(towerImage);
 
-                            String towerName = Helper.getTowerName(imageName);
+                            
                             int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
                             if (target.getGraphic() == null) { // If there is no image there currently
                                 target.setGraphic(towerImageView);
-                                switch (towerName) {
+                                String towerName = Helper.getTowerName(imageName);	//This will give me the towerName
+                                switch (towerName) {//Switch-case to instantiate a Tower object accordingly
                                 case "basicTower":
                                     towers.add(new basicTower(coord));
                                     break;
@@ -191,7 +195,7 @@ public class MyController {
                             System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
                         }
                     });
-
+                    
                     target.setOnMouseEntered(new EventHandler<MouseEvent>() {
                     	public void handle(MouseEvent event) {
                     		Boolean done=false;
@@ -204,22 +208,38 @@ public class MyController {
                     			Circle circle = new Circle(target.getLayoutX()+GRID_WIDTH/2,target.getLayoutY()+GRID_HEIGHT/2,towers.get(getTowerIndex(coord)).getRange());
                     			circle.setOpacity(0.6);
                     			circle.setFill(Color.RED);
+                    			circle.setId("range");
                     			if(!done) {
                     				paneArena.getChildren().add(circle);
                     				done=true;
                     			}
-                    			if(done) {
-                    				target.setOnMouseExited(new EventHandler<MouseEvent>() {
-                    					public void handle(MouseEvent event) {
-                    						paneArena.getChildren().remove(circle);
-                    					}
-                    				});
-                    			}
+                    			
+
                     		}
-                    		//event.consume();
+                    		event.consume();
                     	}
                     });
-                    
+                    target.setOnMouseExited(e->{
+                    	//(new EventHandler<MouseEvent>() {	
+						for(javafx.scene.Node a: paneArena.getChildren()) {
+							if(a.getId()=="range") {
+								paneArena.getChildren().remove(a);
+							}
+						}
+                    });
+                    /*
+    					public void handle(MouseEvent event) {
+    					
+    						for(javafx.scene.Node i: paneArena.getChildren()) {
+    							if(i.getId()=="range") {
+    								paneArena.getChildren().remove(i);
+    							}
+    						}
+    						event.consume();
+    							
+    					}
+    				});
+                    */
                     // setOnDragOver: allows controlling what happens when something is dragged over
                     // the node.
                     // well, you can also write anonymous class or even lambda

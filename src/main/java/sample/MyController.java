@@ -134,9 +134,7 @@ public class MyController {
 
 	}
 
-	// op = 0 for down, 1 for right, 2 for up
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-//1 x 2 y 0
 
 		System.out.println("y: " + y + "x: " + x + " spaceleft : " + spaceLeft + "op " + op);
 		if (spaceLeft == 0) {
@@ -144,8 +142,6 @@ public class MyController {
 			int[] newCoord = { y, x };
 			grids[y][x].setText("M");
 			monsterList.get(monsterCount).setYX(newCoord);
-
-			
 
 			return;
 
@@ -161,10 +157,9 @@ public class MyController {
 
 		}
 
-		// x= 2, y = 0
 		else if (op == 1) {
 
-			if (grids[y][x + 1].getBackground().getFills().get(0).getFill().toString() == "0x008000ff")
+			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN)
 
 			{
 
@@ -209,24 +204,18 @@ public class MyController {
 			System.out.println("y: " + y);
 
 			grids[y][x].setText("");
-//x==2 y ==0
+
 			if (x % 4 == 0)
 				down = true;
 			else
 				down = false;
 
-			
-			System.out.println(grids[y][x + 1].getBackground().getFills().get(0).getFill().toString().substring(2));
-			
-			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN)
-				{right = false;
-				System.out.println(right +" hi");}
-			else
+			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
+				right = false;
+
+			} else
 				right = true;
 
-			System.out.println(right + "?");
-			
-			
 			if (right)
 
 				Move(1, x, y, movementSpeed, i);

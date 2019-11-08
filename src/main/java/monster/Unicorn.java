@@ -9,7 +9,7 @@ package monster;
 public class Unicorn extends Monster{
 
 	private static int hp = 150;
-	private static int movementSpeed = 1;
+	private static int movementSpeed = 3;
 	
 	/** 
 	 * @param coord The x and y coordinates for each monster object.

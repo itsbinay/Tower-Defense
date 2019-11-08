@@ -9,7 +9,7 @@ package monster;
 public class Penguin extends Monster{
 
 	private static int hp = 100;
-	private static int movementSpeed = 1;
+	private static int movementSpeed = 3;
 	
 	
 	/**

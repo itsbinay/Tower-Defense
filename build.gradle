@@ -1,21 +1,27 @@
 plugins {
-    id 'java'
-    id 'jacoco'
-    id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.7'
+	id 'java'
+	id 'jacoco'
+	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.7' apply false
+	id 'eclipse'
 }
 
-javafx {
-    version = "12.0.1"
-    modules = ['javafx.controls','javafx.fxml' ]
-}
-sourceCompatibility = '1.10'
-targetCompatibility = '1.10'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+
+if (JavaVersion.current() != project.targetCompatibility) {
+    apply plugin: 'org.openjfx.javafxplugin'
+    javafx {
+    	version = "12.0.1"
+	modules = ['javafx.controls','javafx.fxml' ]
+    }
+} 
 
 jar {
-    baseName = 'courseScraper'
+    baseName = 'towerDefence'
     version =  '0.1.0'
-    destinationDir = file("/")
+    destinationDir = file("./")
     manifest {
         attributes 'Implementation-Title': baseName,
                 'Implementation-Version': version,
@@ -34,21 +40,19 @@ task debug(type:JavaExec) {
     group 'application'
     description 'debug'
     jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099'
-    main = 'comp3111.coursescraper.MyApplication'
+    main = 'sample.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 dependencies {
     // https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit
     compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.31'
-
+	
     // https://mvnrepository.com/artifact/junit/junit
     testCompile group: 'junit', name: 'junit', version: '4.12'
-   	compile 'junit:junit:4.12'
-
+	compile "junit:junit:4.12"
     // testFX - https://github.com/TestFX/TestFX
     testCompile  group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
-	
 
 }
 
@@ -57,10 +61,9 @@ jacocoTestReport {
         xml.enabled false
         csv.enabled false
         html.destination file("${buildDir}/jacocoHTML")
-       
     }
 }
 
 jacoco{
-	toolVersion="0.8.2"
+	toolVersion="0.8.3"
 }

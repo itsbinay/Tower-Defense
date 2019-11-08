@@ -1,4 +1,6 @@
 package sample;
+
+import tower.*;
 import sample.Helper;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -6,8 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
 
-import java.io.File;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.event.*;
 import javafx.fxml.FXML;
@@ -19,6 +22,7 @@ import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.*;
 
 public class MyController {
     @FXML
@@ -52,10 +56,22 @@ public class MyController {
     private static final int MAX_H_NUM_GRID = 12;
     private static final int MAX_V_NUM_GRID = 12;
 
-    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena
-    //private Boolean flagTower[][] = new Boolean[MAX_V_NUM_GRID][MAX_H_NUM_GRID];
+    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
+    private List<Tower> towers = new ArrayList<>();
+    private int x = -1, y = 0; // where is my monster
     
-    private int x = -1, y = 0; //where is my monster
+    /**
+     * 
+     * @param coord The Coordinate of the s
+     * @return
+     */
+    private int getTowerIndex(int [] coord) {
+    	for(int i=0;i<towers.size();i++) {
+    		if(towers.get(i).getCoord()[0]==coord[0] && towers.get(i).getCoord()[1]==coord[1])
+    			return i;
+    	}
+    	return 0;
+    }
     /**
      * A dummy function to show how button click works
      */
@@ -74,6 +90,7 @@ public class MyController {
         newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
         paneArena.getChildren().addAll(newLabel);
     }
+    
 
     /**
      * A function that create the Arena
@@ -81,15 +98,16 @@ public class MyController {
     @FXML
     public void createArena() {
         if (grids[0][0] != null)
-            return; //created already
+            return; // created already
         for (int i = 0; i < MAX_V_NUM_GRID; i++)
             for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-            	//flagTower[i][j] = false;    
                 Label newLabel = new Label();
                 if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
-                    newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+                    newLabel.setBackground(
+                            new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
                 else
-                    newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+                    newLabel.setBackground(
+                            new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
                 newLabel.setLayoutX(j * GRID_WIDTH);
                 newLabel.setLayoutY(i * GRID_HEIGHT);
                 newLabel.setMinWidth(GRID_WIDTH);
@@ -119,15 +137,19 @@ public class MyController {
         grids[y++][x].setText("");
         grids[y][x].setText("M");
     }
-
     /**
      * A function that allows dragging of Towers 
      * 
      */
+    // create a new function
+    // create a list of coords of all the towers on the grid
+    // if the circleX is not 0, dont loop
+    // if the circleX is 0, loop
     private void setDragAndDrop() {
-         // where on the x by y grid to put the text "Drop Here"
-//        target.setText("Drop\nHere");
+        // where on the x by y grid to put the text "Drop Here"
+        // target.setText("Drop\nHere");
         for (int i = 0; i < MAX_V_NUM_GRID; i++)
+
             for (int j = 0; j < MAX_H_NUM_GRID; j++) {	
             	if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) continue;
               	else {
@@ -150,9 +172,26 @@ public class MyController {
             	           String imageName = Helper.preProcessing(id);
             	           Image towerImage = new Image(imageName, 30.0, 30.0, true,true);
             	           ImageView towerImageView = new ImageView();
-            	           towerImageView.setImage(towerImage);
+                           towerImageView.setImage(towerImage);
+                           
+                           int[] coord = {(int) target.getLayoutX(), (int) target.getLayoutY()};
             	           if(target.getGraphic() == null) {
-            	        	   target.setGraphic(towerImageView);
+                               target.setGraphic(towerImageView);
+                               String towerName = Helper.getTowerName(imageName);	//This will give me the towerName
+                                switch (towerName) {//Switch-case to instantiate a Tower object accordingly
+                                case "basicTower":
+                                    towers.add(new basicTower(coord));
+                                    break;
+                                case "iceTower":
+                                    towers.add(new IceTower(coord));
+                                    break;
+                                case "Catapult":
+                                    towers.add(new Catapult(coord));
+                                    break;
+                                case "laserTower":
+                                    towers.add(new laserTower(coord));
+                                    break;
+                                }
             	           } else {
             	        	   Alert alert = new Alert(AlertType.ERROR);
             	        	   alert.setTitle("Error");
@@ -162,7 +201,8 @@ public class MyController {
             	           }
             	           event.setDropCompleted(true);
             	           //flagTower[i][j] = true;
-            	           event.consume();
+                           event.consume();
+                           System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
             	          //}
             	     }        	                        		
             	});
@@ -213,8 +253,8 @@ public class MyController {
             		System.out.println("Exit");
             		event.consume();
             	});
+
             }
-        }      
     }
 }
 
@@ -231,17 +271,15 @@ class DragEventHandler implements EventHandler<MouseEvent> {
      * 
      */
     @Override
-    public void handle (MouseEvent event) {
+    public void handle(MouseEvent event) {
         Dragboard db = source.startDragAndDrop(TransferMode.ANY);
 
         ClipboardContent content = new ClipboardContent();
         content.putString(source.getId());
-//        content.putString(source.getText());
-//        db.setContent(content);
         db.setContent(content);
-        
+
         String imageURL = Helper.preProcessing(db.getString());
-        db.setDragView(new Image(imageURL, 30.0, 30.0, true,true));
+        db.setDragView(new Image(imageURL, 30.0, 30.0, true, true));
         event.consume();
     }
 }
@@ -252,10 +290,10 @@ class DragDroppedEventHandler implements EventHandler<DragEvent> {
         System.out.println("xx");
         Dragboard db = event.getDragboard();
         boolean success = false;
-        //System.out.println(db.getString());
-        
+        // System.out.println(db.getString());
+
         if (db.hasString()) {
-            ((Label)event.getGestureTarget()).setText(db.getString());
+            ((Label) event.getGestureTarget()).setText(db.getString());
             success = true;
         }
         event.setDropCompleted(success);

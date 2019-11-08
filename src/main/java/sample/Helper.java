@@ -23,4 +23,12 @@ public class Helper {
 		url = uncapitalizeF +".png";
 		return url;
 	}
+	public static String getTowerName(String s) {
+		String a = new String();
+		for(int i=0;i<s.length();i++) {
+			if(s.charAt(i)=='.')break;
+			a+=s.charAt(i);
+		}
+		return a;
+	}
 }

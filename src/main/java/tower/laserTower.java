@@ -8,9 +8,11 @@ public class laserTower extends Tower {
 	private static final int initialCost = 180;
 	private static final int initialPower = 180;
 	private static final int initialRange = 50;
-
+	private static final int initialCDTimer=3;
+	
 	public laserTower(int [] initialCoord){
-		super(initialCoord,initialCost,initialPower,initialRange);
+		super(initialCoord,initialCost,initialPower,initialRange,initialCDTimer);
+		System.out.println("laserTower constructed");
 	}
 	@Override
 	public void upgradeTower(boolean canUpgrade){
@@ -22,5 +24,19 @@ public class laserTower extends Tower {
 	
 	public int getUpgradeCost() {
 		return upgradeCost;
+	}
+	
+	public int attack(int hp) {
+		if(this.getTowerState()==TowerState.READY) {
+			hp-=this.getPower();
+			this.setCooldown(this.initialCDTimer);
+			this.setTowerState(TowerState.ATTACK);
+			System.out.println("laserTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
+			return hp;
+		}
+		return hp;
+	}
+	public String getTowerType() {
+		return "laserTower";
 	}
 }

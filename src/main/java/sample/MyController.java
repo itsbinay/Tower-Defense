@@ -18,43 +18,64 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+
+import monster.Fox;
+import monster.Monster;
+import monster.Penguin;
+import monster.Unicorn;
+
+import java.util.ArrayList;
+import java.util.Random;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.*;
 
 public class MyController {
-    @FXML
-    private Button buttonNextFrame;
+	@FXML
+	private Button buttonNextFrame;
 
-    @FXML
-    private Button buttonSimulate;
+	@FXML
+	private Button buttonSimulate;
 
-    @FXML
-    private Button buttonPlay;
+	@FXML
+	private Button buttonPlay;
 
-    @FXML
-    private AnchorPane paneArena;
+	@FXML
+	private AnchorPane paneArena;
 
-    @FXML
-    private Label labelBasicTower;
+	@FXML
+	private Label labelBasicTower;
 
-    @FXML
-    private Label labelIceTower;
+	@FXML
+	private Label labelIceTower;
 
-    @FXML
-    private Label labelCatapult;
+	@FXML
+	private Label labelCatapult;
 
-    @FXML
-    private Label labelLaserTower;
+	@FXML
+	private Label labelLaserTower;
 
-    private static final int ARENA_WIDTH = 480;
-    private static final int ARENA_HEIGHT = 480;
-    private static final int GRID_WIDTH = 40;
-    private static final int GRID_HEIGHT = 40;
-    private static final int MAX_H_NUM_GRID = 12;
-    private static final int MAX_V_NUM_GRID = 12;
+	private static final int ARENA_WIDTH = 480;
+	private static final int ARENA_HEIGHT = 480;
+	private static final int GRID_WIDTH = 40;
+	private static final int GRID_HEIGHT = 40;
+	private static final int MAX_H_NUM_GRID = 12;
+	private static final int MAX_V_NUM_GRID = 12;
+	
+	private static int monsterCounter = 0;
+	private static int nextFrameCounter = 0;
+	private static int[] startCoord = {0,0};
+	Random r = new Random();
+	int low = 1;
+	int high = 3;
+	
+	private static int speedIncrease = 0;
+	private static int numOfFrames = 0;
+	private static int bonusHp = 50;
+	ArrayList<Monster> monsterList = new ArrayList<Monster>();
 
-    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
+	private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
 
     // a,b
     // Label target = grids[a][b];
@@ -62,7 +83,7 @@ public class MyController {
     private int x = -1, y = 0; // where is my monster
     private Circle rangeCircle = new Circle();
     private Label invisibleLabel = new Label();
-    
+    private boolean rangeShown=false;
     private void initInvisibleLabel() {
     	invisibleLabel.setMinWidth(GRID_WIDTH);
     	invisibleLabel.setMaxWidth(GRID_WIDTH);
@@ -73,9 +94,11 @@ public class MyController {
     
     
     /**
+     * Returns the index of the tower in the towers list, given the coordinate
+     * if tower doesn't exist 0 is returned 
      * 
-     * @param coord The Coordinate of the s
-     * @return
+     * @param coord The Coordinate of the label
+     * @return	the index of where the Tower is
      */
     private int getTowerIndex(int[] coord) {
         for (int i = 0; i < towers.size(); i++) {
@@ -129,26 +152,185 @@ public class MyController {
                 newLabel.setStyle("-fx-border-color: black;");
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel); // add all the labels to the AnchorPane created, without this
-                // map will be empty without tiles
             }
 
         setDragAndDrop();
         //mouseEnterExit();
     }
 
-    @FXML
-    private void nextFrame() {
-        if (x == -1) {
-            grids[0][0].setText("M");
-            x = 0;
-            return;
+	public void monsterGenerate() {
+		System.out.println("monsterGenerate");
+		int result = r.nextInt(high - low) + low;
+
+		switch (result) {
+		case 1:monsterList.add(new Fox(startCoord, false));break;
+		case 2:monsterList.add(new Unicorn(startCoord, false));break;
+		case 3:monsterList.add(new Penguin(startCoord, false));break;
+		default:monsterList.add(new Fox(startCoord, false));break;
+		}
+	}
+
+	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
+
+		System.out.println("y: " + y + "x: " + x + " spaceleft : " + spaceLeft + "op " + op);
+		if (spaceLeft == 0) {
+
+			int[] newCoord = { y, x };
+			grids[y][x].setText("M");
+			monsterList.get(monsterCount).setYX(newCoord);
+
+			return;
+		}
+        switch(op){
+            case 0:{
+                if (y == MAX_V_NUM_GRID - 1){ // y ==11
+                    Move(1, x, y, spaceLeft, monsterCount);
+                }else{
+                    Move(0, x, y + 1, spaceLeft - 1, monsterCount);
+                }
+                break;
+            }
+            case 1:{
+                if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN){
+                    if (y == MAX_V_NUM_GRID - 1){
+                        Move(2, x, y, spaceLeft, monsterCount);
+                    }else if (y == 0 && x != 0) {
+                        Move(0, x, y, spaceLeft, monsterCount);
+                    }
+                } else {
+                    Move(1, x + 1, y, spaceLeft - 1, monsterCount);
+                }
+                break;
+            }
+            case 2:{
+                if (y == 0){
+                    Move(1, x, y, spaceLeft, monsterCount);
+                }else{
+                    Move(2, x, y - 1, spaceLeft - 1, monsterCount);
+                }
+                break;
+            }
+            default:break;
         }
-        if (y == MAX_V_NUM_GRID - 1)
-            return;
-        grids[y++][x].setText("");
-        grids[y][x].setText("M");
-    }
+	}
+	void listAllMonster() {
+		if(monsterList.size()==0)return;
+		System.out.println("Listing out All Monsters");
+		for(int i=0;i<monsterList.size();i++) {
+			int[] coord = monsterList.get(i).getCoord();
+			System.out.println(i+":"+coord[0]+","+coord[1]+" "+monsterList.get(i).getHp());
+		}
+		System.out.println();
+	}
+
+	void listAllTower() {
+		for(int i=0;i<towers.size();i++) {
+			System.out.println("Tower("+i+") State:"+towers.get(i).getStateStr()+" Timer:"+towers.get(i).getCooldown()+" Coord:"+towers.get(i).getCoord()[0]+","+towers.get(i).getCoord()[1]);
+		}
+		System.out.println("");
+	}
+	void updateAllTowerState() {
+		for(int i=0;i<towers.size();i++)towers.get(i).updateTowerState();
+	}
+	void TowerAttackMonster() {
+		System.out.println("Monster size:"+monsterList.size()+" Tower size:"+towers.size());
+		System.out.println("");
+		
+		for(int i=0;i<monsterList.size();i++) {
+			for(int j=0;j<towers.size();j++) {
+				if(towers.get(j).getStateStr()!="READY")return;
+				System.out.println("Monster Coord:"+monsterList.get(i).getCoord()[0]+","+monsterList.get(i).getCoord()[1]);
+				System.out.println("Tower Coord:"+towers.get(j).getCoord()[0]+","+towers.get(j).getCoord()[1]);
+				
+				if(towers.get(j).isInRange(monsterList.get(i).getCoord())) {
+					System.out.println("Monster ("+i+") In Range of Tower ("+j+")");
+					switch(towers.get(j).getTowerType()) {
+						case "basicTower":{
+							monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
+							break;
+						}
+						case "iceTower":{
+							monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
+							monsterList.get(i).setFrozen();
+							break;
+						}
+						case "catapult":{
+							monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
+							break;
+						}
+						case "laserTower":{
+							monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
+							break;
+						}
+					}
+					monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
+					
+					System.out.println("Tower("+j+") State:"+towers.get(j).getStateStr()+" Timer:"+towers.get(j).getCooldown()+" Coord:"+towers.get(j).getCoord()[0]+","+towers.get(j).getCoord()[1]);
+				}
+				System.out.println("");
+			}
+		}
+		updateAllTowerState();
+	}
+	@FXML
+	private void nextFrame() {
+		numOfFrames++;
+
+		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+			speedIncrease++;
+			speedIncrease = (int) Math.pow(2, speedIncrease);
+		}
+
+		for (int i = 0; i < monsterList.size(); i++) {
+
+			boolean down = false;
+			boolean right = false;
+
+			int movementSpeed = monsterList.get(i).getMovementSpeed();
+			int x = monsterList.get(i).getX();
+			int y = monsterList.get(i).getY();
+
+			System.out.println("x: " + x);
+			System.out.println("y: " + y);
+
+			grids[y][x].setText("");
+
+			if (x % 4 == 0)down = true;
+			else down = false;
+
+			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
+				right = false;
+			} else{
+				right = true;
+			}
+			if (right)Move(1, x, y, movementSpeed + speedIncrease, i);
+			else{
+				if (down)Move(0, x, y, movementSpeed + speedIncrease, i);
+				else Move(2, x, y, movementSpeed + speedIncrease, i);
+			}
+
+		}
+
+		if (grids[0][0].getText() == "" && nextFrameCounter % 20 == 0) {
+
+			monsterGenerate();
+			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+				int currHp = monsterList.get(monsterList.size()).getHp();
+				int newHp = currHp + bonusHp;
+				bonusHp = bonusHp + 50;
+
+				monsterList.get(monsterList.size()).setHp(newHp);
+			}
+			grids[0][0].setText("M");
+		}
+
+		nextFrameCounter++;
+		listAllMonster();
+		listAllTower();
+		TowerAttackMonster();
+	}
     
+	
 
     /**
      * A function that demo how drag and drop works
@@ -195,7 +377,7 @@ public class MyController {
                                 case "iceTower":
                                     towers.add(new IceTower(coord));
                                     break;
-                                case "Catapult":
+                                case "catapult":
                                     towers.add(new Catapult(coord));
                                     break;
                                 case "laserTower":
@@ -203,12 +385,10 @@ public class MyController {
                                     break;
                                 }
 
-                            } else {
-                                System.out.println("Cannot place tower here.");
                             }
                             event.setDropCompleted(true);
                             event.consume();
-                            System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
+                            
                         }
                     });
                     
@@ -217,8 +397,9 @@ public class MyController {
                         public void handle(MouseEvent event) {
                     		target.setPickOnBounds(true);
                             if (target.getGraphic() == null) {
-                                System.out.println("There is no tower");
+                               // System.out.println("There is no tower");
                             } else {
+                            	if(!rangeShown) {
                                     System.out.println("There is tower");
                                     int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
                                     System.out.println("This Tower's range: " + towers.get(getTowerIndex(coord)).getRange());
@@ -233,34 +414,19 @@ public class MyController {
                                     invisibleLabel.setLayoutX(target.getLayoutX());
                                     invisibleLabel.setLayoutY(target.getLayoutY());
                                     paneArena.getChildren().add(invisibleLabel);
+                                    rangeShown=true;
+                            	}
                             }
                     	}
                     });
-                    invisibleLabel.setOnMouseExited(new EventHandler<MouseEvent>() {
-                    	public void handle(MouseEvent event) {
-                    		paneArena.getChildren().remove(invisibleLabel);
-                    		paneArena.getChildren().remove(rangeCircle);
-                    		System.out.println("Invisible label exit called");
-                    	}
-                    });
-                    /*
-               		target.setOnMouseExited(new EventHandler<MouseEvent>() {
-            			public void handle(MouseEvent event) {
-                            if (rangeCircle.getId()=="Circlerange") {
-                                System.out.println("Is it getting called?");
-                                paneArena.getChildren().remove(rangeCircle);
-                                count++;
-                                System.out.println(count);
-                            }
-            			}
-            		});*/  
+    
                     // setOnDragOver: allows controlling what happens when something is dragged over
                     // the node.
                     // well, you can also write anonymous class or even lambda
                     // Anonymous class
                     target.setOnDragOver(new EventHandler<DragEvent>() {
                         public void handle(DragEvent event) {
-                            System.out.println("onDragOver");
+                            //System.out.println("onDragOver");
                             if (event.getGestureSource() != target && event.getDragboard().hasString()) {
                                 /* allow for both copying and moving, whatever user chooses */
                                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
@@ -282,7 +448,7 @@ public class MyController {
                     target.setOnDragEntered(new EventHandler<DragEvent>() {
                         public void handle(DragEvent event) {
                             /* the drag-and-drop gesture entered the target */
-                            System.out.println("onDragEntered");
+                            //System.out.println("onDragEntered");
                             /* show to the user that it is an actual gesture target */
                             if (event.getGestureSource() != target && event.getDragboard().hasString()) {
                                 target.setStyle("-fx-border-color: red;");
@@ -302,44 +468,52 @@ public class MyController {
 
             }
         }
+        invisibleLabel.setOnMouseExited(new EventHandler<MouseEvent>() {
+        	public void handle(MouseEvent event) {
+        		paneArena.getChildren().remove(invisibleLabel);
+        		paneArena.getChildren().remove(rangeCircle);
+        		System.out.println("Invisible label exit called");
+        		rangeShown=false;
+        	}
+        });
     }
 }
 
 class DragEventHandler implements EventHandler<MouseEvent> {
-    private Label source;
+	private Label source;
 
-    public DragEventHandler(Label e) {
-        source = e;
-    }
+	public DragEventHandler(Label e) {
+		source = e;
+	}
 
-    @Override
-    public void handle(MouseEvent event) {
-        Dragboard db = source.startDragAndDrop(TransferMode.ANY);
+	@Override
+	public void handle(MouseEvent event) {
+		Dragboard db = source.startDragAndDrop(TransferMode.ANY);
 
-        ClipboardContent content = new ClipboardContent();
-        content.putString(source.getId());
-        db.setContent(content);
+		ClipboardContent content = new ClipboardContent();
+		content.putString(source.getId());
+		db.setContent(content);
 
-        String imageURL = Helper.preProcessing(db.getString());
-        db.setDragView(new Image(imageURL, 30.0, 30.0, true, true));
-        event.consume();
-    }
+		String imageURL = Helper.preProcessing(db.getString());
+		db.setDragView(new Image(imageURL, 30.0, 30.0, true, true));
+		event.consume();
+	}
 }
 
 class DragDroppedEventHandler implements EventHandler<DragEvent> {
-    @Override
-    public void handle(DragEvent event) {
-        System.out.println("xx");
-        Dragboard db = event.getDragboard();
-        boolean success = false;
-        // System.out.println(db.getString());
+	@Override
+	public void handle(DragEvent event) {
+		System.out.println("xx");
+		Dragboard db = event.getDragboard();
+		boolean success = false;
+		// System.out.println(db.getString());
 
-        if (db.hasString()) {
-            ((Label) event.getGestureTarget()).setText(db.getString());
-            success = true;
-        }
-        event.setDropCompleted(success);
-        event.consume();
+		if (db.hasString()) {
+			((Label) event.getGestureTarget()).setText(db.getString());
+			success = true;
+		}
+		event.setDropCompleted(success);
+		event.consume();
 
-    }
+	}
 }

@@ -32,6 +32,8 @@ public class basicTower extends Tower {
 	 * Initial range of a basicTower
 	 */
 	private static final int initialRange = 70;
+	
+	private static final String towerType = "basicTower";
 
 	/**
 	 * Constructs a basicTower that can be placed on the screen The Coord argument
@@ -41,7 +43,7 @@ public class basicTower extends Tower {
 	 * @param Coord coordinate of basicTower where is created
 	 */
 	public basicTower(int[] Coord) {
-		super(Coord, initialCost, initialPower, initialRange);
+		super(Coord, initialCost, initialPower, initialRange, towerType);
 	}
 
 	/**

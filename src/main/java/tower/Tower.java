@@ -25,6 +25,8 @@ public abstract class Tower {
 	private int[] coord;
 	private TowerState curState=TowerState.READY;
 	
+	private String towerType;
+	
 	/**
 	 * This is an abstract class constructor which will base structure that will be inherited 
 	 * by all of its children class. A "Tower" class object cannot be constructed.
@@ -36,13 +38,18 @@ public abstract class Tower {
 	 * @param power	the initial power of the tower built
 	 * @param range	the initial range of the tower built
 	 */
-	public Tower(int []Coord,int cost,int power, int range) {
+	public Tower(int []Coord,int cost,int power, int range, String towerType) {
 		this.buildingCost = cost;
 		this.power = power;
 		this.shootingRange = range;
 		this.coord = new int[2];
 		this.coord[0] = Coord[0];
 		this.coord[1] = Coord[1];
+		this.towerType = towerType;
+	}
+	
+	public String getTowerType () {
+		return this.towerType;
 	}
 	/**
 	 * Returns the building cost of the Tower.
@@ -125,4 +132,6 @@ public abstract class Tower {
 	 * @param canUpgrade canUpgrade this parameter indicates whether the basicTower can be upgraded
 	 */
 	public abstract void upgradeTower(boolean canUpgrade);
+	
+	public abstract int getUpgradeCost();
 }

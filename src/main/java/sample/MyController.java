@@ -51,14 +51,32 @@ public class MyController {
 
     @FXML
     private Label labelLaserTower;
+    
+    @FXML
+    private Label money;
 
     private static final int ARENA_WIDTH = 480;
     private static final int ARENA_HEIGHT = 480;
     private static final int GRID_WIDTH = 40;
     private static final int GRID_HEIGHT = 40;
     private static final int MAX_H_NUM_GRID = 12;
-    private static final int MAX_V_NUM_GRID = 12;
-
+    private static final int MAX_V_NUM_GRID = 12;    
+    private static final int catapultCost = 80;
+    private static final int basicCost = 60;
+    private static final int laserCost = 180;
+    private static final int iceCost = 90;
+    
+    int amtRrs = 200;
+    int bT = 0;
+	int c = 0;
+	int lT = 0;
+	int iT = 0;
+	int sumbT = 0;
+	int sumC = 0;
+	int sumiT = 0;
+	int sumlT = 0;
+	int sumTotal = 0;
+	
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
     private List<Tower> towers = new ArrayList<>();
     private int x = -1, y = 0; // where is my monster
@@ -68,7 +86,7 @@ public class MyController {
     private boolean circleShown = false;
     //List<Label> invisibleLabel = new ArrayList<>();
     //HashMap<String, Label> invLabels = new HashMap<String, Label>();
-    private int countInvisibleLabel = 0;
+    
     /**
      * 
      * @param coord The Coordinate of the s
@@ -106,6 +124,20 @@ public class MyController {
      */
     @FXML
     public void createArena() {
+    	Tooltip basicInfo = new Tooltip();
+    	Tooltip iceInfo = new Tooltip();
+    	Tooltip catapultInfo = new Tooltip();
+    	Tooltip laserInfo = new Tooltip();
+    	
+    	basicInfo.setText(Helper.labelProcessing(labelBasicTower.getId()) + "\n" + "Cost: " + Integer.toString(basicCost));
+    	iceInfo.setText(Helper.labelProcessing(labelIceTower.getId()) + "\n" + "Cost: " + Integer.toString(iceCost));
+    	catapultInfo.setText(Helper.labelProcessing(labelCatapult.getId()) + "\n" + "Cost: " + Integer.toString(catapultCost));
+    	laserInfo.setText(Helper.labelProcessing(labelLaserTower.getId()) + "\n" + "Cost: " + Integer.toString(laserCost));
+    	
+    	labelBasicTower.setTooltip(basicInfo);
+    	labelIceTower.setTooltip(iceInfo);
+    	labelCatapult.setTooltip(catapultInfo);
+    	labelLaserTower.setTooltip(laserInfo);
         if (grids[0][0] != null)
             return; // created already
         for (int i = 0; i < MAX_V_NUM_GRID; i++)
@@ -129,8 +161,29 @@ public class MyController {
                 // map will be empty without tiles
             }
 
-        setDragAndDrop();
+        gameEvents();
        
+    }
+    private void updateResources() {
+    	if(!towers.isEmpty()) {
+    		sumbT = bT * basicCost;
+    		sumC = c * catapultCost;
+    		sumlT = lT * laserCost;
+    		sumiT = iT * iceCost;
+    		
+    		bT = 0;
+    		c = 0;
+    		lT = 0;
+    		iT = 0;
+    		
+    		sumTotal = sumbT + sumC + sumlT + sumiT;
+    		if(amtRrs > 0)
+    			amtRrs -= sumTotal;
+    		else amtRrs = 0;
+    		money.setText("Money Left: " + Integer.toString(amtRrs));
+    	}
+    	else
+    		money.setText("Money Left: " + Integer.toString(amtRrs));    		
     }
    /**
     * A function that allows monster to move forward
@@ -147,12 +200,12 @@ public class MyController {
             return;
         grids[y++][x].setText("");
         grids[y][x].setText("M");
+        
+        /* add after pulling from monster */
+        //updateResources();
     }
    
-    /**
-     * A function that allows dragging of Towers 
-     * 
-     */
+    
 
     public int [] getTowerCoords(int [] coord)
     {
@@ -180,10 +233,13 @@ public class MyController {
     	invisibleLabel.setMinHeight(GRID_HEIGHT);
     	invisibleLabel.setMinHeight(GRID_HEIGHT);
     	invisibleLabel.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,CornerRadii.EMPTY,Insets.EMPTY)));
-    	
- 
+   
     }
-    private void setDragAndDrop() {
+    /**
+     * A function that allows dragging of Towers 
+     * 
+     */
+    private void gameEvents() {
         // where on the x by y grid to put the text "Drop Here"
         // target.setText("Drop\nHere");
         for (int i = 0; i < MAX_V_NUM_GRID; i++)
@@ -213,20 +269,69 @@ public class MyController {
                            
                            int[] coord = {(int) target.getLayoutX(), (int) target.getLayoutY()};
             	           if(target.getGraphic() == null) {
-                               target.setGraphic(towerImageView);
-                               String towerName = Helper.getTowerName(imageName);	//This will give me the towerName
+//                               target.setGraphic(towerImageView);
+                                String towerName = Helper.getTowerName(imageName);	//This will give me the towerName
+//                               target.setId(towerName); /**/
                                 switch (towerName) {//Switch-case to instantiate a Tower object accordingly
                                 case "basicTower":
-                                    towers.add(new basicTower(coord));
+                                	if(amtRrs < basicCost || amtRrs == 0) {
+                                	   Alert alert = new Alert(AlertType.ERROR);
+                     	        	   alert.setTitle("Error");
+                     	        	   alert.setHeaderText("Cannot build Basic Tower");
+                     	        	   alert.setContentText("Not enough money!");
+                     	        	   alert.show();
+                                	}
+                                	else {
+                                       target.setGraphic(towerImageView);
+                                       target.setId(towerName); /**/
+                                	   towers.add(new basicTower(coord));
+                                	   bT++;
+                                	}
                                     break;
                                 case "iceTower":
-                                    towers.add(new IceTower(coord));
+                                	if(amtRrs < iceCost || amtRrs == 0) {
+                                 	   Alert alert = new Alert(AlertType.ERROR);
+                      	        	   alert.setTitle("Error");
+                      	        	   alert.setHeaderText("Cannot build Ice Tower");
+                      	        	   alert.setContentText("Not enough money!");
+                      	        	   alert.show();
+                                 	}
+                                	else {
+                                	   target.setGraphic(towerImageView);
+                                       target.setId(towerName); /**/
+                                       towers.add(new IceTower(coord));
+                                       iT++;
+                                	}
                                     break;
                                 case "catapult":
-                                    towers.add(new Catapult(coord));
+                                	if(amtRrs < catapultCost || amtRrs == 0) {
+                                 	   Alert alert = new Alert(AlertType.ERROR);
+                      	        	   alert.setTitle("Error");
+                      	        	   alert.setHeaderText("Cannot build Catapult");
+                      	        	   alert.setContentText("Not enough money!");
+                      	        	   alert.show();
+                                 	}
+                                	else {
+                                	   target.setGraphic(towerImageView);
+                                       target.setId(towerName); /**/
+                                       towers.add(new Catapult(coord));
+                                       c++;
+                                	}
                                     break;
                                 case "laserTower":
-                                    towers.add(new laserTower(coord));
+                                	if(amtRrs < laserCost || amtRrs == 0) {
+                                  	   Alert alert = new Alert(AlertType.ERROR);
+                       	        	   alert.setTitle("Error");
+                       	        	   alert.setHeaderText("Cannot build Laser Tower");
+                       	        	   alert.setContentText("Not enough money!");
+                       	        	   alert.show();
+                                  	}
+                                 	else {
+                                 	   target.setGraphic(towerImageView);
+                                       target.setId(towerName); /**/
+                                       towers.add(new laserTower(coord));
+                                       lT++;
+                                 	}
                                     break;
                                 }
             	           } else {
@@ -240,7 +345,7 @@ public class MyController {
             	           
                            event.consume();
                            System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
-            	          
+                           updateResources();            	          
             	     }        	                        		
             	});
        
@@ -314,8 +419,7 @@ public class MyController {
                         		rangeCircle.setOpacity(0.6);
                         		rangeCircle.setFill(Color.RED);
                         		rangeCircle.setId("Circlerange");
-                            //rangeCircle.add(rangeCircle2);
-                        		paneArena.getChildren().add(rangeCircle);                            
+                                paneArena.getChildren().add(rangeCircle);                            
                         		initEachInvisibleLabel();                                    
                         		invisibleLabel.setLayoutX(target.getLayoutX());
                         		invisibleLabel.setLayoutY(target.getLayoutY());                           
@@ -323,11 +427,19 @@ public class MyController {
                         		circleShown = true;
                             
                             // Pop-up info
-                        		System.out.println("style:" + tar);
-                        		//String towerName = Helper.getTowerName(target.getGraphic().get);
-                        		towerInfo.setText("Tower");
                         		
+                        		String towerName = Helper.space(target.getId());
+                        		int[] coords = {(int) target.getLayoutX(), (int) target.getLayoutY()};
+                        		String towerStats = "Tower: " + towerName + "\n" + "Tower cost: " + Integer.toString(Helper.returnTower(coords, towers).getTowerCost())+ "\n"
+                                		+ "Upgrade Cost: " + Integer.toString(Helper.returnTower(coords, towers).getUpgradeCost())+ "\n"
+                                		+ "Power: " + Integer.toString(Helper.returnTower(coords, towers).getPower())+ "\n" 
+                                		+ "Range: " + Integer.toString(Helper.returnTower(coords, towers).getRange())+ "\n"
+                                		+ "Current state: " + Helper.returnTower(coords, towers).getTowerState().name()+ "\n";
+//                        		System.out.println(towerStats);
+                        		towerInfo.setText(towerStats);	                       		
                         		invisibleLabel.setTooltip(towerInfo); 
+                        		
+                        		//towerInfo.show(invisibleLabel, invisibleLabel.getLayoutX(), invisibleLabel.getLayoutY());
                         	}
                         }
                 	}
@@ -340,11 +452,11 @@ public class MyController {
             			circleShown = false;
             			}
             		});
-            	}
-              	}
-            }    
+            	} // big else
+              	} // 2nd big for loop
+            } //gameEvents    
   
-}
+}//MyController class
 
 class DragEventHandler implements EventHandler<MouseEvent> {
     private Label source;

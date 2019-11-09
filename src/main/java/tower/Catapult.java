@@ -8,9 +8,9 @@ public class Catapult extends Tower {
 	private static final int initialCost = 80;
 	private static final int initialPower = 50;
 	private static final int initialRange = 200;
-	
+	private static final String towerType = "catapult";
 	public Catapult(int []Coord) {
-		super(Coord,initialCost,initialPower,initialRange);
+		super(Coord,initialCost,initialPower,initialRange, towerType);
 	}
 	
 	@Override

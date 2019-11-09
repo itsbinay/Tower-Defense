@@ -9,10 +9,11 @@ public class IceTower extends Tower {
     private static final int initialPower = 20;
     private static final int initialRange = 50;
     
+    private static final String towerType = "iceTower";
     private int FreezeTimer = 3;	//This is in terms of frames
     
     public IceTower(int []Coord){
-        super(Coord,initialCost,initialPower,initialRange);
+        super(Coord,initialCost,initialPower,initialRange, towerType);
     }
     
     @Override
@@ -27,7 +28,7 @@ public class IceTower extends Tower {
     	return this.FreezeTimer;
     }
     
-    public int upgradeCost() {
+    public int getUpgradeCost() {
     	return upgradeCost;
     }
 }

@@ -47,10 +47,10 @@ task debug(type:JavaExec) {
 dependencies {
     // https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit
     compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.31'
-
+	
     // https://mvnrepository.com/artifact/junit/junit
     testCompile group: 'junit', name: 'junit', version: '4.12'
-
+	compile "junit:junit:4.12"
     // testFX - https://github.com/TestFX/TestFX
     testCompile  group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
 
@@ -62,4 +62,8 @@ jacocoTestReport {
         csv.enabled false
         html.destination file("${buildDir}/jacocoHTML")
     }
+}
+
+jacoco{
+	toolVersion="0.8.3"
 }

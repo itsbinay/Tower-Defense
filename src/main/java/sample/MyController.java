@@ -74,16 +74,19 @@ public class MyController {
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
 	ArrayList<Monster> monsterList = new ArrayList<Monster>();
+	
+	private static int resources = 0;
 
 	private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
 
-    // a,b
-    // Label target = grids[a][b];
-    private List<Tower> towers = new ArrayList<>();
     private int x = -1, y = 0; // where is my monster
+    
+    private List<Tower> towers = new ArrayList<>();
+    
     private Circle rangeCircle = new Circle();
     private Label invisibleLabel = new Label();
     private boolean rangeShown=false;
+    
     private void initInvisibleLabel() {
     	invisibleLabel.setMinWidth(GRID_WIDTH);
     	invisibleLabel.setMaxWidth(GRID_WIDTH);
@@ -160,7 +163,7 @@ public class MyController {
 
 	public void monsterGenerate() {
 		System.out.println("monsterGenerate");
-		int result = r.nextInt(high - low) + low;
+		int result = r.nextInt(high - low+1) + low+1;
 
 		switch (result) {
 		case 1:monsterList.add(new Fox(startCoord, false));break;
@@ -173,11 +176,19 @@ public class MyController {
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
 
 		System.out.println("y: " + y + "x: " + x + " spaceleft : " + spaceLeft + "op " + op);
-		if (spaceLeft == 0) {
+		if (spaceLeft < 1) {
 
 			int[] newCoord = { y, x };
-			grids[y][x].setText("M");
+
 			monsterList.get(monsterCount).setYX(newCoord);
+			
+			String imageName = monsterList.get(monsterCount).getImg();
+			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
+			ImageView monsterImageView = new ImageView();
+			monsterImageView.setImage(monsterImage);
+				
+			System.out.println("monstercount "+ monsterCount + " img "+ monsterList.get(monsterCount).getImg());
+			grids[y][x].setGraphic(monsterImageView);
 
 			return;
 		}
@@ -213,6 +224,9 @@ public class MyController {
             default:break;
         }
 	}
+	/**
+	 * Debugging tool to list out all Monster State
+	 */
 	void listAllMonster() {
 		if(monsterList.size()==0)return;
 		System.out.println("Listing out All Monsters");
@@ -222,13 +236,16 @@ public class MyController {
 		}
 		System.out.println();
 	}
-
+	/**
+	 * Debugging tool to list out all Tower State
+	 */
 	void listAllTower() {
 		for(int i=0;i<towers.size();i++) {
 			System.out.println("Tower("+i+") State:"+towers.get(i).getStateStr()+" Timer:"+towers.get(i).getCooldown()+" Coord:"+towers.get(i).getCoord()[0]+","+towers.get(i).getCoord()[1]);
 		}
 		System.out.println("");
 	}
+	
 	void updateAllTowerState() {
 		for(int i=0;i<towers.size();i++)towers.get(i).updateTowerState();
 	}
@@ -238,20 +255,24 @@ public class MyController {
 		
 		for(int i=0;i<monsterList.size();i++) {
 			for(int j=0;j<towers.size();j++) {
-				if(towers.get(j).getStateStr()!="READY")return;
+				//if(towers.get(j).getStateStr()!="READY")return;
 				System.out.println("Monster Coord:"+monsterList.get(i).getCoord()[0]+","+monsterList.get(i).getCoord()[1]);
 				System.out.println("Tower Coord:"+towers.get(j).getCoord()[0]+","+towers.get(j).getCoord()[1]);
-				
+
 				if(towers.get(j).isInRange(monsterList.get(i).getCoord())) {
 					System.out.println("Monster ("+i+") In Range of Tower ("+j+")");
+					
 					switch(towers.get(j).getTowerType()) {
 						case "basicTower":{
 							monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
 							break;
 						}
 						case "iceTower":{
-							monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
-							monsterList.get(i).setFrozen();
+							if(towers.get(j).getStateStr()=="Ready") {
+								System.out.println("IceTower Shoot");
+								monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
+								monsterList.get(i).setFrozen();
+							}
 							break;
 						}
 						case "catapult":{
@@ -272,8 +293,7 @@ public class MyController {
 		}
 		updateAllTowerState();
 	}
-	@FXML
-	private void nextFrame() {
+	private void MonsterFSM() {
 		numOfFrames++;
 
 		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
@@ -282,6 +302,9 @@ public class MyController {
 		}
 
 		for (int i = 0; i < monsterList.size(); i++) {
+
+			if (monsterList.get(i).getFrozen() == true)
+				monsterList.get(i).reduceSpeed();
 
 			boolean down = false;
 			boolean right = false;
@@ -293,7 +316,7 @@ public class MyController {
 			System.out.println("x: " + x);
 			System.out.println("y: " + y);
 
-			grids[y][x].setText("");
+			grids[y][x].setGraphic(null);
 
 			if (x % 4 == 0)down = true;
 			else down = false;
@@ -309,25 +332,52 @@ public class MyController {
 				else Move(2, x, y, movementSpeed + speedIncrease, i);
 			}
 
+			if (monsterList.get(i).getFrozen() == true)
+				monsterList.get(i).unFreeze();
+
 		}
 
-		if (grids[0][0].getText() == "" && nextFrameCounter % 20 == 0) {
+		if (grids[0][0].getGraphic() == null && nextFrameCounter % 5 == 0) {
 
 			monsterGenerate();
 			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
-				int currHp = monsterList.get(monsterList.size()).getHp();
+				int currHp = monsterList.get(monsterList.size()-1).getHp();
 				int newHp = currHp + bonusHp;
 				bonusHp = bonusHp + 50;
 
-				monsterList.get(monsterList.size()).setHp(newHp);
+				monsterList.get(monsterList.size()-1).setHp(newHp);
+
 			}
-			grids[0][0].setText("M");
+			
+			String imageName = monsterList.get(monsterList.size()-1).getImg();
+			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
+			ImageView monsterImageView = new ImageView();
+			monsterImageView.setImage(monsterImage);
+				grids[0][0].setGraphic(monsterImageView);
+			
 		}
 
 		nextFrameCounter++;
+	}
+	
+	private void clearDeadMonster() {
+		for(int i=0;i<monsterList.size();i++) {
+			if(monsterList.get(i).getHp()<=0) {
+				Image collisionImage = new Image("collision.png", 30.0, 30.0, true, true);
+				ImageView collisionImageView = new ImageView();
+				collisionImageView.setImage(collisionImage);
+				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setGraphic(collisionImageView);
+				monsterList.remove(i);
+			}
+		}
+	}
+	@FXML
+	private void nextFrame() {
+		MonsterFSM();
 		listAllMonster();
 		listAllTower();
 		TowerAttackMonster();
+		clearDeadMonster();
 	}
     
 	
@@ -404,11 +454,11 @@ public class MyController {
                                     int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
                                     System.out.println("This Tower's range: " + towers.get(getTowerIndex(coord)).getRange());
                                     rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
+                                    
                                     rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
                                     rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
                                     rangeCircle.setOpacity(0.6);
                                     rangeCircle.setFill(Color.RED);
-                                    rangeCircle.setId("Circlerange");
                                     paneArena.getChildren().add(rangeCircle);
                                     initInvisibleLabel();
                                     invisibleLabel.setLayoutX(target.getLayoutX());

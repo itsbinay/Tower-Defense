@@ -27,6 +27,7 @@ public abstract class Tower {
 	private TowerState curState=TowerState.READY;
 	private int cooldownTimer;
 	private int maxcdTimer;
+	private int upgradeCost;
 	/**
 	 * This is an abstract class constructor which will base structure that will be inherited 
 	 * by all of its children class. A "Tower" class object cannot be constructed.
@@ -38,7 +39,7 @@ public abstract class Tower {
 	 * @param power	the initial power of the tower built
 	 * @param range	the initial range of the tower built
 	 */
-	public Tower(int []Coord,int cost,int power, int range,int cdTimer) {
+	public Tower(int []Coord,int cost,int power, int range,int cdTimer,int upgradeCost) {
 		this.buildingCost = cost;
 		this.power = power;
 		this.shootingRange = range;
@@ -49,6 +50,9 @@ public abstract class Tower {
 		this.maxcdTimer=cdTimer;
 	}
 	
+	public int getUpgradeCost() {
+		return this.upgradeCost;
+	}
 	/**
 	 * Retuns the cooldown timer of the tower.
 	 * the cooldown of the Timer is lowered if the timer value is greater than 1

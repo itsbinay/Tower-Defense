@@ -45,19 +45,11 @@ public class basicTower extends Tower {
 	 * @param Coord coordinate of basicTower where is created
 	 */
 	public basicTower(int[] Coord) {
-		super(Coord, initialCost, initialPower, initialRange,initialCDTimer);
+		super(Coord, initialCost, initialPower, initialRange,initialCDTimer,upgradeCost);
 		System.out.println("basicTower constructed");
 	}
 
-	/**
-	 * Returns the upgrade cost of the given basicTower.
-	 * 
-	 * @return the upgrade cost of the basicTower
-	 */
-	public int getUpgradeCost() {
-		return upgradeCost;
-	}
-	
+
 	@Override
 	public boolean isInRange(int [] coord) {
 		if(this.getCoord()[0]==coord[0] && Math.abs(this.getCoord()[1]-coord[1])<this.getRange())return true;

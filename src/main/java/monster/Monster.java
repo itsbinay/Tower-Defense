@@ -8,10 +8,14 @@ package monster;
 
 public class Monster {
 	
-	
+	public enum MonsterState{
+		FROZEN,
+		TARGETED
+	}
 	private int movementSpeed;
 	private int hp;
 	private boolean frozen;
+	private String img;
 	
 	private int[] coord = {0,0};
 	
@@ -22,11 +26,12 @@ public class Monster {
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
 	 */
 	
-	public Monster(int[]coord,int hp, int movementSpeed, boolean frozen ) {
+	public Monster(int[]coord,int hp, int movementSpeed,String img, boolean frozen) {
 		this.movementSpeed = movementSpeed;
 		this.hp = hp;
 		this.frozen = frozen;
 		this.coord = coord;
+		this.img = img;
 		
 	}
 	
@@ -36,6 +41,9 @@ public class Monster {
 
 	public int getMovementSpeed() {
 		return this.movementSpeed;
+	}
+	public String getImg() {
+		return this.img;
 	}
 	
 	/**
@@ -98,8 +106,16 @@ public class Monster {
 		if(this.frozen == true) {
 			
 			this.movementSpeed = this.movementSpeed-5;
-			this.frozen = false;
+			
 		}
+	}
+		public void unFreeze() {
+			
+			if(this.frozen == true) {
+				
+				this.movementSpeed = this.movementSpeed+5;
+				this.frozen = false;
+			}
 		
 		
 		

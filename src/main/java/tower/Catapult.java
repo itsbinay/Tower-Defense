@@ -11,7 +11,7 @@ public class Catapult extends Tower {
 	private static final int initialCDTimer=4;
 	
 	public Catapult(int []Coord) {
-		super(Coord,initialCost,initialPower,initialRange,initialCDTimer);
+		super(Coord,initialCost,initialPower,initialRange,initialCDTimer,upgradeCost);
 		System.out.println("Catapult constructed");
 	}
 	
@@ -22,11 +22,6 @@ public class Catapult extends Tower {
 		this.setPower(this.getPower() + powerIncrement);
 		this.setRange(this.getRange() + rangeIncrement);
 	}
-	
-	public int getUpgradeCost() {
-		return upgradeCost;
-	}
-	
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();

@@ -7,13 +7,13 @@ public class IceTower extends Tower {
     
     private static final int initialCost = 90;
     private static final int initialPower = 20;
-    private static final int initialRange = 50;
-    private static final int initialCDTimer=1;
+    private static final int initialRange = 100;
+    private static final int initialCDTimer=3;
     
     private int FreezeTimer = 3;	//This is in terms of frames
     
     public IceTower(int []Coord){
-        super(Coord,initialCost,initialPower,initialRange,initialCDTimer);
+        super(Coord,initialCost,initialPower,initialRange,initialCDTimer,upgradeCost);
         System.out.println("iceTower constructed");
     }
     
@@ -27,10 +27,6 @@ public class IceTower extends Tower {
     
     public int getFreezeTimer() {
     	return this.FreezeTimer;
-    }
-    
-    public int upgradeCost() {
-    	return upgradeCost;
     }
     
 	public int attack(int hp) {

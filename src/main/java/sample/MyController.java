@@ -145,7 +145,7 @@ public class MyController {
 
 	public void monsterGenerate() {
 		System.out.println("monsterGenerate");
-		int result = r.nextInt(high - low) + low;
+		int result = r.nextInt(high - low+1) + low+1;
 
 		switch (result) {
 		case 1:
@@ -168,11 +168,26 @@ public class MyController {
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
 
 		System.out.println("y: " + y + "x: " + x + " spaceleft : " + spaceLeft + "op " + op);
-		if (spaceLeft == 0) {
+		if (spaceLeft < 1) {
 
 			int[] newCoord = { y, x };
-			grids[y][x].setText("M");
+			
+			
+		
+			
+			
 			monsterList.get(monsterCount).setYX(newCoord);
+			
+			String imageName = monsterList.get(monsterCount).getImg();
+			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
+			ImageView monsterImageView = new ImageView();
+			monsterImageView.setImage(monsterImage);
+				
+			System.out.println("monstercount "+ monsterCount + " img "+ monsterList.get(monsterCount).getImg());
+			grids[y][x].setGraphic(monsterImageView);
+			
+			
+			
 
 			return;
 
@@ -228,6 +243,9 @@ public class MyController {
 
 		for (int i = 0; i < monsterList.size(); i++) {
 
+			if (monsterList.get(i).getFrozen() == true)
+				monsterList.get(i).reduceSpeed();
+
 			boolean down = false;
 			boolean right = false;
 
@@ -238,7 +256,7 @@ public class MyController {
 			System.out.println("x: " + x);
 			System.out.println("y: " + y);
 
-			grids[y][x].setText("");
+			grids[y][x].setGraphic(null);
 
 			if (x % 4 == 0)
 				down = true;
@@ -262,25 +280,32 @@ public class MyController {
 					Move(0, x, y, movementSpeed + speedIncrease, i);
 				else
 					Move(2, x, y, movementSpeed + speedIncrease, i);
-
 			}
+
+			if (monsterList.get(i).getFrozen() == true)
+				monsterList.get(i).unFreeze();
 
 		}
 
-		if (grids[0][0].getText() == "" && nextFrameCounter % 20 == 0) {
+		if (grids[0][0].getGraphic() == null && nextFrameCounter % 5 == 0) {
 
 			monsterGenerate();
 
 			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
-				int currHp = monsterList.get(monsterList.size()).getHp();
+				int currHp = monsterList.get(monsterList.size()-1).getHp();
 				int newHp = currHp + bonusHp;
 				bonusHp = bonusHp + 50;
 
-				monsterList.get(monsterList.size()).setHp(newHp);
+				monsterList.get(monsterList.size()-1).setHp(newHp);
 
 			}
-
-			grids[0][0].setText("M");
+			
+			String imageName = monsterList.get(monsterList.size()-1).getImg();
+			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
+			ImageView monsterImageView = new ImageView();
+			monsterImageView.setImage(monsterImage);
+				grids[0][0].setGraphic(monsterImageView);
+			
 		}
 
 		nextFrameCounter++;

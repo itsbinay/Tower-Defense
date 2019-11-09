@@ -10,6 +10,7 @@ package monster;
 public class Fox extends Monster{
 	private static int hp = 100;
 	private static int movementSpeed = 1;
+	private static String img = "fox.png";
 	
 	/**
 	 * 
@@ -17,7 +18,7 @@ public class Fox extends Monster{
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
 	 */
 	public Fox(int [] coord, boolean frozen) {
-		super(coord,hp, movementSpeed, frozen);
+		super(coord,hp, movementSpeed,img, frozen);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -6,12 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.event.*;
 import javafx.fxml.FXML;
+import javafx.scene.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -55,25 +55,36 @@ public class MyController {
     private static final int MAX_V_NUM_GRID = 12;
 
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
-    
-    
-//    a,b
-//    Label target = grids[a][b];
+
+    // a,b
+    // Label target = grids[a][b];
     private List<Tower> towers = new ArrayList<>();
     private int x = -1, y = 0; // where is my monster
+    private Circle rangeCircle = new Circle();
+    private Label invisibleLabel = new Label();
+    
+    private void initInvisibleLabel() {
+    	invisibleLabel.setMinWidth(GRID_WIDTH);
+    	invisibleLabel.setMaxWidth(GRID_WIDTH);
+    	invisibleLabel.setMinHeight(GRID_HEIGHT);
+    	invisibleLabel.setMinHeight(GRID_HEIGHT);
+    	invisibleLabel.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,CornerRadii.EMPTY,Insets.EMPTY)));
+    }
+    
     
     /**
      * 
      * @param coord The Coordinate of the s
      * @return
      */
-    private int getTowerIndex(int [] coord) {
-    	for(int i=0;i<towers.size();i++) {
-    		if(towers.get(i).getCoord()[0]==coord[0] && towers.get(i).getCoord()[1]==coord[1])
-    			return i;
-    	}
-    	return 0;
+    private int getTowerIndex(int[] coord) {
+        for (int i = 0; i < towers.size(); i++) {
+            if (towers.get(i).getCoord()[0] == coord[0] && towers.get(i).getCoord()[1] == coord[1])
+                return i;
+        }
+        return 0;
     }
+
     /**
      * A dummy function to show how button click works
      */
@@ -92,7 +103,6 @@ public class MyController {
         newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
         paneArena.getChildren().addAll(newLabel);
     }
-    
 
     /**
      * A function that create the Arena
@@ -123,7 +133,7 @@ public class MyController {
             }
 
         setDragAndDrop();
-        mouseEnterExit();
+        //mouseEnterExit();
     }
 
     @FXML
@@ -138,103 +148,12 @@ public class MyController {
         grids[y++][x].setText("");
         grids[y][x].setText("M");
     }
-    List<Circle> circleX=new ArrayList<>();
+    
+
+    private int count = 0;
     /**
      * A function that demo how drag and drop works
      */
-    
-//    private void mouseEvents() {
-//  
-//    	target.setOnMouseEntered(new EventHandler<MouseEvent>() {
-//        	public void handle(MouseEvent event) {
-//        		if(target.getGraphic()==null) {
-//        			System.out.println("There is no tower");
-//        		}else if (target.getGraphic()!=null){
-//        			if(circleX.size()==0) {
-//        			
-//        				System.out.println("There is tower");
-//        				int []coord = {(int)target.getLayoutX(),(int)target.getLayoutY()};
-//        				System.out.println("This Tower's range: "+towers.get(getTowerIndex(coord)).getRange());
-//        				Circle circle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-//        				circle.setLayoutX(target.getLayoutX());
-//        				circle.setLayoutY(target.getLayoutY());
-//        				circle.setOpacity(0.6);
-//        				circle.setFill(Color.RED);
-//        				circle.setId("Circlerange");
-//        				paneArena.getChildren().add(circle);
-//        				//circleX.add(circle);
-//        			}
-//
-//        		}
-//        		event.consume();
-//        	}
-//        });
-//        
-//        target.setOnMouseExited(new EventHandler<MouseEvent>(){
-//        	public void handle(MouseEvent event) {
-//        	if(target.getGraphic()==null)return;
-//        	
-//        	if(!circleX.isEmpty()) {
-//        		System.out.println("Is it getting called?");
-//        		paneArena.getChildren().remove(circleX.get(0));
-//        		circleX.remove(0);
-//        	}
-//        	
-//        	/*
-//			for(javafx.scene.Node a: paneArena.getChildren()) {	
-//				if(a.getId()=="Circlerange") {
-//					System.out.println("targetX:"+target.getLayoutX()+" aX:" +a.getLayoutX());
-//					System.out.println("targetY:"+target.getLayoutY()+" aY:" +a.getLayoutY());
-//					if(a.getLayoutX()==(target.getLayoutX()) && a.getLayoutY()==(target.getLayoutY())) {
-//						System.out.println("Mouse Exit function called");
-//						paneArena.getChildren().remove(a);
-//						//circleX.remove(0);
-//					}
-//					event.consume();
-//				}
-//			}
-//			*/
-//        	}
-//        });
-//    }
-    public int [] getTowerCoords(int [] coord)
-    {
-    	int[] returnCoords = {0,0};
-    	for (int i = 0; i < MAX_V_NUM_GRID; i++)
-            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-            	if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
-                    continue;
-                else {
-                	if(grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[0]) {
-                		returnCoords[0] = i;
-                		returnCoords[1] = j; 
-                		System.out.println("getTowerCoord-i:"+i+" j:"+j);
-                	}
-                }
-            }
-    	return returnCoords;
-    	
-    }
-    private void mouseEnterExit() {
-    	if(circleX.size()==0)return;
-    	int []circleCoord = {(int)circleX.get(0).getLayoutX(), (int)circleX.get(0).getLayoutY()};
-    	int [] index = getTowerCoords(circleCoord);
-    	System.out.println("index: "+index[0]+" "+index[1]);
-    	Label targetSp = grids[index[0]][index[1]];
-    	
-    	targetSp.setOnMouseExited(new EventHandler<MouseEvent>(){
-        	public void handle(MouseEvent event) {
-        	if(targetSp.getGraphic()==null)return;
-        	
-        	if(!circleX.isEmpty()) {
-        		System.out.println("Is it getting called?");
-        		paneArena.getChildren().remove(circleX.get(0));
-        		circleX.remove(0);
-        	}
-
-        	}
-        });	
-    }
     private void setDragAndDrop() {
         // where on the x by y grid to put the text "Drop Here"
         // target.setText("Drop\nHere");
@@ -254,7 +173,7 @@ public class MyController {
                     source2.setOnDragDetected(new DragEventHandler(source2));
                     source3.setOnDragDetected(new DragEventHandler(source3));
                     source4.setOnDragDetected(new DragEventHandler(source4));
-                    //mouseEnterExit();
+                    // mouseEnterExit();
                     target.setOnDragDropped(new DragDroppedEventHandler() {
                         public void handle(DragEvent event) {
 
@@ -266,12 +185,11 @@ public class MyController {
                             ImageView towerImageView = new ImageView();
                             towerImageView.setImage(towerImage);
 
-                            
                             int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
                             if (target.getGraphic() == null) { // If there is no image there currently
                                 target.setGraphic(towerImageView);
-                                String towerName = Helper.getTowerName(imageName);	//This will give me the towerName
-                                switch (towerName) {//Switch-case to instantiate a Tower object accordingly
+                                String towerName = Helper.getTowerName(imageName); // This will give me the towerName
+                                switch (towerName) {// Switch-case to instantiate a Tower object accordingly
                                 case "basicTower":
                                     towers.add(new basicTower(coord));
                                     break;
@@ -294,117 +212,49 @@ public class MyController {
                             System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
                         }
                     });
-                	target.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                    	public void handle(MouseEvent event) {
-                    		if(target.getGraphic()==null) {
-                    			System.out.println("There is no tower");
-                    		}else{
-                    			if(circleX.size()==0) {
-                    			
-                    				System.out.println("There is tower");
-                    				int []coord = {(int)target.getLayoutX(),(int)target.getLayoutY()};
-                    				System.out.println("This Tower's range: "+towers.get(getTowerIndex(coord)).getRange());
-                    				Circle circle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-                    				circle.setLayoutX(target.getLayoutX()+GRID_WIDTH/2);
-                    				circle.setLayoutY(target.getLayoutY()+GRID_HEIGHT/2);
-                    				circle.setOpacity(0.6);
-                    				circle.setFill(Color.RED);
-                    				circle.setId("Circlerange");
-                    				paneArena.getChildren().add(circle);
-                    				circleX.add(circle);
-                    			}
-
-                    		}
-                    		event.consume();
+                    
+                    target.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    	@Override
+                        public void handle(MouseEvent event) {
+                    		target.setPickOnBounds(true);
+                            if (target.getGraphic() == null) {
+                                System.out.println("There is no tower");
+                            } else {
+                                    System.out.println("There is tower");
+                                    int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
+                                    System.out.println("This Tower's range: " + towers.get(getTowerIndex(coord)).getRange());
+                                    rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
+                                    rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+                                    rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+                                    rangeCircle.setOpacity(0.6);
+                                    rangeCircle.setFill(Color.RED);
+                                    rangeCircle.setId("Circlerange");
+                                    paneArena.getChildren().add(rangeCircle);
+                                    initInvisibleLabel();
+                                    invisibleLabel.setLayoutX(target.getLayoutX());
+                                    invisibleLabel.setLayoutY(target.getLayoutY());
+                                    paneArena.getChildren().add(invisibleLabel);
+                            }
                     	}
                     });
-//                    
-//                    target.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-//                    	@Override
-//                    	public void handle(MouseEvent event) {
-//                    	if(target.getGraphic()==null) {
-//                			System.out.println("There is no tower");
-//                		}else if (target.getGraphic()!=null){
-//                			if(circleX.size()==0) {                			
-//                				System.out.println("There is tower");
-//                				int []coord = {(int)target.getLayoutX(),(int)target.getLayoutY()};
-//                				System.out.println("This Tower's range: "+towers.get(getTowerIndex(coord)).getRange());
-//                				Circle circle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-//                				circle.setLayoutX(target.getLayoutX()+GRID_WIDTH/2);
-//                				circle.setLayoutY(target.getLayoutY()+GRID_HEIGHT/2);
-//                				circle.setOpacity(0.6);
-//                				circle.setFill(Color.RED);
-//                				circle.setId("Circlerange");
-//                				paneArena.getChildren().add(circle);
-//                				circleX.add(circle);
-//                			}
-//                		}
-//                		event.consume();
-//                    	}
-//                    });
-//                    
-//                    target.addEventHandler(MouseEvent.MOUSE_EXITED_TARGET, new EventHandler<MouseEvent>() {
-//                    	@Override 
-//                    	public void handle(MouseEvent event) {
-//                        	if(!circleX.isEmpty()) {
-//                    		System.out.println("Is it getting called?");
-//                    		paneArena.getChildren().remove(circleX.get(0));
-//                    		circleX.remove(0);
-//                    	}
-//                    	}
-//                    });
-//                    
-//                    target.setOnMouseEntered(new EventHandler<MouseEvent>() {
-//                    	public void handle(MouseEvent event) {
-//                    		if(target.getGraphic()==null) {
-//                    			System.out.println("There is no tower");
-//                    		}else{
-//                    			if(circleX.size()==0) {
-//                    			
-//                    				System.out.println("There is tower");
-//                    				int []coord = {(int)target.getLayoutX(),(int)target.getLayoutY()};
-//                    				System.out.println("This Tower's range: "+towers.get(getTowerIndex(coord)).getRange());
-//                    				Circle circle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-//                    				circle.setLayoutX(target.getLayoutX()+GRID_WIDTH/2);
-//                    				circle.setLayoutY(target.getLayoutY()+GRID_HEIGHT/2);
-//                    				circle.setOpacity(0.6);
-//                    				circle.setFill(Color.RED);
-//                    				circle.setId("Circlerange");
-//                    				paneArena.getChildren().add(circle);
-//                    				circleX.add(circle);
-//                    			}
-//
-//                    		}
-//                    		event.consume();
-//                    	}
-//                    });
-//                    
-//                    target.setOnMouseExited(new EventHandler<MouseEvent>(){
-//                    	public void handle(MouseEvent event) {
-//                    	if(target.getGraphic()==null)return;
-//                    	
-//                    	if(!circleX.isEmpty()) {
-//                    		System.out.println("Is it getting called?");
-//                    		paneArena.getChildren().remove(circleX.get(0));
-//                    		circleX.remove(0);
-//                    	}
-//                    	
-                    	
-//						for(javafx.scene.Node a: paneArena.getChildren()) {	
-//							if(a.getId()=="Circlerange") {
-//								System.out.println("targetX:"+target.getLayoutX()+" aX:" +a.getLayoutX());
-//								System.out.println("targetY:"+target.getLayoutY()+" aY:" +a.getLayoutY());
-//								if(a.getLayoutX()==(target.getLayoutX()) && a.getLayoutY()==(target.getLayoutY())) {
-//									System.out.println("Mouse Exit function called");
-//									paneArena.getChildren().remove(a);
-//									//circleX.remove(0);
-//								}
-//								event.consume();
-//							}
-//						}
-                    	//}
-//                    });
-
+                    invisibleLabel.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    	public void handle(MouseEvent event) {
+                    		paneArena.getChildren().remove(invisibleLabel);
+                    		paneArena.getChildren().remove(rangeCircle);
+                    		System.out.println("Invisible label exit called");
+                    	}
+                    });
+                    /*
+               		target.setOnMouseExited(new EventHandler<MouseEvent>() {
+            			public void handle(MouseEvent event) {
+                            if (rangeCircle.getId()=="Circlerange") {
+                                System.out.println("Is it getting called?");
+                                paneArena.getChildren().remove(rangeCircle);
+                                count++;
+                                System.out.println(count);
+                            }
+            			}
+            		});*/  
                     // setOnDragOver: allows controlling what happens when something is dragged over
                     // the node.
                     // well, you can also write anonymous class or even lambda
@@ -450,10 +300,10 @@ public class MyController {
                         event.consume();
                     });
                 }
-            
-    }
+
+            }
         }
-}
+    }
 }
 
 class DragEventHandler implements EventHandler<MouseEvent> {

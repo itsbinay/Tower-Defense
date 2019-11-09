@@ -52,7 +52,12 @@ public class basicTower extends Tower {
 	public int getUpgradeCost() {
 		return upgradeCost;
 	}
-
+	
+	@Override
+	public boolean isInRange(int [] coord) {
+		if(this.getCoord()[0]==coord[0] && Math.abs(this.getCoord()[1]-coord[1])<this.getRange())return true;
+		return false;
+	}
 	@Override
 	/**
 	 * If the canUpgrade argument is evaluates to be true, the power and the range

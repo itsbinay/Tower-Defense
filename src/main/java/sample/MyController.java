@@ -150,7 +150,6 @@ public class MyController {
     }
     
 
-    private int count = 0;
     /**
      * A function that demo how drag and drop works
      */

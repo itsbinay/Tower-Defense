@@ -68,6 +68,10 @@ public class Monster {
 		return this.hp;
 	}
 	
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+	
 	
 	/**
 	 * 

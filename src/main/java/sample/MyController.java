@@ -70,7 +70,11 @@ public class MyController {
 	private static int speedIncrease = 0;
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
+
 	ArrayList<Monster> monsterList = new ArrayList<Monster>();
+
+	List<Integer> collisionX = new ArrayList<Integer>();
+	List<Integer> collisionY = new ArrayList<Integer>();
 
 	private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
 
@@ -145,7 +149,7 @@ public class MyController {
 
 	public void monsterGenerate() {
 		System.out.println("monsterGenerate");
-		int result = r.nextInt(high - low+1) + low+1;
+		int result = r.nextInt(high - low + 1) + low + 1;
 
 		switch (result) {
 		case 1:
@@ -171,24 +175,16 @@ public class MyController {
 		if (spaceLeft < 1) {
 
 			int[] newCoord = { y, x };
-			
-			
-		
-			
-			
+
 			monsterList.get(monsterCount).setYX(newCoord);
-			
+
 			String imageName = monsterList.get(monsterCount).getImg();
 			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
-				
-			System.out.println("monstercount "+ monsterCount + " img "+ monsterList.get(monsterCount).getImg());
+
 			grids[y][x].setGraphic(monsterImageView);
 			
-			
-			
-
 			return;
 
 		}
@@ -236,6 +232,15 @@ public class MyController {
 	private void nextFrame() {
 		numOfFrames++;
 
+		for (int i = 0; i < collisionX.size(); i++) {
+
+			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
+
+			collisionX.remove(i);
+			collisionY.remove(i);
+
+		}
+
 		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
@@ -255,6 +260,26 @@ public class MyController {
 
 			System.out.println("x: " + x);
 			System.out.println("y: " + y);
+
+			grids[y][x].setGraphic(null);
+
+			if (monsterList.get(i).getHp() < 1) {
+
+				String collisionImgName = "collision.png";
+				Image collisionImage = new Image(collisionImgName, 30.0, 30.0, true, true);
+				ImageView collisionImageView = new ImageView();
+				collisionImageView.setImage(collisionImage);
+
+				
+				grids[y][x].setGraphic(collisionImageView);
+
+				collisionX.add(x);
+				collisionY.add(y);
+				
+				 
+
+				return;
+			}
 
 			grids[y][x].setGraphic(null);
 
@@ -292,20 +317,20 @@ public class MyController {
 			monsterGenerate();
 
 			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
-				int currHp = monsterList.get(monsterList.size()-1).getHp();
+				int currHp = monsterList.get(monsterList.size() - 1).getHp();
 				int newHp = currHp + bonusHp;
 				bonusHp = bonusHp + 50;
 
-				monsterList.get(monsterList.size()-1).setHp(newHp);
+				monsterList.get(monsterList.size() - 1).setHp(newHp);
 
 			}
-			
-			String imageName = monsterList.get(monsterList.size()-1).getImg();
+
+			String imageName = monsterList.get(monsterList.size() - 1).getImg();
 			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
-				grids[0][0].setGraphic(monsterImageView);
-			
+			grids[0][0].setGraphic(monsterImageView);
+
 		}
 
 		nextFrameCounter++;

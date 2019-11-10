@@ -28,6 +28,9 @@ public abstract class Tower {
 	private int cooldownTimer;
 	private int maxcdTimer;
 	private int upgradeCost;
+	
+	private String towerType;
+	
 	/**
 	 * This is an abstract class constructor which will base structure that will be inherited 
 	 * by all of its children class. A "Tower" class object cannot be constructed.
@@ -39,7 +42,7 @@ public abstract class Tower {
 	 * @param power	the initial power of the tower built
 	 * @param range	the initial range of the tower built
 	 */
-	public Tower(int []Coord,int cost,int power, int range,int cdTimer,int upgradeCost) {
+	public Tower(int []Coord,int cost,int power, int range, String towerType,int UpgradeCost,int cdTimer) {
 		this.buildingCost = cost;
 		this.power = power;
 		this.shootingRange = range;
@@ -48,6 +51,7 @@ public abstract class Tower {
 		this.coord[1] = Coord[1];
 		this.cooldownTimer=cdTimer;
 		this.maxcdTimer=cdTimer;
+		this.upgradeCost=UpgradeCost;
 	}
 	
 	public int getUpgradeCost() {
@@ -79,6 +83,10 @@ public abstract class Tower {
 	}
 	public int getCooldown() {
 		return this.cooldownTimer;
+	}
+	
+	public String getTowerType () {
+		return this.towerType;
 	}
 	/**
 	 * Returns the building cost of the Tower.
@@ -171,5 +179,7 @@ public abstract class Tower {
 	 */
 	public abstract void upgradeTower(boolean canUpgrade);
 	public abstract int attack(int hp);
-	public abstract String getTowerType();
+	//public abstract String getTowerType();
+	//public abstract int getUpgradeCost();
+
 }

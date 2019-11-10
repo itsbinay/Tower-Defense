@@ -37,6 +37,9 @@ public class basicTower extends Tower {
 	 * Cooldowntimer of a basicTower
 	 */
 	private static final int initialCDTimer=1;
+	
+	private static final String towerType = "basicTower";
+
 	/**
 	 * Constructs a basicTower that can be placed on the screen The Coord argument
 	 * must be an integer array of size 2 which specifies the x coordinate and the
@@ -45,8 +48,7 @@ public class basicTower extends Tower {
 	 * @param Coord coordinate of basicTower where is created
 	 */
 	public basicTower(int[] Coord) {
-		super(Coord, initialCost, initialPower, initialRange,initialCDTimer,upgradeCost);
-		System.out.println("basicTower constructed");
+		super(Coord, initialCost, initialPower, initialRange, towerType,upgradeCost,initialCDTimer);
 	}
 
 

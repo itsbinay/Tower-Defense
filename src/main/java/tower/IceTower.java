@@ -10,11 +10,11 @@ public class IceTower extends Tower {
     private static final int initialRange = 100;
     private static final int initialCDTimer=3;
     
+    private static final String towerType = "iceTower";
     private int FreezeTimer = 3;	//This is in terms of frames
     
     public IceTower(int []Coord){
-        super(Coord,initialCost,initialPower,initialRange,initialCDTimer,upgradeCost);
-        System.out.println("iceTower constructed");
+        super(Coord,initialCost,initialPower,initialRange, towerType,upgradeCost,initialCDTimer);
     }
     
     @Override

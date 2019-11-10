@@ -9,11 +9,10 @@ public class laserTower extends Tower {
 	private static final int initialCost = 180;
 	private static final int initialPower = 180;
 	private static final int initialRange = 50;
+	private static final String towerType = "laserTower";
 	private static final int initialCDTimer=3;
-	
 	public laserTower(int [] initialCoord){
-		super(initialCoord,initialCost,initialPower,initialRange,initialCDTimer,upgradeCost);
-		System.out.println("laserTower constructed");
+		super(initialCoord,initialCost,initialPower,initialRange, towerType,upgradeCost,initialCDTimer);
 	}
 	@Override
 	public void upgradeTower(boolean canUpgrade){

@@ -8,11 +8,10 @@ public class Catapult extends Tower {
 	private static final int initialCost = 80;
 	private static final int initialPower = 50;
 	private static final int initialRange = 200;
-	private static final int initialCDTimer=4;
-	
+	private static final String towerType = "catapult";
+	private static final int initialCDTimer=3;
 	public Catapult(int []Coord) {
-		super(Coord,initialCost,initialPower,initialRange,initialCDTimer,upgradeCost);
-		System.out.println("Catapult constructed");
+		super(Coord,initialCost,initialPower,initialRange, towerType,upgradeCost,initialCDTimer);
 	}
 	
 	@Override

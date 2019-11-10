@@ -91,7 +91,7 @@
                      	</ImageView>
                      </graphic>
                   </Label>
-                  <Label layoutX="17.0" layoutY="390.0" text="Money Left: " />
+                  <Label fx:id="money" layoutX="10.0" layoutY="390.0" text="Money Left: 200" />
                </children>
                <padding>
                   <Insets left="10.0" />

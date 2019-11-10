@@ -94,7 +94,10 @@ public class MyController {
     private Label invisibleLabel = new Label();
     private boolean circleShown = false;
 
-    private List<Monster> monsterList = new ArrayList<>();
+	private List<Monster> monsterList = new ArrayList<>();
+	private List<Integer> collisionX = new ArrayList<Integer>();
+	private List<Integer> collisionY = new ArrayList<Integer>();
+	
 	private static int monsterCounter = 0;
 	private static int nextFrameCounter = 0;
 	private static int[] startCoord = {0,0};
@@ -182,13 +185,11 @@ public class MyController {
             }
         }
         gameEvents();
-        //setDragAndDrop();
-        //mouseEnterExit();
     }
 
 	public void monsterGenerate() {
 		System.out.println("monsterGenerate");
-		int result = r.nextInt(high - low+1) + low+1;
+		int result = r.nextInt(high - low + 1) + low + 1;
 
 		switch (result) {
 		case 1:monsterList.add(new Fox(startCoord, false));break;
@@ -199,42 +200,32 @@ public class MyController {
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-
 		System.out.println("y: " + y + "x: " + x + " spaceleft : " + spaceLeft + "op " + op);
 		if (spaceLeft < 1) {
-
 			int[] newCoord = { y, x };
-
 			monsterList.get(monsterCount).setYX(newCoord);
-			
 			String imageName = monsterList.get(monsterCount).getImg();
 			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
-				
-			System.out.println("monstercount "+ monsterCount + " img "+ monsterList.get(monsterCount).getImg());
 			grids[y][x].setGraphic(monsterImageView);
-
 			return;
 		}
         switch(op){
             case 0:{
-                if (y == MAX_V_NUM_GRID - 1){ // y ==11
-                    Move(1, x, y, spaceLeft, monsterCount);
-                }else{
-                    Move(0, x, y + 1, spaceLeft - 1, monsterCount);
-                }
+                if (y == MAX_V_NUM_GRID - 1){Move(1, x, y, spaceLeft, monsterCount);}
+                else{Move(0, x, y + 1, spaceLeft - 1, monsterCount);}
                 break;
             }
             case 1:{
                 if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN){
                     if (y == MAX_V_NUM_GRID - 1){
-                        Move(2, x, y, spaceLeft, monsterCount);
+                    	Move(2, x, y, spaceLeft, monsterCount);
                     }else if (y == 0 && x != 0) {
-                        Move(0, x, y, spaceLeft, monsterCount);
+                    	Move(0, x, y, spaceLeft, monsterCount);
                     }
-                } else {
-                    Move(1, x + 1, y, spaceLeft - 1, monsterCount);
+                }else {
+                	Move(1, x + 1, y, spaceLeft - 1, monsterCount);
                 }
                 break;
             }
@@ -293,11 +284,9 @@ public class MyController {
 							break;
 						}
 						case "iceTower":{
-							if(towers.get(j).getStateStr()=="Ready") {
 								System.out.println("IceTower Shoot");
 								monsterList.get(i).setHp(towers.get(j).attack(monsterList.get(i).getHp()));
 								monsterList.get(i).setFrozen();
-							}
 							break;
 						}
 						case "catapult":{
@@ -321,6 +310,15 @@ public class MyController {
 	private void MonsterFSM() {
 		numOfFrames++;
 
+		for (int i = 0; i < collisionX.size(); i++) {
+
+			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
+
+			collisionX.remove(i);
+			collisionY.remove(i);
+
+		}
+
 		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
@@ -343,8 +341,12 @@ public class MyController {
 
 			grids[y][x].setGraphic(null);
 
-			if (x % 4 == 0)down = true;
-			else down = false;
+			grids[y][x].setGraphic(null);
+
+			if (x % 4 == 0)
+				down = true;
+			else
+				down = false;
 
 			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
 				right = false;
@@ -366,20 +368,20 @@ public class MyController {
 
 			monsterGenerate();
 			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
-				int currHp = monsterList.get(monsterList.size()-1).getHp();
+				int currHp = monsterList.get(monsterList.size() - 1).getHp();
 				int newHp = currHp + bonusHp;
 				bonusHp = bonusHp + 50;
 
-				monsterList.get(monsterList.size()-1).setHp(newHp);
+				monsterList.get(monsterList.size() - 1).setHp(newHp);
 
 			}
-			
-			String imageName = monsterList.get(monsterList.size()-1).getImg();
+
+			String imageName = monsterList.get(monsterList.size() - 1).getImg();
 			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
-				grids[0][0].setGraphic(monsterImageView);
-			
+			grids[0][0].setGraphic(monsterImageView);
+
 		}
 
 		nextFrameCounter++;

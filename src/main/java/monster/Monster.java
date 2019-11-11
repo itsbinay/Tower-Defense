@@ -2,6 +2,7 @@ package monster;
 
 /**
  * This is an abstract class model for all types of monsters.
+ * 
  * @author apple
  *
  */
@@ -14,19 +15,22 @@ public class Monster {
 	}
 	private int movementSpeed;
 	private int hp;
-	private boolean frozen;
+	private int frozen;
 	private String img;
 	private int deathResource;
 	private int[] coord = {0,0};
 	
 	/**
-	 * @param coord The x and y coordinates for each monster object.
-	 * @param hp The health points that each monster obtains when created.
-	 * @param movementSpeed The maximum number of squares on the grid the monster can move. 
-	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
+	 * @param coord         The x and y coordinates for each monster object.
+	 * @param hp            The health points that each monster obtains when
+	 *                      created.
+	 * @param movementSpeed The maximum number of squares on the grid the monster
+	 *                      can move.
+	 * @param frozen        The status of monster that illustrates if a monster is
+	 *                      frozen or not.
 	 */
-	
-	public Monster(int[]coord,int hp, int movementSpeed,String img, boolean frozen,int resourceEarn) {
+
+	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen,int resourceEarn) {
 		this.movementSpeed = movementSpeed;
 		this.hp = hp;
 		this.frozen = frozen;
@@ -44,6 +48,7 @@ public class Monster {
 	public int getMovementSpeed() {
 		return this.movementSpeed;
 	}
+
 	public String getImg() {
 		return this.img;
 	}
@@ -59,77 +64,84 @@ public class Monster {
 	/** 
 	 * @return returns the x-coordinate of the monster.
 	 */
-	public int getY() {	
+	public int getY() {
 		return this.coord[0];
 	}
-	/** 
+
+	/**
 	 * @return returns the y-coordinate of the monster.
 	 */
-	public int getX() {	
+	public int getX() {
 		return this.coord[1];
 	}
+
 	/**
-	 * @param coord The current coordinates of the monster. 
+	 * @param coord The current coordinates of the monster.
 	 */
 	public void setYX(int[] coord) {
 		this.coord = coord;
 	}
-	
-/**
- * 
- * @return returns the health point of the monster
- */
+
+	/**
+	 * 
+	 * @return returns the health point of the monster
+	 */
 	public int getHp() {
 		return this.hp;
 	}
-	
+
 	public void setHp(int hp) {
 		this.hp = hp;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return returns frozen status of the monster
 	 */
-	
-	public boolean getFrozen() {
+
+	public int getFrozen() {
 		return this.frozen;
 	}
-	public void setFrozen() {
-		this.frozen=true;
+	public void setFrozen(int a) {
+		this.frozen=a;
 	}
 	
 	/**
 	 * reduces the movement speed of the monster if its status is frozen.
 	 */
 	public void reduceSpeed() {
-		
-		if(this.frozen == true) {
+
+		if (this.frozen > 0) {
+
+			if (this.img == "fox.png") {
+				if (this.movementSpeed == 3)
+
+					this.movementSpeed = this.movementSpeed - 1;
+
+			}
 			
-			this.movementSpeed = this.movementSpeed-5;
+			if (this.img == "unicorn.png" || this.img == "penguin.png"){
+				if (this.movementSpeed == 1)
+
+					this.movementSpeed = this.movementSpeed - 1;
+
+			}
 			
+			
+
+			--this.frozen;
+
 		}
 	}
-		public void unFreeze() {
-			
-			if(this.frozen == true) {
-				
-				this.movementSpeed = this.movementSpeed+5;
-				this.frozen = false;
-			}
-		
-		
-		
+
+	public void unFreeze() {
+
+		if (this.frozen == 0) {
+
+			this.movementSpeed = this.movementSpeed + 1;
+			this.frozen = 0;
+		}
+
 	}
-	
 
-	
-
-	
-	
-	
-	
-	
-	
 }

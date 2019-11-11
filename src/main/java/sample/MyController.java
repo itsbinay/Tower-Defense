@@ -4,6 +4,7 @@ import tower.*;
 import sample.Helper;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 
 import java.util.ArrayList;
@@ -464,15 +465,17 @@ public class MyController {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
 				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) {
 					
-					//Tooltip MonsterInfo = new Tooltip();
+					Tooltip MonsterInfo = new Tooltip();
 					
 					Label target = grids[i][j];
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 							if (target.getText() != "") {
-								String hpInfo = target.getText();
+								String hpInfo = "HP: " + target.getText();
 								
+								MonsterInfo.setText(hpInfo);
 								
+								target.setTooltip(MonsterInfo);
 								System.out.println("monsterHp " + target.getText());
 							} else {
 

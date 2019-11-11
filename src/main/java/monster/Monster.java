@@ -16,7 +16,7 @@ public class Monster {
 	private int hp;
 	private boolean frozen;
 	private String img;
-	
+	private int deathResource;
 	private int[] coord = {0,0};
 	
 	/**
@@ -26,15 +26,17 @@ public class Monster {
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
 	 */
 	
-	public Monster(int[]coord,int hp, int movementSpeed,String img, boolean frozen) {
+	public Monster(int[]coord,int hp, int movementSpeed,String img, boolean frozen,int resourceEarn) {
 		this.movementSpeed = movementSpeed;
 		this.hp = hp;
 		this.frozen = frozen;
 		this.coord = coord;
 		this.img = img;
-		
+		this.deathResource=resourceEarn;
 	}
-	
+	public int getResourceEarned(){
+		return this.deathResource;
+	}
 	/**
 	 * @return returns the movement speed of the monster.
 	 */

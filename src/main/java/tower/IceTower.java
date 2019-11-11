@@ -13,6 +13,10 @@ public class IceTower extends Tower {
     private static final String towerType = "iceTower";
     private int FreezeTimer = 3;	//This is in terms of frames
     
+    /**
+     * Constructor of the IceTower
+     * @param Coord coordinate of where the Catapult is built (the top left corner of the grid)
+     */
     public IceTower(int []Coord){
         super(Coord,initialCost,initialPower,initialRange, towerType,upgradeCost,initialCDTimer);
     }
@@ -25,6 +29,11 @@ public class IceTower extends Tower {
         this.FreezeTimer +=  freezeIncrement;
     }
     
+    /**
+     * Returns the number of frames the tower freezes the monster
+     * 
+     * @return returns the frames this tower freezes
+     */
     public int getFreezeTimer() {
     	return this.FreezeTimer;
     }

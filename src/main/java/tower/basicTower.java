@@ -41,9 +41,7 @@ public class basicTower extends Tower {
 	private static final String towerType = "basicTower";
 
 	/**
-	 * Constructs a basicTower that can be placed on the screen The Coord argument
-	 * must be an integer array of size 2 which specifies the x coordinate and the
-	 * y-coordinate.
+	 * Constructor of the basicTower
 	 * 
 	 * @param Coord coordinate of basicTower where is created
 	 */

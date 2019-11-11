@@ -55,12 +55,15 @@ public class Helper {
 	}
 	
 	public static String space(String name) {
-		String k;
-		String n;
-		String m;
-		k = name.substring(0, 1).toUpperCase();
-		n = name.substring(1, name.indexOf("Tower"));
-		m = k + n + " " + "Tower";	
-		return m;
+		if(!name.equals("catapult")){
+			String k;
+			String n;
+			String m;
+			k = name.substring(0, 1).toUpperCase();
+			n = name.substring(1, name.indexOf("Tower"));
+			m = k + n + " " + "Tower";
+			return m;
+		}	
+		return name;
 	}
 }

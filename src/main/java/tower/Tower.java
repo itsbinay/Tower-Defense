@@ -49,7 +49,7 @@ public abstract class Tower {
 		this.coord = new int[2];
 		this.coord[0] = Coord[0];
 		this.coord[1] = Coord[1];
-		this.cooldownTimer=cdTimer;
+		this.cooldownTimer=1;
 		this.maxcdTimer=cdTimer;
 		this.upgradeCost=UpgradeCost;
 	}
@@ -77,7 +77,13 @@ public abstract class Tower {
 			this.curState=TowerState.READY;
 		}
 	}
-	
+	public int getMaxCDTimer(){
+		return this.maxcdTimer;
+	}
+	public void setMaxCDTimer(int a){
+		if(a<=1)return;
+		this.maxcdTimer=a;
+	}
 	public void setCooldown(int cd) {
 		this.cooldownTimer=cd;
 	}
@@ -181,5 +187,10 @@ public abstract class Tower {
 	public abstract int attack(int hp);
 	//public abstract String getTowerType();
 	//public abstract int getUpgradeCost();
-
+	public int getAttackCost() {
+		return 0;
+	}
+	public int getMinRange(){
+		return 0;
+	}
 }

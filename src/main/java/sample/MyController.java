@@ -184,7 +184,7 @@ public class MyController {
 			monsterImageView.setImage(monsterImage);
 
 			grids[y][x].setGraphic(monsterImageView);
-			grids[0][0].setText(String.valueOf(monsterList.get(monsterCount).getHp()));
+			grids[y][x].setText(String.valueOf(monsterList.get(monsterCount).getHp()));
 
 			return;
 
@@ -236,8 +236,7 @@ public class MyController {
 
 	@FXML
 	private void nextFrame() {
-		
-		
+
 		numOfFrames++;
 
 		for (int i = 0; i < collisionX.size(); i++) {
@@ -326,8 +325,7 @@ public class MyController {
 				monsterList.get(i).unFreeze();
 
 			grids[0][0].setText("");
-			
-			
+
 		}
 
 		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
@@ -353,7 +351,7 @@ public class MyController {
 		}
 
 		nextFrameCounter++;
-	
+
 	}
 
 	List<Circle> circleX = new ArrayList<>();
@@ -464,9 +462,26 @@ public class MyController {
 
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
-					continue;
-				else {
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) {
+					
+					//Tooltip MonsterInfo = new Tooltip();
+					
+					Label target = grids[i][j];
+					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
+						public void handle(MouseEvent event) {
+							if (target.getText() != "") {
+								String hpInfo = target.getText();
+								
+								
+								System.out.println("monsterHp " + target.getText());
+							} else {
+
+							}
+							event.consume();
+						}
+					});
+
+				} else {
 					Label target = grids[i][j];
 					Label source1 = labelBasicTower;
 					Label source2 = labelIceTower;

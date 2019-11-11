@@ -70,7 +70,7 @@ public class MyController {
 	private static int speedIncrease = 0;
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
-
+	private static int perFrame = 3;
 	ArrayList<Monster> monsterList = new ArrayList<Monster>();
 
 	List<Integer> collisionX = new ArrayList<Integer>();
@@ -153,25 +153,25 @@ public class MyController {
 
 		switch (result) {
 		case 1:
-			monsterList.add(new Fox(startCoord,100,3, 0));
+			monsterList.add(new Fox(startCoord, 100, 1, 0));
 			break;
 		case 2:
-			monsterList.add(new Unicorn(startCoord,150,1, 0));
+			monsterList.add(new Unicorn(startCoord, 150, 1, 0));
 			break;
 		case 3:
-			monsterList.add(new Penguin(startCoord,100,1, 0));
+			monsterList.add(new Penguin(startCoord, 100, 1, 0));
 			break;
 
 		default:
-			monsterList.add(new Fox(startCoord,100,3, 0));
+			monsterList.add(new Fox(startCoord, 100, 1, 0));
 
 		}
 
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
+		System.out.println("X AXIS " + x);
 
-		System.out.println("y: " + y + "x: " + x + " spaceleft : " + spaceLeft + "op " + op);
 		if (spaceLeft < 1) {
 
 			int[] newCoord = { y, x };
@@ -184,7 +184,7 @@ public class MyController {
 			monsterImageView.setImage(monsterImage);
 
 			grids[y][x].setGraphic(monsterImageView);
-			
+
 			return;
 
 		}
@@ -200,6 +200,11 @@ public class MyController {
 		}
 
 		else if (op == 1) {
+
+			if (x + 1 > 11) {
+				System.out.println("Game Over");
+				return;
+			}
 
 			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN)
 
@@ -270,18 +275,21 @@ public class MyController {
 				ImageView collisionImageView = new ImageView();
 				collisionImageView.setImage(collisionImage);
 
-				
 				grids[y][x].setGraphic(collisionImageView);
 
 				collisionX.add(x);
 				collisionY.add(y);
-				
-				 
 
 				return;
 			}
 
 			grids[y][x].setGraphic(null);
+
+			if (x + 1 > 11) {
+				System.out.println("Game over");
+				perFrame = 100;
+				return;
+			}
 
 			if (x % 4 == 0)
 				down = true;
@@ -312,7 +320,7 @@ public class MyController {
 
 		}
 
-		if (grids[0][0].getGraphic() == null && nextFrameCounter % 5 == 0) {
+		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
 
 			monsterGenerate();
 
@@ -416,6 +424,9 @@ public class MyController {
 	}
 
 	private void mouseEnterExit() {
+		
+		
+		
 		if (circleX.size() == 0)
 			return;
 		int[] circleCoord = { (int) circleX.get(0).getLayoutX(), (int) circleX.get(0).getLayoutY() };
@@ -441,10 +452,14 @@ public class MyController {
 	private void setDragAndDrop() {
 		// where on the x by y grid to put the text "Drop Here"
 		// target.setText("Drop\nHere");
+		
+		
+		
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
 				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
 					continue;
+				
 				else {
 					Label target = grids[i][j];
 					Label source1 = labelBasicTower;
@@ -461,6 +476,8 @@ public class MyController {
 					target.setOnDragDropped(new DragDroppedEventHandler() {
 						public void handle(DragEvent event) {
 
+							
+							
 							Dragboard db = event.getDragboard();
 							String id = db.getString();
 							String imageName = Helper.preProcessing(id);
@@ -496,6 +513,7 @@ public class MyController {
 							System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
 						}
 					});
+					
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 							if (target.getGraphic() == null) {
@@ -652,6 +670,11 @@ public class MyController {
 						System.out.println("Exit");
 						event.consume();
 					});
+					
+					
+					
+					
+					
 				}
 
 			}

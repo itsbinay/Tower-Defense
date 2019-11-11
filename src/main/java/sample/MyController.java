@@ -153,17 +153,17 @@ public class MyController {
 
 		switch (result) {
 		case 1:
-			monsterList.add(new Fox(startCoord, false));
+			monsterList.add(new Fox(startCoord,100,3, 0));
 			break;
 		case 2:
-			monsterList.add(new Unicorn(startCoord, false));
+			monsterList.add(new Unicorn(startCoord,150,1, 0));
 			break;
 		case 3:
-			monsterList.add(new Penguin(startCoord, false));
+			monsterList.add(new Penguin(startCoord,100,1, 0));
 			break;
 
 		default:
-			monsterList.add(new Fox(startCoord, false));
+			monsterList.add(new Fox(startCoord,100,3, 0));
 
 		}
 
@@ -248,7 +248,7 @@ public class MyController {
 
 		for (int i = 0; i < monsterList.size(); i++) {
 
-			if (monsterList.get(i).getFrozen() == true)
+			if (monsterList.get(i).getFrozen() > 0)
 				monsterList.get(i).reduceSpeed();
 
 			boolean down = false;
@@ -307,7 +307,7 @@ public class MyController {
 					Move(2, x, y, movementSpeed + speedIncrease, i);
 			}
 
-			if (monsterList.get(i).getFrozen() == true)
+			if (monsterList.get(i).getFrozen() == 0)
 				monsterList.get(i).unFreeze();
 
 		}

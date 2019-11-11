@@ -134,4 +134,5 @@ public abstract class Tower {
 	public abstract void upgradeTower(boolean canUpgrade);
 	
 	public abstract int getUpgradeCost();
+	public abstract int getRangeIncrement();
 }

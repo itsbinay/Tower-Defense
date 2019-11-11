@@ -24,4 +24,7 @@ public class laserTower extends Tower {
 	public int getUpgradeCost() {
 		return upgradeCost;
 	}
+	public int getRangeIncrement() {
+		return rangeIncrement;
+	}
 }

@@ -184,6 +184,7 @@ public class MyController {
 			monsterImageView.setImage(monsterImage);
 
 			grids[y][x].setGraphic(monsterImageView);
+			grids[0][0].setText(String.valueOf(monsterList.get(monsterCount).getHp()));
 
 			return;
 
@@ -235,11 +236,14 @@ public class MyController {
 
 	@FXML
 	private void nextFrame() {
+		
+		
 		numOfFrames++;
 
 		for (int i = 0; i < collisionX.size(); i++) {
 
 			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
+			grids[collisionX.get(i)][collisionX.get(i)].setText("");
 
 			collisionX.remove(i);
 			collisionY.remove(i);
@@ -267,6 +271,7 @@ public class MyController {
 			System.out.println("y: " + y);
 
 			grids[y][x].setGraphic(null);
+			grids[y][x].setText("");
 
 			if (monsterList.get(i).getHp() < 1) {
 
@@ -276,6 +281,7 @@ public class MyController {
 				collisionImageView.setImage(collisionImage);
 
 				grids[y][x].setGraphic(collisionImageView);
+				grids[y][x].setText("");
 
 				collisionX.add(x);
 				collisionY.add(y);
@@ -284,6 +290,7 @@ public class MyController {
 			}
 
 			grids[y][x].setGraphic(null);
+			grids[y][x].setText("");
 
 			if (x + 1 > 11) {
 				System.out.println("Game over");
@@ -318,6 +325,9 @@ public class MyController {
 			if (monsterList.get(i).getFrozen() == 0)
 				monsterList.get(i).unFreeze();
 
+			grids[0][0].setText("");
+			
+			
 		}
 
 		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
@@ -338,11 +348,12 @@ public class MyController {
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
 			grids[0][0].setGraphic(monsterImageView);
+			grids[0][0].setText(String.valueOf(monsterList.get(monsterList.size() - 1).getHp()));
 
 		}
 
 		nextFrameCounter++;
-		System.out.println("nextFrameCounter" + nextFrameCounter);
+	
 	}
 
 	List<Circle> circleX = new ArrayList<>();
@@ -424,9 +435,7 @@ public class MyController {
 	}
 
 	private void mouseEnterExit() {
-		
-		
-		
+
 		if (circleX.size() == 0)
 			return;
 		int[] circleCoord = { (int) circleX.get(0).getLayoutX(), (int) circleX.get(0).getLayoutY() };
@@ -452,14 +461,11 @@ public class MyController {
 	private void setDragAndDrop() {
 		// where on the x by y grid to put the text "Drop Here"
 		// target.setText("Drop\nHere");
-		
-		
-		
+
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
 				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
 					continue;
-				
 				else {
 					Label target = grids[i][j];
 					Label source1 = labelBasicTower;
@@ -476,8 +482,6 @@ public class MyController {
 					target.setOnDragDropped(new DragDroppedEventHandler() {
 						public void handle(DragEvent event) {
 
-							
-							
 							Dragboard db = event.getDragboard();
 							String id = db.getString();
 							String imageName = Helper.preProcessing(id);
@@ -513,7 +517,7 @@ public class MyController {
 							System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
 						}
 					});
-					
+
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 							if (target.getGraphic() == null) {
@@ -670,11 +674,6 @@ public class MyController {
 						System.out.println("Exit");
 						event.consume();
 					});
-					
-					
-					
-					
-					
 				}
 
 			}

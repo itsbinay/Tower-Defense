@@ -1,5 +1,7 @@
 package monster;
 
+
+
 /**
  * This is an abstract class model for all types of monsters.
  * 
@@ -10,7 +12,7 @@ package monster;
 public class Monster {
 
 	public enum MonsterState {
-		FROZEN, TARGETED
+		FROZEN, TARGETED, UNTOUCHED, DAMAGED,
 	}
 
 	private int movementSpeed;
@@ -19,6 +21,7 @@ public class Monster {
 	private String img;
 	private int deathResource;
 	private int[] coord = { 0, 0 };
+	private MonsterState curState= MonsterState.UNTOUCHED;
 
 	/**
 	 * @param coord         The x and y coordinates for each monster object.
@@ -42,7 +45,13 @@ public class Monster {
 	public int getResourceEarned() {
 		return this.deathResource;
 	}
-
+	public MonsterState getMonsterState() {
+		return curState;
+	}
+	public void setMonsterState(MonsterState newState) {
+		this.curState=newState;
+	}
+	
 	/**
 	 * @return returns the movement speed of the monster.
 	 */

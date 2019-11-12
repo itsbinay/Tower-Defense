@@ -138,8 +138,23 @@ public class Monster {
 
 		if (this.frozen == 0) {
 
-			this.movementSpeed = this.movementSpeed + 1;
-			this.frozen = 0;
+			if (this.img == "fox.png") {
+				if (this.movementSpeed != 1)
+
+					this.movementSpeed = 1;
+
+			}
+			
+			if (this.img == "unicorn.png" || this.img == "penguin.png"){
+				if (this.movementSpeed != 1)
+
+					this.movementSpeed = 1;
+
+			}
+			
+			
+
+			
 		}
 
 	}

@@ -26,12 +26,7 @@ public class Penguin extends Monster{
 	 *  increases the health points of this monster(penguin) by 5 if its health points is below 100.
 	 */
 
-	public void regenerate() {
-		if (this.hp< 100) {
-			this.hp += 5;
-		}
- 		
-	}
+
 	
 
 }

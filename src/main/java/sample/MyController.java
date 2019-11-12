@@ -526,6 +526,25 @@ public class MyController {
 			if (monsterList.get(i).getFrozen() > 0)
 				monsterList.get(i).reduceSpeed();
 
+			if (monsterList.get(i).getImg() == "penguin.png") {
+
+				if (numOfFrames < 10)
+
+				{
+					if (monsterList.get(i).getHp() < 100) {
+						monsterList.get(i).regenerate();
+					}
+				}
+				
+				else {
+					if (monsterList.get(i).getHp() < 100 + bonusHp) {
+						monsterList.get(i).regenerate();
+					}
+					
+				}
+
+			}
+
 			boolean down = false;
 			boolean right = false;
 
@@ -540,23 +559,18 @@ public class MyController {
 			grids[y][x].setText("");
 
 			/*
-			if (monsterList.get(i).getHp() < 1) {
-
-				String collisionImgName = "collision.png";
-				Image collisionImage = new Image(collisionImgName, 30.0, 30.0, true, true);
-				ImageView collisionImageView = new ImageView();
-				collisionImageView.setImage(collisionImage);
-
-				grids[y][x].setGraphic(collisionImageView);
-				grids[y][x].setText("");
-
-				collisionX.add(x);
-				collisionY.add(y);
-
-				return;
-			}*/
-
-
+			 * if (monsterList.get(i).getHp() < 1) {
+			 * 
+			 * String collisionImgName = "collision.png"; Image collisionImage = new
+			 * Image(collisionImgName, 30.0, 30.0, true, true); ImageView collisionImageView
+			 * = new ImageView(); collisionImageView.setImage(collisionImage);
+			 * 
+			 * grids[y][x].setGraphic(collisionImageView); grids[y][x].setText("");
+			 * 
+			 * collisionX.add(x); collisionY.add(y);
+			 * 
+			 * return; }
+			 */
 
 			if (x + 1 > 11) {
 				System.out.println("Game over");
@@ -583,7 +597,8 @@ public class MyController {
 					Move(2, x, y, movementSpeed + speedIncrease, i);
 			}
 
-			if (monsterList.get(i).getFrozen() == 0)monsterList.get(i).unFreeze();
+			if (monsterList.get(i).getFrozen() == 0)
+				monsterList.get(i).unFreeze();
 
 			grids[0][0].setText("");
 
@@ -592,9 +607,7 @@ public class MyController {
 		if (grids[0][0].getGraphic() == null && nextFrameCounter % 3 == 0) {
 
 			monsterGenerate();
-			
-			
-			
+
 			if (numOfFrames > 10) {
 				System.out.println("aayush");
 				int currHp = monsterList.get(monsterList.size() - 1).getHp();
@@ -603,8 +616,8 @@ public class MyController {
 				monsterList.get(monsterList.size() - 1).setHp(newHp);
 
 			}
-			
-			if(numOfFrames%10 == 0 && numOfFrames!=0)  {
+
+			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
 				bonusHp = bonusHp + 50;
 			}
 

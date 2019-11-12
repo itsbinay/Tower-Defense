@@ -8,18 +8,18 @@ package monster;
  */
 
 public class Monster {
-	
-	public enum MonsterState{
-		FROZEN,
-		TARGETED
+
+	public enum MonsterState {
+		FROZEN, TARGETED
 	}
+
 	private int movementSpeed;
 	private int hp;
 	private int frozen;
 	private String img;
 	private int deathResource;
-	private int[] coord = {0,0};
-	
+	private int[] coord = { 0, 0 };
+
 	/**
 	 * @param coord         The x and y coordinates for each monster object.
 	 * @param hp            The health points that each monster obtains when
@@ -30,17 +30,19 @@ public class Monster {
 	 *                      frozen or not.
 	 */
 
-	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen,int resourceEarn) {
+	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn) {
 		this.movementSpeed = movementSpeed;
 		this.hp = hp;
 		this.frozen = frozen;
 		this.coord = coord;
 		this.img = img;
-		this.deathResource=resourceEarn;
+		this.deathResource = resourceEarn;
 	}
-	public int getResourceEarned(){
+
+	public int getResourceEarned() {
 		return this.deathResource;
 	}
+
 	/**
 	 * @return returns the movement speed of the monster.
 	 */
@@ -52,20 +54,27 @@ public class Monster {
 	public String getImg() {
 		return this.img;
 	}
-	
+
 	/**
 	 * 
 	 * @return the coordinate of the monster
 	 */
-	public int [] getCoord() {
-		int [] coordinate= {this.getX()*40,this.getY()*40};
+	public int[] getCoord() {
+		int[] coordinate = { this.getX() * 40, this.getY() * 40 };
 		return coordinate;
 	}
-	/** 
+
+	/**
 	 * @return returns the x-coordinate of the monster.
 	 */
 	public int getY() {
 		return this.coord[0];
+	}
+
+	public void regenerate() {
+
+		this.hp += 10;
+
 	}
 
 	/**
@@ -102,10 +111,11 @@ public class Monster {
 	public int getFrozen() {
 		return this.frozen;
 	}
+
 	public void setFrozen(int a) {
-		this.frozen=a;
+		this.frozen = a;
 	}
-	
+
 	/**
 	 * reduces the movement speed of the monster if its status is frozen.
 	 */
@@ -119,15 +129,13 @@ public class Monster {
 					this.movementSpeed = this.movementSpeed - 1;
 
 			}
-			
-			if (this.img == "unicorn.png" || this.img == "penguin.png"){
+
+			if (this.img == "unicorn.png" || this.img == "penguin.png") {
 				if (this.movementSpeed == 1)
 
 					this.movementSpeed = this.movementSpeed - 1;
 
 			}
-			
-			
 
 			--this.frozen;
 
@@ -144,17 +152,14 @@ public class Monster {
 					this.movementSpeed = 1;
 
 			}
-			
-			if (this.img == "unicorn.png" || this.img == "penguin.png"){
+
+			if (this.img == "unicorn.png" || this.img == "penguin.png") {
 				if (this.movementSpeed != 1)
 
 					this.movementSpeed = 1;
 
 			}
-			
-			
 
-			
 		}
 
 	}

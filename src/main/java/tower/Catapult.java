@@ -7,7 +7,7 @@ public class Catapult extends Tower {
 	private static final int initialPower = 30;
 	private static final int initialRange = 150;
 	private static final int minimumRange = 50;
-
+	private static final int rangeIncrement = 10;
 	private static final String towerType = "catapult";
 	private static final int initialCDTimer=3;
 	/**
@@ -23,6 +23,7 @@ public class Catapult extends Tower {
 	public void upgradeTower(boolean canUpgrade) {
 		if(!canUpgrade)return;
 		
+		this.setRange(this.getRange()+rangeIncrement);
 		this.setMaxCDTimer(this.getMaxCDTimer()-1);
 	}
 	/**
@@ -64,5 +65,8 @@ public class Catapult extends Tower {
 	}
 	public String getTowerType() {
 		return "catapult";
+	}
+	public int getRangeIncrement() {
+		return rangeIncrement;
 	}
 }

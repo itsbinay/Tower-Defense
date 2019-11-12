@@ -54,16 +54,20 @@ public class Helper {
 		return null;
 	}
 	
-	public static String space(String name) {
-		if(!name.equals("catapult")){
+
+	public static String space(String name) {			
+		if(!name.equals("catapult")) {
 			String k;
 			String n;
 			String m;
 			k = name.substring(0, 1).toUpperCase();
 			n = name.substring(1, name.indexOf("Tower"));
-			m = k + n + " " + "Tower";
+
+			m = k + n + " " + "Tower";	
 			return m;
-		}	
-		return name;
+		}
+		else {
+			return name;
+		}
 	}
 }

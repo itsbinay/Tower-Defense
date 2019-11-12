@@ -42,4 +42,7 @@ public class laserTower extends Tower {
 	public String getTowerType() {
 		return "laserTower";
 	}
+	public int getRangeIncrement() {
+		return rangeIncrement;
+	}
 }

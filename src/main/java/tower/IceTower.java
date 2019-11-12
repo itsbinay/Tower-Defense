@@ -50,5 +50,5 @@ public class IceTower extends Tower {
 	}
 	public String getTowerType() {
 		return "iceTower";
-	}
+    }
 }

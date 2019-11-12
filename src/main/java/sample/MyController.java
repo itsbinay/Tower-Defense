@@ -1,4 +1,7 @@
 package sample;
+import javafx.scene.Scene;
+import javafx.scene.input.*;
+import javafx.scene.control.ToolBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,19 +24,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import monster.Fox;
 import monster.Monster;
 import monster.Penguin;
 import monster.Unicorn;
 import sample.Helper;
 import tower.*;
-
-
-
-
 
 
 public class MyController {
@@ -78,15 +79,6 @@ public class MyController {
 	private static final int iceCost = 90;
 	private static final int laserHurt = 20;
 	int resourcesAmount = 200;
-	int bT = 0;
-	int c = 0;
-	int lT = 0;
-	int iT = 0;
-	int sumbT = 0;
-	int sumC = 0;
-	int sumiT = 0;
-	int sumlT = 0;
-	int sumTotal = 0;
 
 	private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
 	private List<Tower> towers = new ArrayList<>();
@@ -118,7 +110,10 @@ public class MyController {
 	private static int bonusHp = 50;
 	 
 	private static int perFrame = 3;
-
+	
+	private boolean clicked = false;
+    private int numClicks = 0;
+    private boolean upgraded = false;
 
 	/**
 	 * Returns the index of the tower in the towers list, given the coordinate if
@@ -164,13 +159,10 @@ public class MyController {
 		Tooltip catapultInfo = new Tooltip();
 		Tooltip laserInfo = new Tooltip();
 
-		basicInfo.setText(
-				Helper.labelProcessing(labelBasicTower.getId()) + "\n" + "Cost: " + Integer.toString(basicCost));
+		basicInfo.setText(Helper.labelProcessing(labelBasicTower.getId()) + "\n" + "Cost: " + Integer.toString(basicCost));
 		iceInfo.setText(Helper.labelProcessing(labelIceTower.getId()) + "\n" + "Cost: " + Integer.toString(iceCost));
-		catapultInfo.setText(
-				Helper.labelProcessing(labelCatapult.getId()) + "\n" + "Cost: " + Integer.toString(catapultCost));
-		laserInfo.setText(
-				Helper.labelProcessing(labelLaserTower.getId()) + "\n" + "Cost: " + Integer.toString(laserCost));
+		catapultInfo.setText(Helper.labelProcessing(labelCatapult.getId()) + "\n" + "Cost: " + Integer.toString(catapultCost));
+		laserInfo.setText(Helper.labelProcessing(labelLaserTower.getId()) + "\n" + "Cost: " + Integer.toString(laserCost));
 
 		labelBasicTower.setTooltip(basicInfo);
 		labelIceTower.setTooltip(iceInfo);
@@ -206,19 +198,10 @@ public class MyController {
 		int result = r.nextInt(high - low + 1) + low + 1;
 
 		switch (result) {
-		case 1:
-			monsterList.add(new Fox(startCoord, 100, 1, 0));
-			break;
-		case 2:
-			monsterList.add(new Unicorn(startCoord, 150, 1, 0));
-			break;
-		case 3:
-			monsterList.add(new Penguin(startCoord, 100, 1, 0));
-			break;
-
-		default:
-			monsterList.add(new Fox(startCoord, 100, 1, 0));
-
+		case 1:monsterList.add(new Fox(startCoord, 100, 1, 0));break;
+		case 2:monsterList.add(new Unicorn(startCoord, 150, 1, 0));break;
+		case 3:monsterList.add(new Penguin(startCoord, 100, 1, 0));break;
+		default:monsterList.add(new Fox(startCoord, 100, 1, 0));
 		}
 	}
 
@@ -290,9 +273,7 @@ public class MyController {
 	 */
 	void listAllTower() {
 		for (int i = 0; i < towers.size(); i++) {
-			System.out.println(
-					"Tower(" + i + ") State:" + towers.get(i).getStateStr() + " Timer:" + towers.get(i).getCooldown()
-							+ " Coord:" + towers.get(i).getCoord()[0] + "," + towers.get(i).getCoord()[1]);
+			System.out.println("Tower(" + i + ") State:" + towers.get(i).getStateStr() + " Timer:" + towers.get(i).getCooldown()+ " Coord:" + towers.get(i).getCoord()[0] + "," + towers.get(i).getCoord()[1]);
 		}
 		System.out.println("");
 	}
@@ -458,8 +439,7 @@ public class MyController {
 			return;
 		int[] coord = monsterInRange.get(0).getCoord();
 
-		double shortestDistance = (Math.pow((coord[0] - 440), 2) + Math.pow(coord[1], 2)); // Eucledian Distance with
-																							// (440,0)
+		double shortestDistance = (Math.pow((coord[0] - 440), 2) + Math.pow(coord[1], 2)); // Eucledian Distance with (440,0)
 
 		int index = 0;
 		for (int i = 1; i < monsterInRange.size(); i++) {
@@ -490,9 +470,7 @@ public class MyController {
 			if (curTower.getTowerState() == Tower.TowerState.READY) {
 				laserTarget = monsterInRange.get(index);
 				resourcesAmount -= curTower.getAttackCost();
-				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to
-																										// reset the
-																										// cooldown
+				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to reset the cooldown																							
 				drawLaserLine(curTower.getCoord());
 			}
 			break;
@@ -543,23 +521,6 @@ public class MyController {
 
 			grids[y][x].setGraphic(null);
 			grids[y][x].setText("");
-
-			/*
-			if (monsterList.get(i).getHp() < 1) {
-
-				String collisionImgName = "collision.png";
-				Image collisionImage = new Image(collisionImgName, 30.0, 30.0, true, true);
-				ImageView collisionImageView = new ImageView();
-				collisionImageView.setImage(collisionImage);
-
-				grids[y][x].setGraphic(collisionImageView);
-				grids[y][x].setText("");
-
-				collisionX.add(x);
-				collisionY.add(y);
-
-				return;
-			}*/
 
 			grids[y][x].setGraphic(null);
 			grids[y][x].setText("");
@@ -668,19 +629,6 @@ public class MyController {
 		money.setText("Money Left: " + Integer.toString(resourcesAmount));
 	}
 
-	/*
-	 * private void updateResources() { if(!towers.isEmpty()) { sumbT = bT *
-	 * basicCost; sumC = c * catapultCost; sumlT = lT * laserCost; sumiT = iT *
-	 * iceCost;
-	 * 
-	 * bT = 0; c = 0; lT = 0; iT = 0;
-	 * 
-	 * sumTotal = sumbT + sumC + sumlT + sumiT; if(resourcesAmount > 0)
-	 * resourcesAmount -= sumTotal; else resourcesAmount = 0;
-	 * money.setText("Money Left: " + Integer.toString(resourcesAmount)); } else
-	 * money.setText("Money Left: " + Integer.toString(resourcesAmount)); }
-	 */
-
 	public int[] getTowerCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++)
@@ -688,10 +636,10 @@ public class MyController {
 				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
 					continue;
 				else {
-					if (grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[0]) {
+					if (grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[1]) {
 						returnCoords[0] = i;
 						returnCoords[1] = j;
-						System.out.println("getTowerCoord-i:" + i + " j:" + j);
+						//System.out.println("getTowerCoord-i:" + i + " j:" + j);
 					}
 				}
 			}
@@ -706,27 +654,7 @@ public class MyController {
 		invisibleLabel.setMinHeight(GRID_HEIGHT);
 		invisibleLabel.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
-	/*
-	private void mouseEnterExit() {
 
-		if (circleX.size() == 0)
-			return;
-		int[] circleCoord = { (int) circleX.get(0).getLayoutX(), (int) circleX.get(0).getLayoutY() };
-		int[] index = getTowerCoords(circleCoord);
-		System.out.println("index: " + index[0] + " " + index[1]);
-		Label targetSp = grids[index[0]][index[1]];
-
-		targetSp.setOnMouseExited(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				if (targetSp.getGraphic() == null)
-					return;
-
-				if (!circleX.isEmpty()) {
-					System.out.println("Is it getting called?");
-					paneArena.getChildren().remove(circleX.get(0));
-					circleX.remove(0);
-				}
-*/
 	void inadequateBuildError(String tower) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
@@ -770,9 +698,8 @@ public class MyController {
 					Label source2 = labelIceTower;
 					Label source3 = labelCatapult;
 					Label source4 = labelLaserTower;
-					source1.setOnDragDetected(new DragEventHandler(source1)); // when dragging source1, do something,
-																				// source1 is now source in DragEventHandler
-																				// class
+					
+					source1.setOnDragDetected(new DragEventHandler(source1)); 
 					source2.setOnDragDetected(new DragEventHandler(source2));
 					source3.setOnDragDetected(new DragEventHandler(source3));
 					source4.setOnDragDetected(new DragEventHandler(source4));
@@ -847,7 +774,7 @@ public class MyController {
 							
 							updateResourceText();
 							event.setDropCompleted(true);
-							System.out.println(towers.get(towers.size() - 1).getCoord()[0]);
+							
 							event.consume();
 						}
 						
@@ -866,7 +793,7 @@ public class MyController {
 					target.setOnDragEntered(new EventHandler<DragEvent>() {					
 						public void handle(DragEvent event) {
 							if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-								System.out.println("onDragEntered");
+								//System.out.println("onDragEntered");
 							}
 							target.setStyle("-fx-border-color: red;");
 							event.consume();
@@ -893,7 +820,6 @@ public class MyController {
 
 									int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
 									// Circle, Arc or Rectangle
-									System.out.println("This Tower's range: " + towers.get(getTowerIndex(coord)).getRange());
 									
 									switch (target.getId()) {
 										case "basicTower": {
@@ -903,8 +829,7 @@ public class MyController {
 											break;
 
 										}
-										case "catapult": {
-											
+										case "catapult": {	
 											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
 											Circle ringCircle = new Circle(towers.get(getTowerIndex(coord)).getMinRange());
 											rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
@@ -956,8 +881,74 @@ public class MyController {
 							paneArena.getChildren().remove(rangeCircle);
 							paneArena.getChildren().remove(invisibleLabel);
 							circleShown = false;
-							System.out.println("Invisible label exit called");
+							//System.out.println("Invisible label exit called");
 						}
+					});
+					invisibleLabel.setOnMouseClicked(new EventHandler<MouseEvent>(){
+					   	public void handle(MouseEvent event) {
+							numClicks++;
+							clicked = true;
+							if(clicked == true && numClicks < 2) {
+								System.out.println("Clicked1:" + clicked);
+								ToolBar toolbar = new ToolBar();
+								Button destroyButton = new Button("Destroy Tower");
+								Button upgradeButton = new Button("Upgrade Tower");
+								toolbar.getItems().addAll(destroyButton, upgradeButton);            				
+								VBox vbox = new VBox(toolbar);
+								Scene scene = new Scene(vbox);
+								Stage stage = new Stage();
+								stage.setScene(scene);
+								stage.show();    
+								System.out.println("TOWER SIZE BEFORRE: " + towers.size());				
+								destroyButton.setOnAction(new EventHandler<ActionEvent>() {
+							   		public void handle(ActionEvent e) {   
+										int [] towerCoords = {(int)invisibleLabel.getLayoutX(),(int)invisibleLabel.getLayoutY()};
+										int towerIndex = getTowerIndex(towerCoords);
+										int []gridCoord = getTowerCoords(towerCoords);
+
+										grids[gridCoord[0]][gridCoord[1]].setGraphic(null);
+										grids[gridCoord[0]][gridCoord[1]].setText("wassup");
+										towers.remove(towerIndex);
+										//System.out.println(towers.size());
+										destroyButton.setDisable(true);
+										upgradeButton.setDisable(true);         	
+							   		}
+								});
+								upgradeButton.setOnAction(new EventHandler<ActionEvent>() {
+							   		public void handle(ActionEvent e) {
+								   		int[] towerCoords = {(int) invisibleLabel.getLayoutX(), (int) invisibleLabel.getLayoutY()};
+								   		System.out.println("xUpgrade: " + towerCoords[0]);
+								   		System.out.println("yUpgrade: " + towerCoords[1]);
+								   		for(Tower a : towers) {
+									   		int[]aCoor = a.getCoord();
+									   		int aX = aCoor[0];
+									   		int aY = aCoor[1];
+									   		if(towerCoords[0] == aX && towerCoords[1] == aY) {
+											   	if(resourcesAmount >= a.getUpgradeCost() && upgraded == false) {
+												   	a.upgradeTower(true);
+												   	resourcesAmount -= a.getUpgradeCost();
+												   	updateResourceText();
+									   				System.out.println(a.getTowerType() + " is being upgraded.");
+												   	upgraded = true;
+												   	//rangeCircle.setRadius(a.getRange());
+											   	}
+											   	else if (resourcesAmount < a.getUpgradeCost()) {
+									   				System.out.println("not enough resources to upgrade " + a.getTowerType());		
+											   	}
+									   		}
+								   		}
+								   		upgraded = false;
+							   		}
+								});
+								stage.setOnHidden(new EventHandler<WindowEvent>() {
+									public void handle(WindowEvent a) {
+										clicked = false;
+										numClicks = 0;
+										System.out.println("Clicked2:" + clicked);
+								   	}
+								});
+							}				
+						} 
 					});
 				}
 			} // inner for-loop

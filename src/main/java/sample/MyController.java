@@ -452,30 +452,37 @@ public class MyController {
 			}
 		}
 		switch (curTower.getTowerType()) {
-		case "basicTower": {
-			monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
-			break;
-		}
-		case "iceTower": {
-			monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
-			monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
-			break;
-		}
-		case "catapult": {
-			catapultTarget.add(monsterInRange.get(index));
-			break;
-		}
-		case "laserTower": {
-			if (curTower.getAttackCost() > resourcesAmount)
-				return; // If not adequate resources, GTFO
-			if (curTower.getTowerState() == Tower.TowerState.READY) {
-				laserTarget = monsterInRange.get(index);
-				resourcesAmount -= curTower.getAttackCost();
-				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to reset the cooldown																							
-				drawLaserLine(curTower.getCoord());
+			case "basicTower": {
+				if(curTower.getTowerState()==Tower.TowerState.READY)
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+				break;
 			}
-			break;
-		}
+			case "iceTower": {
+				if(curTower.getTowerState()==Tower.TowerState.READY){
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+					monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
+				}
+				break;
+			}
+			case "catapult": {
+				if(curTower.getTowerState()==Tower.TowerState.READY){	//Only if Tower is In Ready State
+					catapultTarget.add(monsterInRange.get(index));
+					curTower.attack(0);
+					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
+					grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+				}
+				break;
+			}
+			case "laserTower": {
+				if (curTower.getAttackCost() > resourcesAmount)return; // If not adequate resources, GTFO
+				if (curTower.getTowerState() == Tower.TowerState.READY) {
+					laserTarget = monsterInRange.get(index);
+					resourcesAmount -= curTower.getAttackCost();
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to reset the cooldown																							
+					drawLaserLine(curTower.getCoord());
+				}
+				break;
+			}
 		}
 	}
 
@@ -619,7 +626,6 @@ public class MyController {
 				System.out.println("Getting resources:" + monsterList.get(i).getResourceEarned());
 				resourcesAmount += monsterList.get(i).getResourceEarned(); // Resources Gained
 				monsterList.remove(i);
-
 			}
 		}
 	}
@@ -639,9 +645,18 @@ public class MyController {
 			collisionY.remove(i);
 		}
 	}
-
+	void resetAllMonsterGridColors(){
+		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
+			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)){
+					grids[i][j].setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+				}
+			}
+		}
+	}
 	@FXML
 	private void nextFrame() {
+		resetAllMonsterGridColors();
 		// Debugging Print Tools
 		listAllMonster();
 		listAllTower();
@@ -677,6 +692,22 @@ public class MyController {
 
 	}
 
+	public int[] getMonsterCoords(int[] coord) {
+		int[] returnCoords = { 0, 0 };
+		for (int i = 0; i < MAX_V_NUM_GRID; i++){
+			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)){
+					if (grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[1]) {
+						returnCoords[0] = i;
+						returnCoords[1] = j;
+						//System.out.println("getTowerCoord-i:" + i + " j:" + j);
+					}
+				}
+			}
+		}
+		return returnCoords;
+
+	}
 	private void initEachInvisibleLabel() {
 		invisibleLabel.setMinWidth(GRID_WIDTH);
 		invisibleLabel.setMaxWidth(GRID_WIDTH);
@@ -711,7 +742,7 @@ public class MyController {
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 							if (target.getText() != "") {
-								System.out.println("hey");
+								//System.out.println("hey");
 								String hpInfo = "HP: " + target.getText();
 
 								MonsterInfo.setText(hpInfo);
@@ -720,7 +751,7 @@ public class MyController {
 								System.out.println("monsterHp " + target.getText());
 							} else {
 
-								System.out.println("hey you");
+								//System.out.println("hey you");
 								MonsterInfo.setText("");
 								target.setTooltip(null);
 
@@ -836,7 +867,7 @@ public class MyController {
 					});
 					/* mouse moved away, remove the graphical cues */
 					target.setOnDragExited((event) -> {
-						System.out.println("Exit");
+						//System.out.println("Exit");
 						target.setStyle("-fx-border-color: black;");
 						event.consume();
 					});
@@ -848,7 +879,7 @@ public class MyController {
 						@Override
 						public void handle(MouseEvent event) {
 							if (target.getGraphic() == null) {
-								System.out.println("There is no tower");
+								//System.out.println("There is no tower");
 							} else {
 								if (!circleShown) {
 									System.out.println("There is tower");
@@ -948,7 +979,7 @@ public class MyController {
 										int []gridCoord = getTowerCoords(towerCoords);
 
 										grids[gridCoord[0]][gridCoord[1]].setGraphic(null);
-										grids[gridCoord[0]][gridCoord[1]].setText("wassup");
+										//grids[gridCoord[0]][gridCoord[1]].setText("wassup");
 										towers.remove(towerIndex);
 										//System.out.println(towers.size());
 										destroyButton.setDisable(true);

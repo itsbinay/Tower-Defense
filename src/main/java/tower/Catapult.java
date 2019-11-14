@@ -4,7 +4,7 @@ public class Catapult extends Tower {
 	private static final int upgradeCost = 100;
 	
 	private static final int initialCost = 80;
-	private static final int initialPower = 30;
+	private static final int initialPower = 60;
 	private static final int initialRange = 150;
 	private static final int minimumRange = 50;
 	private static final int rangeIncrement = 10;

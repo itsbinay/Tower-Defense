@@ -20,6 +20,7 @@ public class Monster {
 	private int deathResource;
 	private int[] coord = { 0, 0 };
 
+	private String monsterTypeStr;
 	/**
 	 * @param coord         The x and y coordinates for each monster object.
 	 * @param hp            The health points that each monster obtains when
@@ -30,13 +31,18 @@ public class Monster {
 	 *                      frozen or not.
 	 */
 
-	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn) {
+	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn,String monsterType) {
 		this.movementSpeed = movementSpeed;
 		this.hp = hp;
 		this.frozen = frozen;
 		this.coord = coord;
 		this.img = img;
 		this.deathResource = resourceEarn;
+		this.monsterTypeStr=monsterType;
+	}
+
+	public String getMonsterType(){
+		return this.monsterTypeStr;
 	}
 
 	public int getResourceEarned() {

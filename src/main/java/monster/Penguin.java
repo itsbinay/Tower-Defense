@@ -11,14 +11,14 @@ public class Penguin extends Monster{
 	private  int hp = 100;
 	private  int movementSpeed = 1;
 	private static String img = "penguin.png";
-	private static final int resourceEarn = 35;
+	private static final int resourceEarn = 50;
 	
 	/**
 	 * @param coord The x and y coordinates for each monster object.
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
 	 */
 	public Penguin(int [] coord,int hp, int movementSpeed, int frozen)  {
-		super(coord,hp, movementSpeed, img, frozen,resourceEarn);
+		super(coord,hp, movementSpeed, img, frozen,resourceEarn,"Penguin");
 		// TODO Auto-generated constructor stub
 	}
 

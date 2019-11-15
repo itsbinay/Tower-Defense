@@ -70,11 +70,6 @@ public class basicTower extends Tower {
 		this.setPower(this.getPower() + powerIncrement);
 		this.setRange(this.getRange() + rangeIncrement);
 	}
-	public int getRangeIncrement() {
-		return rangeIncrement;
-	}
-
-	// Made Some change here
 	/**
 	 * Returns the updated hp of the monster given it was attacked.
 	 * @param hp the current hp of the monster
@@ -93,5 +88,4 @@ public class basicTower extends Tower {
 	public String getTowerType() {
 		return towerType;
 	}
-	
 }

@@ -53,7 +53,6 @@ public class Helper {
 		}
 		return null;
 	}
-	
 	public static String space(String name) {			
 		if(!name.equals("catapult")) {
 			String k;

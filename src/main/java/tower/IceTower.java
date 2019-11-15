@@ -38,9 +38,6 @@ public class IceTower extends Tower {
     	return this.FreezeTimer;
     }
     
-    public int getRangeIncrement() {
-		return rangeIncrement;
-    }
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();
@@ -52,6 +49,6 @@ public class IceTower extends Tower {
 		return hp;
 	}
 	public String getTowerType() {
-		return towerType;
-	}
+		return "iceTower";
+    }
 }

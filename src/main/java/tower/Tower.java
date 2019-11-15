@@ -69,7 +69,7 @@ public abstract class Tower {
 	public void updateTowerState() {
 		if(this.curState==TowerState.ATTACK) {	//If you have attacked recently
 			this.curState=TowerState.COOLDOWN;
-			this.cooldownTimer=this.maxcdTimer-1;
+			this.cooldownTimer=this.maxcdTimer;
 			return;
 		}
 		this.cooldownTimer--;
@@ -156,10 +156,10 @@ public abstract class Tower {
     }
 	public String getStateStr() {
 		switch(this.curState) {
-	case READY: return "Ready";
-	case COOLDOWN:return "Cooldown";
-	case ATTACK:return "Attack";
-	default: return "Cant find state";
+			case READY: return "Ready";
+			case COOLDOWN:return "Cooldown";
+			case ATTACK:return "Attack";
+			default: return "Cant find state";
 		}
 	}
 	/**
@@ -185,9 +185,6 @@ public abstract class Tower {
 	 * @param canUpgrade canUpgrade this parameter indicates whether the basicTower can be upgraded
 	 */
 	public abstract void upgradeTower(boolean canUpgrade);
-	
-	
-	
 	public abstract int attack(int hp);
 	//public abstract String getTowerType();
 	//public abstract int getUpgradeCost();

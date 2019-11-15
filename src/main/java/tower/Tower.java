@@ -1,5 +1,6 @@
 package tower;
 import java.lang.Math;
+
 /**
  * This is an abstract class model for all types of tower.
  * @author binay
@@ -12,18 +13,21 @@ public abstract class Tower {
 	 * @author binay
 	 *
 	 */
+
 	public enum TowerState{
 		READY,
 		COOLDOWN,
 		ATTACK
-	}
+	};
 	
-
 	private int buildingCost;
 	private int power;
 	private int shootingRange;
 	private int[] coord;
 	private TowerState curState=TowerState.READY;
+	private int cooldownTimer;
+	private int maxcdTimer;
+	private int upgradeCost;
 	
 	private String towerType;
 	
@@ -38,14 +42,54 @@ public abstract class Tower {
 	 * @param power	the initial power of the tower built
 	 * @param range	the initial range of the tower built
 	 */
-	public Tower(int []Coord,int cost,int power, int range, String towerType) {
+	public Tower(int []Coord,int cost,int power, int range, String towerType,int UpgradeCost,int cdTimer) {
 		this.buildingCost = cost;
 		this.power = power;
 		this.shootingRange = range;
 		this.coord = new int[2];
 		this.coord[0] = Coord[0];
 		this.coord[1] = Coord[1];
+		this.cooldownTimer=1;
+		this.maxcdTimer=cdTimer;
+		this.upgradeCost=UpgradeCost;
 		this.towerType = towerType;
+	}
+	
+	public int getUpgradeCost() {
+		return this.upgradeCost;
+	}
+	/**
+	 * Retuns the cooldown timer of the tower.
+	 * the cooldown of the Timer is lowered if the timer value is greater than 1
+	 * The timer of the tower shall never be lower than 1.
+	 * cooldownTimer==1 indciates that the tower can attack in the next turn
+	 * 
+	 * @return the cooldown timer of the tower
+	 */
+	public void updateTowerState() {
+		if(this.curState==TowerState.ATTACK) {	//If you have attacked recently
+			this.curState=TowerState.COOLDOWN;
+			this.cooldownTimer=this.maxcdTimer-1;
+			return;
+		}
+		this.cooldownTimer--;
+		if(this.cooldownTimer<=1) {
+			this.cooldownTimer=1;
+			this.curState=TowerState.READY;
+		}
+	}
+	public int getMaxCDTimer(){
+		return this.maxcdTimer;
+	}
+	public void setMaxCDTimer(int a){
+		if(a<=1)return;
+		this.maxcdTimer=a;
+	}
+	public void setCooldown(int cd) {
+		this.cooldownTimer=cd;
+	}
+	public int getCooldown() {
+		return this.cooldownTimer;
 	}
 	
 	public String getTowerType () {
@@ -105,10 +149,19 @@ public abstract class Tower {
 	 */
 	public boolean isInRange(int [] coord) {
         int [] towerCoord = this.getCoord();
-        double distance = Math.sqrt(Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2));
-
-        return (distance<this.getRange())?true:false;
+        
+        double distance = Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2);
+        System.out.println("Distance:"+distance+" Range:"+this.getRange());
+        return (distance<Math.pow(this.getRange(),2))?true:false;
     }
+	public String getStateStr() {
+		switch(this.curState) {
+	case READY: return "Ready";
+	case COOLDOWN:return "Cooldown";
+	case ATTACK:return "Attack";
+	default: return "Cant find state";
+		}
+	}
 	/**
 	 * Returns the state of the selected tower
 	 * 
@@ -133,6 +186,15 @@ public abstract class Tower {
 	 */
 	public abstract void upgradeTower(boolean canUpgrade);
 	
-	public abstract int getUpgradeCost();
-	public abstract int getRangeIncrement();
+	
+	
+	public abstract int attack(int hp);
+	//public abstract String getTowerType();
+	//public abstract int getUpgradeCost();
+	public int getAttackCost() {
+		return 0;
+	}
+	public int getMinRange(){
+		return 0;
+	}
 }

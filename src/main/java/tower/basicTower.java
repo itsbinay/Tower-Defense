@@ -33,28 +33,28 @@ public class basicTower extends Tower {
 	 */
 	private static final int initialRange = 70;
 	
+	/**
+	 * Cooldowntimer of a basicTower
+	 */
+	private static final int initialCDTimer=1;
+	
 	private static final String towerType = "basicTower";
 
 	/**
-	 * Constructs a basicTower that can be placed on the screen The Coord argument
-	 * must be an integer array of size 2 which specifies the x coordinate and the
-	 * y-coordinate.
+	 * Constructor of the basicTower
 	 * 
 	 * @param Coord coordinate of basicTower where is created
 	 */
 	public basicTower(int[] Coord) {
-		super(Coord, initialCost, initialPower, initialRange, towerType);
+		super(Coord, initialCost, initialPower, initialRange, towerType,upgradeCost,initialCDTimer);
 	}
 
-	/**
-	 * Returns the upgrade cost of the given basicTower.
-	 * 
-	 * @return the upgrade cost of the basicTower
-	 */
-	public int getUpgradeCost() {
-		return upgradeCost;
-	}
 
+	@Override
+	public boolean isInRange(int [] coord) {
+		if(this.getCoord()[0]==coord[0] && Math.abs(this.getCoord()[1]-coord[1])<this.getRange())return true;
+		return false;
+	}
 	@Override
 	/**
 	 * If the canUpgrade argument is evaluates to be true, the power and the range
@@ -75,4 +75,23 @@ public class basicTower extends Tower {
 	}
 
 	// Made Some change here
+	/**
+	 * Returns the updated hp of the monster given it was attacked.
+	 * @param hp the current hp of the monster
+	 * @return the updated hp of the monster
+	 */
+	public int attack(int hp) {
+		if(this.getTowerState()==TowerState.READY) {
+			hp-=this.getPower();
+			this.setCooldown(this.initialCDTimer);
+			this.setTowerState(TowerState.ATTACK);
+			System.out.println("basicTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
+			return hp;
+		}
+		return hp;
+	}
+	public String getTowerType() {
+		return towerType;
+	}
+	
 }

@@ -198,12 +198,12 @@ public class MyController {
 	}
 
 	public void monsterGenerate() {
-		System.out.println("monsterGenerate");
+	
 		int result = r.nextInt(high - low + 1) + low + 1;
 
 		switch (result) {
 		case 1:
-			monsterList.add(new Fox(startCoord, 100, 1, 0));
+			monsterList.add(new Fox(startCoord, 100, 2, 0));
 			break;
 		case 2:
 			monsterList.add(new Unicorn(startCoord, 150, 1, 0));
@@ -212,7 +212,7 @@ public class MyController {
 			monsterList.add(new Penguin(startCoord, 100, 1, 0));
 			break;
 		default:
-			monsterList.add(new Fox(startCoord, 100, 1, 0));
+			monsterList.add(new Fox(startCoord, 100, 2, 0));
 		}
 
 		prevHp.add(monsterList.get(monsterList.size() - 1).getHp());
@@ -220,7 +220,14 @@ public class MyController {
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-		System.out.println("X AXIS " + x);
+		
+		if (x + 1 > 11) {
+			System.out.println("Game over");
+			perFrame = 100;
+			return;
+		}
+		
+		
 
 		if (spaceLeft < 1) {
 			int[] newCoord = { y, x };
@@ -230,7 +237,7 @@ public class MyController {
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
 			grids[y][x].setGraphic(monsterImageView);
-			grids[y][x].setText(String.valueOf(monsterList.get(monsterCount).getHp()));
+		
 
 			return;
 		}
@@ -469,17 +476,27 @@ public class MyController {
 			}
 		}
 		switch (curTower.getTowerType()) {
+
 		case "basicTower": {
-			monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+			if (curTower.getTowerState() == Tower.TowerState.READY)
+				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
 			break;
 		}
 		case "iceTower": {
-			monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
-			monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
+			if (curTower.getTowerState() == Tower.TowerState.READY) {
+				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+				monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
+			}
 			break;
 		}
 		case "catapult": {
-			catapultTarget.add(monsterInRange.get(index));
+			if (curTower.getTowerState() == Tower.TowerState.READY) { // Only if Tower is In Ready State
+				catapultTarget.add(monsterInRange.get(index));
+				curTower.attack(0);
+				int[] gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
+				grids[gridCoord[0]][gridCoord[1]].setBackground(
+						new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+			}
 			break;
 		}
 		case "laserTower": {
@@ -494,6 +511,7 @@ public class MyController {
 				drawLaserLine(curTower.getCoord());
 			}
 			break;
+
 		}
 		}
 	}
@@ -509,17 +527,18 @@ public class MyController {
 	}
 
 	private void MonsterFSM() {
+	
 		numOfFrames++;
 
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
-			grids[collisionX.get(i)][collisionX.get(i)].setText("");
+			
 
 			collisionX.remove(i);
 			collisionY.remove(i);
 		}
 
-		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
 		}
@@ -538,8 +557,8 @@ public class MyController {
 
 			prevHp.set(i, monsterList.get(i).getHp());
 
-			if (monsterList.get(i).getFrozen() > 0)
-				monsterList.get(i).reduceSpeed();
+			 if (monsterList.get(i).getFrozen() > 0)
+			 monsterList.get(i).reduceSpeed();
 
 			if (monsterList.get(i).getImg() == "penguin.png") {
 
@@ -564,23 +583,16 @@ public class MyController {
 			boolean right = false;
 
 			int movementSpeed = monsterList.get(i).getMovementSpeed();
+			
+
 			int x = monsterList.get(i).getX();
 			int y = monsterList.get(i).getY();
 
-			System.out.println("x: " + x);
-			System.out.println("y: " + y);
+			grids[y][x].setGraphic(null);
 
 			grids[y][x].setGraphic(null);
-			grids[y][x].setText("");
 
-			grids[y][x].setGraphic(null);
-			grids[y][x].setText("");
-
-			if (x + 1 > 11) {
-				System.out.println("Game over");
-				perFrame = 100;
-				return;
-			}
+			
 
 			if (x % 4 == 0)
 				down = true;
@@ -601,19 +613,19 @@ public class MyController {
 					Move(2, x, y, movementSpeed + speedIncrease, i);
 			}
 
-			if (monsterList.get(i).getFrozen() == 0)
-				monsterList.get(i).unFreeze();
+			 if (monsterList.get(i).getFrozen() == 0)
+			 monsterList.get(i).unFreeze();
 
-			grids[0][0].setText("");
+			
 
 		}
 
-		if (grids[0][0].getGraphic() == null && nextFrameCounter % 3 == 0) {
+		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
 
 			monsterGenerate();
 
-			if (numOfFrames > 10) {
-				System.out.println("aayush");
+			if (numOfFrames > 30) {
+				
 				int currHp = monsterList.get(monsterList.size() - 1).getHp();
 				int newHp = currHp + bonusHp;
 
@@ -621,7 +633,7 @@ public class MyController {
 
 			}
 
-			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+			if (numOfFrames % 30 == 0 && numOfFrames != 0) {
 				bonusHp = bonusHp + 50;
 			}
 
@@ -630,8 +642,7 @@ public class MyController {
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
 			grids[0][0].setGraphic(monsterImageView);
-			grids[0][0].setText(String.valueOf(monsterList.get(monsterList.size() - 1).getHp()));
-
+		
 		}
 
 		nextFrameCounter++;
@@ -644,7 +655,7 @@ public class MyController {
 				ImageView collisionImageView = new ImageView();
 				collisionImageView.setImage(collisionImage);
 				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setGraphic(collisionImageView);
-				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setText("");
+	
 				collisionX.add(monsterList.get(i).getX());
 				collisionY.add(monsterList.get(i).getY());
 				System.out.println("Getting resources:" + monsterList.get(i).getResourceEarned());
@@ -663,7 +674,7 @@ public class MyController {
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionY.get(i)][collisionX.get(i)].setGraphic(null);
-			grids[collisionY.get(i)][collisionX.get(i)].setText("");
+	
 
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
@@ -672,8 +683,20 @@ public class MyController {
 		}
 	}
 
+	void resetAllMonsterGridColors() {
+		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
+			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) {
+					grids[i][j].setBackground(
+							new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+				}
+			}
+		}
+	}
+
 	@FXML
 	private void nextFrame() {
+		resetAllMonsterGridColors();
 		// Debugging Print Tools
 		listAllMonster();
 		listAllTower();
@@ -709,6 +732,23 @@ public class MyController {
 
 	}
 
+	public int[] getMonsterCoords(int[] coord) {
+		int[] returnCoords = { 0, 0 };
+		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
+			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) {
+					if (grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[1]) {
+						returnCoords[0] = i;
+						returnCoords[1] = j;
+						// System.out.println("getTowerCoord-i:" + i + " j:" + j);
+					}
+				}
+			}
+		}
+		return returnCoords;
+
+	}
+
 	private void initEachInvisibleLabel() {
 		invisibleLabel.setMinWidth(GRID_WIDTH);
 		invisibleLabel.setMaxWidth(GRID_WIDTH);
@@ -740,23 +780,48 @@ public class MyController {
 					Tooltip MonsterInfo = new Tooltip();
 
 					Label target = grids[i][j];
+
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
-							if (target.getText() != "") {
-								System.out.println("hey");
-								String hpInfo = "HP: " + target.getText();
 
-								MonsterInfo.setText(hpInfo);
+							
+							target.setTooltip(null);
+							String hpInfo = "";
 
-								target.setTooltip(MonsterInfo);
-								System.out.println("monsterHp " + target.getText());
-							} else {
+							for (int k = 0; k < monsterList.size(); k++) {
+								if ((int) target.getLayoutX() / 40 == monsterList.get(k).getX()
+										&& (int) target.getLayoutY() / 40 == monsterList.get(k).getY()) {
+									String hpVal = String.valueOf(monsterList.get(k).getHp());
 
-								System.out.println("hey you");
-								MonsterInfo.setText("");
-								target.setTooltip(null);
+									switch (monsterList.get(k).getImg()) {
+									case "fox.png": {
+										hpInfo = hpInfo + "Fox " + "HP: " + hpVal + "\n";
+										break;
+									}
+									case "penguin.png": {
+										hpInfo = hpInfo + "Penguin " + "HP: " + hpVal + "\n";
+										break;
+									}
+									case "unicorn.png": {
+										hpInfo = hpInfo + "Unicorn " + "HP: " + hpVal + "\n";
+										break;
+
+									}
+									default: {
+										String name = "";
+									}
+
+									}
+
+									MonsterInfo.setText(hpInfo);
+
+									target.setTooltip(MonsterInfo);
+									
+
+								}
 
 							}
+
 							event.consume();
 						}
 					});
@@ -868,7 +933,7 @@ public class MyController {
 					});
 					/* mouse moved away, remove the graphical cues */
 					target.setOnDragExited((event) -> {
-						System.out.println("Exit");
+						// System.out.println("Exit");
 						target.setStyle("-fx-border-color: black;");
 						event.consume();
 					});
@@ -880,7 +945,7 @@ public class MyController {
 						@Override
 						public void handle(MouseEvent event) {
 							if (target.getGraphic() == null) {
-								System.out.println("There is no tower");
+								// System.out.println("There is no tower");
 							} else {
 								if (!circleShown) {
 									System.out.println("There is tower");
@@ -982,7 +1047,7 @@ public class MyController {
 										int[] gridCoord = getTowerCoords(towerCoords);
 
 										grids[gridCoord[0]][gridCoord[1]].setGraphic(null);
-										grids[gridCoord[0]][gridCoord[1]].setText("wassup");
+										// grids[gridCoord[0]][gridCoord[1]].setText("wassup");
 										towers.remove(towerIndex);
 										// System.out.println(towers.size());
 										destroyButton.setDisable(true);

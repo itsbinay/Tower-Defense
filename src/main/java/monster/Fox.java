@@ -9,7 +9,7 @@ package monster;
 
 public class Fox extends Monster{
 	private int hp = 100;
-	private int movementSpeed = 1;
+	private int movementSpeed = 2;
 	private static String img = "fox.png";
 	private static final int resourceEarn = 40;
 	/**

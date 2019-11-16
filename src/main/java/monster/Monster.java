@@ -156,9 +156,9 @@ public class Monster {
 		if (this.frozen == 0) {
 
 			if (this.img == "fox.png") {
-				if (this.movementSpeed != 1)
+				if (this.movementSpeed != 2)
 
-					this.movementSpeed = 1;
+					this.movementSpeed = 2;
 
 			}
 

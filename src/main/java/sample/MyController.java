@@ -1,4 +1,5 @@
 package sample;
+
 import javafx.scene.Scene;
 import javafx.scene.input.*;
 import javafx.scene.control.ToolBar;
@@ -97,6 +98,8 @@ public class MyController {
 	private Shape rangeCircle = new Circle();
 	
 	private List<Monster> monsterList = new ArrayList<>();
+	private List<Integer> prevHp = new ArrayList<Integer>();
+
 	private List<Integer> collisionX = new ArrayList<Integer>();
 	private List<Integer> collisionY = new ArrayList<Integer>();
 	private List<Line> laserLines = new ArrayList<>();
@@ -110,7 +113,8 @@ public class MyController {
 	Random r = new Random();
 	int low = 1;
 	int high = 3;
-
+	boolean gameOver = false;
+	String endZone = "";
 	private static int speedIncrease = 0;
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
@@ -206,40 +210,49 @@ public class MyController {
                    BackgroundSize.DEFAULT);
         Background background2 = new Background(backgroundImage2);
         grids[0][11].setBackground(background2);
-
+        endZone = grids[0][11].getBackground().toString();
+        System.out.println("GET BACKGROUND: " + endZone);
         
         gameEvents();
 	}
 	
     private void updateResourceText() {
-    	money.setText("Money Left: " + Integer.toString(amtRrs));}	
+		money.setText("Money Left: " + Integer.toString(amtRrs));
+	}	
 
-
+	
 	public void monsterGenerate() {
-		//System.out.println("monsterGenerate");
+	
 		int result = r.nextInt(high - low + 1) + low + 1;
 
 		switch (result) {
 		case 1:
-			monsterList.add(new Fox(startCoord, 100, 1, 0));
-			
+			monsterList.add(new Fox(startCoord, 100, 2, 0));
 			break;
 		case 2:
 			monsterList.add(new Unicorn(startCoord, 150, 1, 0));
-			
 			break;
 		case 3:
 			monsterList.add(new Penguin(startCoord, 100, 1, 0));
-			
 			break;
 		default:
-			monsterList.add(new Fox(startCoord, 100, 1, 0));
-			
+			monsterList.add(new Fox(startCoord, 100, 2, 0));
 		}
+
+		prevHp.add(monsterList.get(monsterList.size() - 1).getHp());
+
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-		//System.out.println("X AXIS " + x);
+		
+		if (x + 1 > 11) {
+			gameOver = true;
+			System.out.println("Game over");
+			perFrame = 100;
+			return;
+		}
+		
+		
 
 		if (spaceLeft < 1) {
 			int[] newCoord = { y, x };
@@ -249,7 +262,7 @@ public class MyController {
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
 			grids[y][x].setGraphic(monsterImageView);
-			grids[y][x].setText(String.valueOf(monsterList.get(monsterCount).getHp()));
+		
 
 			return;
 		}
@@ -302,7 +315,9 @@ public class MyController {
 	 */
 	void listAllTower() {
 		for (int i = 0; i < towers.size(); i++) {
-			System.out.println("Tower(" + i + ") State:" + towers.get(i).getStateStr() + " Timer:" + towers.get(i).getCooldown()+ " Coord:" + towers.get(i).getCoord()[0] + "," + towers.get(i).getCoord()[1]);
+			System.out.println(
+					"Tower(" + i + ") State:" + towers.get(i).getStateStr() + " Timer:" + towers.get(i).getCooldown()
+							+ " Coord:" + towers.get(i).getCoord()[0] + "," + towers.get(i).getCoord()[1]);
 		}
 		System.out.println("");
 	}
@@ -475,7 +490,8 @@ public class MyController {
 			return;
 		int[] coord = monsterInRange.get(0).getCoord();
 
-		double shortestDistance = (Math.pow((coord[0] - 440), 2) + Math.pow(coord[1], 2)); // Eucledian Distance with (440,0)
+		double shortestDistance = (Math.pow((coord[0] - 440), 2) + Math.pow(coord[1], 2)); // Eucledian Distance with
+																							// (440,0)
 
 		int index = 0;
 		for (int i = 1; i < monsterInRange.size(); i++) {
@@ -534,8 +550,10 @@ public class MyController {
 				}
 				break;
 			}
+
 		}
 	}
+	
 
 	void TowerAttackMonster() {
 		for (int i = 0; i < towers.size(); i++) {
@@ -548,22 +566,34 @@ public class MyController {
 	}
 
 	private void MonsterFSM() {
+
 		numOfFrames++;
 
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
-			grids[collisionX.get(i)][collisionX.get(i)].setText("");
 
 			collisionX.remove(i);
 			collisionY.remove(i);
 		}
 
-		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
 		}
 
 		for (int i = 0; i < monsterList.size(); i++) {
+
+			if (monsterList.get(i).getHp() < prevHp.get(i)) {
+
+				monsterList.get(i).setMonsterState(Monster.MonsterState.DAMAGED);
+
+			} else {
+
+				monsterList.get(i).setMonsterState(Monster.MonsterState.UNTOUCHED);
+
+			}
+
+			prevHp.set(i, monsterList.get(i).getHp());
 
 			if (monsterList.get(i).getFrozen() > 0)
 				monsterList.get(i).reduceSpeed();
@@ -577,12 +607,12 @@ public class MyController {
 						monsterList.get(i).regenerate();
 					}
 				}
-				
+
 				else {
 					if (monsterList.get(i).getHp() < 100 + bonusHp) {
 						monsterList.get(i).regenerate();
 					}
-					
+
 				}
 
 			}
@@ -591,29 +621,36 @@ public class MyController {
 			boolean right = false;
 
 			int movementSpeed = monsterList.get(i).getMovementSpeed();
+
 			int x = monsterList.get(i).getX();
 			int y = monsterList.get(i).getY();
 
-			//System.out.println("x: " + x);
-			//System.out.println("y: " + y);
+			int monsterInSame = 0;
+			for (int j = 0; j < monsterList.size(); j++) {
 
-			grids[y][x].setGraphic(null);
-			grids[y][x].setText("");
+				int allX = monsterList.get(j).getX();
+				int allY = monsterList.get(j).getY();
 
-			grids[y][x].setGraphic(null);
-			grids[y][x].setText("");
+				if (x == allX && y == allY) {
+					monsterInSame++;
+					
+				}
 
-			if (x + 1 > 11) {
-				System.out.println("Game over");
-				perFrame = 100;
-				return;
 			}
-
+			
+			if (monsterInSame==1) 
+				
+				grids[y][x].setGraphic(null);
+		
 			if (x % 4 == 0)
 				down = true;
 			else
 				down = false;
-
+			if(x+1 == 11 && y ==0) {
+				gameOver = true;
+				System.out.print("ENTERS HERE");
+				return;
+			}
 			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
 				right = false;
 			} else {
@@ -631,15 +668,14 @@ public class MyController {
 			if (monsterList.get(i).getFrozen() == 0)
 				monsterList.get(i).unFreeze();
 
-			grids[0][0].setText("");
-
 		}
 
-		if (grids[0][0].getGraphic() == null && nextFrameCounter % 3 == 0) {
+		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
 
 			monsterGenerate();
-			if (numOfFrames > 10) {
-				//System.out.println("aayush");
+
+			if (numOfFrames > 30) {
+
 				int currHp = monsterList.get(monsterList.size() - 1).getHp();
 				int newHp = currHp + bonusHp;
 
@@ -647,7 +683,7 @@ public class MyController {
 
 			}
 
-			if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+			if (numOfFrames % 30 == 0 && numOfFrames != 0) {
 				bonusHp = bonusHp + 50;
 			}
 
@@ -656,8 +692,6 @@ public class MyController {
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
 			grids[0][0].setGraphic(monsterImageView);
-			grids[0][0].setText(String.valueOf(monsterList.get(monsterList.size() - 1).getHp()));
-
 
 		}
 
@@ -671,12 +705,14 @@ public class MyController {
 				ImageView collisionImageView = new ImageView();
 				collisionImageView.setImage(collisionImage);
 				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setGraphic(collisionImageView);
-				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setText("");
+	
 				collisionX.add(monsterList.get(i).getX());
 				collisionY.add(monsterList.get(i).getY());
 				System.out.println("Getting resources:"+monsterList.get(i).getResourceEarned());
 				amtRrs+=monsterList.get(i).getResourceEarned();	//Resources Gained
 				monsterList.remove(i);
+				prevHp.remove(i);
+
 			}
 		}
 	}
@@ -688,7 +724,7 @@ public class MyController {
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionY.get(i)][collisionX.get(i)].setGraphic(null);
-			grids[collisionY.get(i)][collisionX.get(i)].setText("");
+	
 
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
@@ -696,11 +732,13 @@ public class MyController {
 			collisionY.remove(i);
 		}
 	}
-	void resetAllMonsterGridColors(){
+
+	void resetAllMonsterGridColors() {
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)){
-					grids[i][j].setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) {
+					grids[i][j].setBackground(
+							new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 				}
 			}
 		}
@@ -721,15 +759,18 @@ public class MyController {
                  BackgroundSize.DEFAULT);
       Background background2 = new Background(backgroundImage2);
       grids[0][11].setBackground(background2);
-      
+//      
 	}
+	
 	@FXML
 	private void nextFrame() {
 		// Debugging Print Tools
 		//listAllMonster();
 		//listAllTower();
 
-	
+		if(gameOver)
+			return;
+		
 		resetAllMonsterGridColors();
 		clearAllVisualLaserLines();
 		clearAllCollision(); // Clears out all collision
@@ -753,7 +794,7 @@ public class MyController {
 					if (grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[1]) {
 						returnCoords[0] = i;
 						returnCoords[1] = j;
-						//System.out.println("getTowerCoord-i:" + i + " j:" + j);
+						// System.out.println("getTowerCoord-i:" + i + " j:" + j);
 					}
 				}
 			}
@@ -771,13 +812,13 @@ public class MyController {
 	}
 	public int[] getMonsterCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
-		for (int i = 0; i < MAX_V_NUM_GRID; i++){
+		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)){
+				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1)) {
 					if (grids[i][j].getLayoutX() == coord[0] && grids[i][j].getLayoutY() == coord[1]) {
 						returnCoords[0] = i;
 						returnCoords[1] = j;
-						//System.out.println("getTowerCoord-i:" + i + " j:" + j);
+						// System.out.println("getTowerCoord-i:" + i + " j:" + j);
 					}
 				}
 			}
@@ -808,23 +849,48 @@ public class MyController {
 					Tooltip MonsterInfo = new Tooltip();
 
 					Label target = grids[i][j];
+
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
-							if (target.getText() != "") {
-								//System.out.println("hey");
-								String hpInfo = "HP: " + target.getText();
 
-								MonsterInfo.setText(hpInfo);
+							
+							target.setTooltip(null);
+							String hpInfo = "";
 
-								target.setTooltip(MonsterInfo);
-								//System.out.println("monsterHp " + target.getText());
-							} else {
+							for (int k = 0; k < monsterList.size(); k++) {
+								if ((int) target.getLayoutX() / 40 == monsterList.get(k).getX()
+										&& (int) target.getLayoutY() / 40 == monsterList.get(k).getY()) {
+									String hpVal = String.valueOf(monsterList.get(k).getHp());
 
-								//System.out.println("hey you");
-								MonsterInfo.setText("");
-								target.setTooltip(null);
+									switch (monsterList.get(k).getImg()) {
+									case "fox.png": {
+										hpInfo = hpInfo + "Fox " + "HP: " + hpVal + "\n";
+										break;
+									}
+									case "penguin.png": {
+										hpInfo = hpInfo + "Penguin " + "HP: " + hpVal + "\n";
+										break;
+									}
+									case "unicorn.png": {
+										hpInfo = hpInfo + "Unicorn " + "HP: " + hpVal + "\n";
+										break;
+
+									}
+									default: {
+										String name = "";
+									}
+
+									}
+
+									MonsterInfo.setText(hpInfo);
+
+									target.setTooltip(MonsterInfo);
+									
+
+								}
 
 							}
+
 							event.consume();
 						}
 					});
@@ -834,8 +900,8 @@ public class MyController {
 					Label source2 = labelIceTower;
 					Label source3 = labelCatapult;
 					Label source4 = labelLaserTower;
-					
-					source1.setOnDragDetected(new DragEventHandler(source1)); 
+
+					source1.setOnDragDetected(new DragEventHandler(source1));
 					source2.setOnDragDetected(new DragEventHandler(source2));
 					source3.setOnDragDetected(new DragEventHandler(source3));
 					source4.setOnDragDetected(new DragEventHandler(source4));
@@ -910,10 +976,9 @@ public class MyController {
 
 							updateResourceText();
 							event.setDropCompleted(true);
-							
+
 							event.consume();
 						}
-
 					});
 					target.setOnDragOver(new EventHandler<DragEvent>() {
 						public void handle(DragEvent event) {
@@ -928,7 +993,7 @@ public class MyController {
 					target.setOnDragEntered(new EventHandler<DragEvent>() {
 						public void handle(DragEvent event) {
 							if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-								//System.out.println("onDragEntered");
+								// System.out.println("onDragEntered");
 							}
 							target.setStyle("-fx-border-color: red;");
 							event.consume();
@@ -936,7 +1001,7 @@ public class MyController {
 					});
 					/* mouse moved away, remove the graphical cues */
 					target.setOnDragExited((event) -> {
-						//System.out.println("Exit");
+						// System.out.println("Exit");
 						target.setStyle("-fx-border-color: black;");
 						event.consume();
 					});
@@ -948,40 +1013,41 @@ public class MyController {
 						@Override
 						public void handle(MouseEvent event) {
 							if (target.getGraphic() == null) {
-								//System.out.println("There is no tower");
+								// System.out.println("There is no tower");
 							} else {
 								if (!circleShown) {
 									//System.out.println("There is tower");
 
 									int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
 									// Circle, Arc or Rectangle
-									
-									switch (target.getId()) {
-										case "basicTower": {
-											int radius = towers.get(getTowerIndex(coord)).getRange();
-											int length = radius * 2 + GRID_HEIGHT;
-											rangeCircle = new Rectangle(target.getLayoutX(), target.getLayoutY() - radius,GRID_WIDTH, length);
-											break;
 
-										}
-										case "catapult": {	
-											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-											Circle ringCircle = new Circle(towers.get(getTowerIndex(coord)).getMinRange());
-											rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
-											rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
-											ringCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
-											ringCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
-											ringCircle.setFill(Color.TRANSPARENT);
-											rangeCircle = rangeCircle.subtract(rangeCircle, ringCircle);
-											break;
-										}	
-										case "laserTower": 
-										case "iceTower":{
-											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-											rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
-											rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
-											break;
-										}
+									switch (target.getId()) {
+									case "basicTower": {
+										int radius = towers.get(getTowerIndex(coord)).getRange();
+										int length = radius * 2 + GRID_HEIGHT;
+										rangeCircle = new Rectangle(target.getLayoutX(), target.getLayoutY() - radius,
+												GRID_WIDTH, length);
+										break;
+
+									}
+									case "catapult": {
+										rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
+										Circle ringCircle = new Circle(towers.get(getTowerIndex(coord)).getMinRange());
+										rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+										rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+										ringCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+										ringCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+										ringCircle.setFill(Color.TRANSPARENT);
+										rangeCircle = rangeCircle.subtract(rangeCircle, ringCircle);
+										break;
+									}
+									case "laserTower":
+									case "iceTower": {
+										rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
+										rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+										rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+										break;
+									}
 									}
 
 									rangeCircle.setOpacity(0.3);
@@ -1021,11 +1087,11 @@ public class MyController {
 							paneArena.getChildren().remove(rangeCircle);
 							paneArena.getChildren().remove(invisibleLabel);
 							circleShown = false;
-							//System.out.println("Invisible label exit called");
+							// System.out.println("Invisible label exit called");
 						}
 					});
-					invisibleLabel.setOnMouseClicked(new EventHandler<MouseEvent>(){
-					   	public void handle(MouseEvent event) {
+					invisibleLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+						public void handle(MouseEvent event) {
 							numClicks++;
 							clicked = true;
 							if(clicked == true && numClicks < 2) {
@@ -1033,7 +1099,7 @@ public class MyController {
 								ToolBar toolbar = new ToolBar();
 								Button destroyButton = new Button("Destroy Tower");
 								Button upgradeButton = new Button("Upgrade Tower");
-								toolbar.getItems().addAll(destroyButton, upgradeButton);            				
+								toolbar.getItems().addAll(destroyButton, upgradeButton);
 								VBox vbox = new VBox(toolbar);
 								Scene scene = new Scene(vbox);
 								Stage stage = new Stage();
@@ -1041,18 +1107,19 @@ public class MyController {
 								stage.show();    
 								//System.out.println("TOWER SIZE BEFORRE: " + towers.size());				
 								destroyButton.setOnAction(new EventHandler<ActionEvent>() {
-							   		public void handle(ActionEvent e) {   
-										int [] towerCoords = {(int)invisibleLabel.getLayoutX(),(int)invisibleLabel.getLayoutY()};
+									public void handle(ActionEvent e) {
+										int[] towerCoords = { (int) invisibleLabel.getLayoutX(),
+												(int) invisibleLabel.getLayoutY() };
 										int towerIndex = getTowerIndex(towerCoords);
-										int []gridCoord = getTowerCoords(towerCoords);
+										int[] gridCoord = getTowerCoords(towerCoords);
 
 										grids[gridCoord[0]][gridCoord[1]].setGraphic(null);
-										//grids[gridCoord[0]][gridCoord[1]].setText("wassup");
+										// grids[gridCoord[0]][gridCoord[1]].setText("wassup");
 										towers.remove(towerIndex);
-										//System.out.println(towers.size());
+										// System.out.println(towers.size());
 										destroyButton.setDisable(true);
-										upgradeButton.setDisable(true);         	
-							   		}
+										upgradeButton.setDisable(true);
+									}
 								});
 								upgradeButton.setOnAction(new EventHandler<ActionEvent>() {
 							   		public void handle(ActionEvent e) {
@@ -1087,8 +1154,8 @@ public class MyController {
 										//System.out.println("Clicked2:" + clicked);
 								   	}
 								});
-							}				
-						} 
+							}
+						}
 					});
 				}
 			} // inner for-loop

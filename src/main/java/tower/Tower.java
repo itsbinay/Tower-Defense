@@ -52,6 +52,7 @@ public abstract class Tower {
 		this.cooldownTimer=1;
 		this.maxcdTimer=cdTimer;
 		this.upgradeCost=UpgradeCost;
+		this.towerType = towerType;
 	}
 	
 	public int getUpgradeCost() {

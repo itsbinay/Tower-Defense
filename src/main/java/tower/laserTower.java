@@ -40,7 +40,7 @@ public class laserTower extends Tower {
 		return hp;
 	}
 	public String getTowerType() {
-		return "laserTower";
+		return towerType;
 	}
 	public int getRangeIncrement() {
 		return rangeIncrement;

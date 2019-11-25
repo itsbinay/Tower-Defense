@@ -24,7 +24,9 @@ public class Catapult extends Tower {
 		if(!canUpgrade)return;
 		
 		this.setRange(this.getRange()+rangeIncrement);
-		this.setMaxCDTimer(this.getMaxCDTimer()-1);
+		if(this.getMaxCDTimer()>1){
+			this.setMaxCDTimer(this.getMaxCDTimer()-1);
+		}
 	}
 	/**
 	 * Returns the minimum range of the catapult
@@ -64,9 +66,9 @@ public class Catapult extends Tower {
 		return hp;
 	}
 	public String getTowerType() {
-		return "catapult";
+		return towerType;
 	}
-	public int getRangeIncrement() {
-		return rangeIncrement;
-	}
+//	public int getRangeIncrement() {
+//		return rangeIncrement;
+//	}
 }

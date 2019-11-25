@@ -1,5 +1,7 @@
 package monster;
 
+
+
 /**
  * This is an abstract class model for all types of monsters.
  * 
@@ -10,7 +12,7 @@ package monster;
 public class Monster {
 
 	public enum MonsterState {
-		FROZEN, TARGETED
+		FROZEN, TARGETED, UNTOUCHED, DAMAGED,
 	}
 
 	private int movementSpeed;
@@ -19,6 +21,10 @@ public class Monster {
 	private String img;
 	private int deathResource;
 	private int[] coord = { 0, 0 };
+	private int[] nextCoord = {0,0};
+
+
+	private MonsterState curState= MonsterState.UNTOUCHED;
 
 	private String monsterTypeStr;
 	/**
@@ -41,6 +47,15 @@ public class Monster {
 		this.monsterTypeStr=monsterType;
 	}
 
+	public void updateNextCoord(int[] newcoord){
+		this.nextCoord[0] = newcoord[0];
+		this.nextCoord[1] = newcoord[1];
+	}
+
+	public int [] getNextCoord(){
+		int [] newCoord = {this.nextCoord[1]*40,this.nextCoord[0]*40};
+		return newCoord;
+	}
 	public String getMonsterType(){
 		return this.monsterTypeStr;
 	}
@@ -48,7 +63,13 @@ public class Monster {
 	public int getResourceEarned() {
 		return this.deathResource;
 	}
-
+	public MonsterState getMonsterState() {
+		return curState;
+	}
+	public void setMonsterState(MonsterState newState) {
+		this.curState=newState;
+	}
+	
 	/**
 	 * @return returns the movement speed of the monster.
 	 */
@@ -153,9 +174,9 @@ public class Monster {
 		if (this.frozen == 0) {
 
 			if (this.img == "fox.png") {
-				if (this.movementSpeed != 1)
+				if (this.movementSpeed != 2)
 
-					this.movementSpeed = 1;
+					this.movementSpeed = 2;
 
 			}
 

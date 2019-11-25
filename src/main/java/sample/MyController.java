@@ -198,7 +198,7 @@ public class MyController {
 	}
 
 	public void monsterGenerate() {
-	
+
 		int result = r.nextInt(high - low + 1) + low + 1;
 
 		switch (result) {
@@ -220,14 +220,12 @@ public class MyController {
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-		
+
 		if (x + 1 > 11) {
 			System.out.println("Game over");
 			perFrame = 100;
 			return;
 		}
-		
-		
 
 		if (spaceLeft < 1) {
 			int[] newCoord = { y, x };
@@ -236,8 +234,8 @@ public class MyController {
 			Image monsterImage = new Image(imageName, 30.0, 30.0, true, true);
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
+			System.out.println("y is : " + y + "x is : " + x);
 			grids[y][x].setGraphic(monsterImageView);
-		
 
 			return;
 		}
@@ -527,12 +525,11 @@ public class MyController {
 	}
 
 	private void MonsterFSM() {
-	
+
 		numOfFrames++;
 
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
-			
 
 			collisionX.remove(i);
 			collisionY.remove(i);
@@ -557,8 +554,8 @@ public class MyController {
 
 			prevHp.set(i, monsterList.get(i).getHp());
 
-			 if (monsterList.get(i).getFrozen() > 0)
-			 monsterList.get(i).reduceSpeed();
+			if (monsterList.get(i).getFrozen() > 0)
+				monsterList.get(i).reduceSpeed();
 
 			if (monsterList.get(i).getImg() == "penguin.png") {
 
@@ -583,16 +580,28 @@ public class MyController {
 			boolean right = false;
 
 			int movementSpeed = monsterList.get(i).getMovementSpeed();
-			
 
 			int x = monsterList.get(i).getX();
 			int y = monsterList.get(i).getY();
 
-			grids[y][x].setGraphic(null);
+			int monsterInSame = 0;
+			for (int j = 0; j < monsterList.size(); j++) {
 
-			grids[y][x].setGraphic(null);
+				int allX = monsterList.get(j).getX();
+				int allY = monsterList.get(j).getY();
 
+				if (x == allX && y == allY) {
+					monsterInSame++;
+					
+				}
+
+			}
 			
+			if (monsterInSame==1) 
+				
+				grids[y][x].setGraphic(null);
+			
+		
 
 			if (x % 4 == 0)
 				down = true;
@@ -613,10 +622,8 @@ public class MyController {
 					Move(2, x, y, movementSpeed + speedIncrease, i);
 			}
 
-			 if (monsterList.get(i).getFrozen() == 0)
-			 monsterList.get(i).unFreeze();
-
-			
+			if (monsterList.get(i).getFrozen() == 0)
+				monsterList.get(i).unFreeze();
 
 		}
 
@@ -625,7 +632,7 @@ public class MyController {
 			monsterGenerate();
 
 			if (numOfFrames > 30) {
-				
+
 				int currHp = monsterList.get(monsterList.size() - 1).getHp();
 				int newHp = currHp + bonusHp;
 
@@ -642,7 +649,7 @@ public class MyController {
 			ImageView monsterImageView = new ImageView();
 			monsterImageView.setImage(monsterImage);
 			grids[0][0].setGraphic(monsterImageView);
-		
+
 		}
 
 		nextFrameCounter++;
@@ -655,7 +662,7 @@ public class MyController {
 				ImageView collisionImageView = new ImageView();
 				collisionImageView.setImage(collisionImage);
 				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setGraphic(collisionImageView);
-	
+
 				collisionX.add(monsterList.get(i).getX());
 				collisionY.add(monsterList.get(i).getY());
 				System.out.println("Getting resources:" + monsterList.get(i).getResourceEarned());
@@ -674,7 +681,6 @@ public class MyController {
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionY.get(i)][collisionX.get(i)].setGraphic(null);
-	
 
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
@@ -784,7 +790,6 @@ public class MyController {
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 
-							
 							target.setTooltip(null);
 							String hpInfo = "";
 
@@ -816,7 +821,6 @@ public class MyController {
 									MonsterInfo.setText(hpInfo);
 
 									target.setTooltip(MonsterInfo);
-									
 
 								}
 

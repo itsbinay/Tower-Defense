@@ -911,13 +911,6 @@ public class MyController {
 									// Circle, Arc or Rectangle
 									
 									switch (target.getId()) {
-										case "basicTower": {
-											int radius = towers.get(getTowerIndex(coord)).getRange();
-											int length = radius * 2 + GRID_HEIGHT;
-											rangeCircle = new Rectangle(target.getLayoutX(), target.getLayoutY() - radius,GRID_WIDTH, length);
-											break;
-
-										}
 										case "catapult": {	
 											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
 											Circle ringCircle = new Circle(towers.get(getTowerIndex(coord)).getMinRange());
@@ -929,7 +922,8 @@ public class MyController {
 											rangeCircle = rangeCircle.subtract(rangeCircle, ringCircle);
 											break;
 										}	
-										case "laserTower": 
+										case "laserTower":
+										case "basicTower": 
 										case "iceTower":{
 											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
 											rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);

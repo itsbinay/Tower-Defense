@@ -298,8 +298,10 @@ public class MyController {
 	 */
 	boolean withinAOErange(int[] coord1, int[] coord2) {
 		double shortestDistance = (Math.pow((coord1[0] - coord2[0]), 2) + Math.pow(coord1[1] - coord2[1], 2));
-		if (shortestDistance <= (25 * 25))
+		if (shortestDistance <= (25 * 25)){
+			System.out.println("Monster in Catapult AOE range");
 			return true; // Within the 25px radius
+		}
 		return false;
 	}
 
@@ -307,17 +309,19 @@ public class MyController {
 		if (catapultTarget.size() == 0)
 			return;
 		for (int i = 0; i < catapultTarget.size(); i++) {
-			List<Monster> targetNearby = new ArrayList<>();
+			List<Integer> targetNearby = new ArrayList<Integer>();
 			for (int j = 0; j < monsterList.size(); j++) {
 				if (withinAOErange(catapultTarget.get(i).getCoord(), monsterList.get(j).getCoord())) {// If within the
 																										// AOE range
-					targetNearby.add(monsterList.get(j));
+					targetNearby.add(j);
 				}
 			}
 			if (targetNearby.size() == 0)
 				continue;
 			for (int j = 0; j < targetNearby.size(); j++) {
-				targetNearby.get(j).setHp(targetNearby.get(j).getHp() - catapultAOEDamage);
+				System.out.println("Attacking monster");
+				monsterList.get(targetNearby.get(j)).setHp(monsterList.get(targetNearby.get(j)).getHp() - catapultAOEDamage);
+				//Hp Updated!
 			}
 		}
 	}
@@ -486,7 +490,9 @@ public class MyController {
 					monsterInRange.get(index).getMonsterType()+" @("+monsterInRange.get(index).getCoord()[0]+","+monsterInRange.get(index).getCoord()[1]+
 					")");
 					catapultTarget.add(monsterInRange.get(index));
-					curTower.attack(0);
+					//System.out.println("<Catapult>Old Hp:"+monsterInRange.get(index).getHp());
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+					//System.out.println("<Catapult>New Hp:"+monsterInRange.get(index).getHp());
 					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
 					grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
 				}
@@ -529,7 +535,7 @@ public class MyController {
 			collisionY.remove(i);
 		}
 
-		if (numOfFrames % 10 == 0 && numOfFrames != 0) {
+		if (numOfFrames % 40 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
 		}
@@ -577,6 +583,12 @@ public class MyController {
 			if (x + 1 > 11) {
 				System.out.println("Game over");
 				perFrame = 100;
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Game Over");
+				alert.setHeaderText(null);
+				String message = "You have survived for " + numOfFrames + " seconds!";
+				alert.setContentText(message);
+				alert.show();
 				return;
 			}
 
@@ -645,7 +657,7 @@ public class MyController {
 				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setText("");
 				collisionX.add(monsterList.get(i).getX());
 				collisionY.add(monsterList.get(i).getY());
-				System.out.println("Getting resources:" + monsterList.get(i).getResourceEarned());
+				//System.out.println("Getting resources:" + monsterList.get(i).getResourceEarned());
 				resourcesAmount += monsterList.get(i).getResourceEarned(); // Resources Gained
 				monsterList.remove(i);
 			}
@@ -872,7 +884,6 @@ public class MyController {
 					target.setOnDragOver(new EventHandler<DragEvent>() {
 						public void handle(DragEvent event) {
 							if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-								// System.out.println("onDragOver");
 							}
 							event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
 							event.consume();
@@ -882,7 +893,6 @@ public class MyController {
 					target.setOnDragEntered(new EventHandler<DragEvent>() {
 						public void handle(DragEvent event) {
 							if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-								//System.out.println("onDragEntered");
 							}
 							target.setStyle("-fx-border-color: red;");
 							event.consume();
@@ -890,7 +900,6 @@ public class MyController {
 					});
 					/* mouse moved away, remove the graphical cues */
 					target.setOnDragExited((event) -> {
-						//System.out.println("Exit");
 						target.setStyle("-fx-border-color: black;");
 						event.consume();
 					});

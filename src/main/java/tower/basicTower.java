@@ -75,7 +75,7 @@ public class basicTower extends Tower {
 			hp-=this.getPower();
 			this.setCooldown(this.initialCDTimer);
 			this.setTowerState(TowerState.ATTACK);
-			System.out.println("basicTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
+			//System.out.println("basicTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
 			return hp;
 		}
 		return hp;

@@ -245,7 +245,7 @@ public class MyController {
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
 		
-		if (x + 1 > 11) {
+		if (x + 1 >= 11 && y == 0) {
 			gameOver = true;
 			System.out.println("Game over");
 			perFrame = 100;
@@ -648,7 +648,6 @@ public class MyController {
 				down = false;
 			if(x+1 == 11 && y ==0) {
 				gameOver = true;
-				System.out.print("ENTERS HERE");
 				return;
 			}
 			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {

@@ -91,6 +91,12 @@ public class Monster {
 		return coordinate;
 	}
 
+	public int getNextX(){
+		return this.nextCoord[1];
+	}
+	public int getNextY(){
+		return this.nextCoord[0];
+	}
 	/**
 	 * @return returns the x-coordinate of the monster.
 	 */

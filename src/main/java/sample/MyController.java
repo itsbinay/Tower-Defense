@@ -228,18 +228,27 @@ public class MyController {
 		System.out.println("Monster being generated");
 		int result = r.nextInt(high - low + 1) + low + 1;
 
+		int nextCoord[] ={0,0};
 		switch (result) {
 		case 1:
 			monsterList.add(new Fox(startCoord, 100, 2, 0));
+			nextCoord[0]=speedIncrease+2;
+			monsterList.get(monsterList.size()-1).updateNextCoord(nextCoord);
 			break;
 		case 2:
 			monsterList.add(new Unicorn(startCoord, 150, 1, 0));
+			nextCoord[0]=1+speedIncrease;
+			monsterList.get(monsterList.size()-1).updateNextCoord(nextCoord);
 			break;
 		case 3:
 			monsterList.add(new Penguin(startCoord, 100, 1, 0));
+			nextCoord[0]=1+speedIncrease;
+			monsterList.get(monsterList.size()-1).updateNextCoord(nextCoord);
 			break;
 		default:
 			monsterList.add(new Fox(startCoord, 100, 2, 0));
+			nextCoord[0]=speedIncrease+2;
+			monsterList.get(monsterList.size()-1).updateNextCoord(nextCoord);
 		}
 
 		prevHp.add(monsterList.get(monsterList.size() - 1).getHp());
@@ -260,35 +269,34 @@ public class MyController {
 			return newCoord;
 		}
 		switch (op) {
-		case 0: {
-			if (y == MAX_V_NUM_GRID - 1) {
-				return getNextMove(1, x, y, spaceLeft, monsterCount);
-			} else {
-				return getNextMove(0, x, y + 1, spaceLeft - 1, monsterCount);
-			}
-		}
-		case 1: {
-			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
+			case 0: {
 				if (y == MAX_V_NUM_GRID - 1) {
-					return getNextMove(2, x, y, spaceLeft, monsterCount);
-				} else if (y == 0 && x != 0) {
-					return getNextMove(0, x, y, spaceLeft, monsterCount);
+					return getNextMove(1, x, y, spaceLeft, monsterCount);
+				} else {
+					return getNextMove(0, x, y + 1, spaceLeft - 1, monsterCount);
 				}
-			} else {
-				return getNextMove(1, x + 1, y, spaceLeft - 1, monsterCount);
 			}
-		}
-		case 2: {
-			if (y == 0) {
-				return getNextMove(1, x, y, spaceLeft, monsterCount);
-			} else {
-				return getNextMove(2, x, y - 1, spaceLeft - 1, monsterCount);
+			case 1: {
+				if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
+					if (y == MAX_V_NUM_GRID - 1) {
+						return getNextMove(2, x, y, spaceLeft, monsterCount);
+					} else if (y == 0 && x != 0) {
+						return getNextMove(0, x, y, spaceLeft, monsterCount);
+					}
+				} else {
+					return getNextMove(1, x + 1, y, spaceLeft - 1, monsterCount);
+				}
 			}
+			case 2: {
+				if (y == 0) {
+					return getNextMove(1, x, y, spaceLeft, monsterCount);
+				} else {
+					return getNextMove(2, x, y - 1, spaceLeft - 1, monsterCount);
+				}
+			}
+			default:return bs;
 		}
-		default:
-			break;
-		}
-		return bs;
+		
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
@@ -600,6 +608,7 @@ public class MyController {
 					System.out.println(curTower.getTowerType()+" @("+curTower.getCoord()[0]+","+curTower.getCoord()[1]+") -> "+
 					monsterInRange.get(index).getMonsterType()+" @("+monsterInRange.get(index).getCoord()[0]+","+monsterInRange.get(index).getCoord()[1]+
 					")");
+
 					laserTarget = monsterInRange.get(index);
 					amountResources -= curTower.getAttackCost();
 					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));	//this called to reset the cooldown
@@ -627,12 +636,14 @@ public class MyController {
 
 		numOfFrames++;
 
+		/*
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
 
 			collisionX.remove(i);
 			collisionY.remove(i);
 		}
+		*/
 
 		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
 			speedIncrease++;
@@ -751,13 +762,20 @@ public class MyController {
 					right = true;
 				}
 			}
-			if (right)
+			if (right){
 				monsterList.get(i).updateNextCoord(getNextMove(1,x,y,movementSpeed+speedIncrease,i));
-			else {
-				if (down)
+				int[] nextpos = getNextMove(1,x,y,movementSpeed+speedIncrease,i);
+				System.out.println("Next Pos:"+nextpos[0]+","+nextpos[1]);
+			}else {
+				if (down){
 					monsterList.get(i).updateNextCoord(getNextMove(0,x,y,movementSpeed+speedIncrease,i));
-				else
+					int[] nextpos = getNextMove(0,x,y,movementSpeed+speedIncrease,i);
+					System.out.println("Next Pos:"+nextpos[0]+","+nextpos[1]);
+				}else{
 					monsterList.get(i).updateNextCoord(getNextMove(2,x,y,movementSpeed+speedIncrease,i));
+					int[] nextpos = getNextMove(2,x,y,movementSpeed+speedIncrease,i);
+					System.out.println("Next Pos:"+nextpos[0]+","+nextpos[1]);
+				}
 			}
 
 
@@ -799,10 +817,10 @@ public class MyController {
 				Image collisionImage = new Image("collision.png", 30.0, 30.0, true, true);
 				ImageView collisionImageView = new ImageView();
 				collisionImageView.setImage(collisionImage);
-				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setGraphic(collisionImageView);
-	
-				collisionX.add(monsterList.get(i).getX());
-				collisionY.add(monsterList.get(i).getY());
+				grids[monsterList.get(i).getNextY()][monsterList.get(i).getNextX()].setGraphic(collisionImageView);
+				grids[monsterList.get(i).getY()][monsterList.get(i).getX()].setGraphic(null);
+				collisionX.add(monsterList.get(i).getNextX());
+				collisionY.add(monsterList.get(i).getNextY());
 
 				System.out.println("Getting resources:"+monsterList.get(i).getResourceEarned());
 				amountResources+=monsterList.get(i).getResourceEarned();	//Resources Gained
@@ -821,8 +839,7 @@ public class MyController {
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionY.get(i)][collisionX.get(i)].setGraphic(null);
-	
-
+			System.out.println("Removing Collision: "+i);
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			collisionX.remove(i);
@@ -880,8 +897,8 @@ public class MyController {
 		listLastGeneratedMonster(); //
 		
 		TowerAttackMonster(); // In charge of telling the Tower to Attack the Monster
-		MonsterFSM();
 		clearDeadMonster(); // Sets the dead monster as Collision Image
+		MonsterFSM();
 		updateResourceText(); // Update the text after earning some cash from the dead monster
 		System.out.println("resources amount:" + amountResources);
 	}

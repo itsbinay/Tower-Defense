@@ -24,7 +24,9 @@ public class Catapult extends Tower {
 		if(!canUpgrade)return;
 		
 		this.setRange(this.getRange()+rangeIncrement);
-		this.setMaxCDTimer(this.getMaxCDTimer()-1);
+		if(this.getMaxCDTimer()>1){
+			this.setMaxCDTimer(this.getMaxCDTimer()-1);
+		}
 	}
 	/**
 	 * Returns the minimum range of the catapult
@@ -58,7 +60,7 @@ public class Catapult extends Tower {
 			hp-=this.getPower();
 			this.setCooldown(this.initialCDTimer);
 			this.setTowerState(TowerState.ATTACK);
-			System.out.println("Catapult("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
+			//System.out.println("Catapult("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
 			return hp;
 		}
 		return hp;

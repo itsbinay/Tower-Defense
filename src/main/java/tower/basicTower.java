@@ -51,11 +51,6 @@ public class basicTower extends Tower {
 
 
 	@Override
-	public boolean isInRange(int [] coord) {
-		if(this.getCoord()[0]==coord[0] && Math.abs(this.getCoord()[1]-coord[1])<this.getRange())return true;
-		return false;
-	}
-	@Override
 	/**
 	 * If the canUpgrade argument is evaluates to be true, the power and the range
 	 * of the basicTower will be incremented.
@@ -87,5 +82,12 @@ public class basicTower extends Tower {
 	}
 	public String getTowerType() {
 		return towerType;
+	}
+	@Override
+	public void updateTowerState() {
+		if(this.getTowerState()==TowerState.ATTACK) {	//If you have attacked recently
+			this.setTowerState(TowerState.READY);
+		}
+		return;
 	}
 }

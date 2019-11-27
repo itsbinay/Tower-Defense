@@ -21,6 +21,8 @@ public class Monster {
 	private String img;
 	private int deathResource;
 	private int[] coord = { 0, 0 };
+
+
 	private MonsterState curState= MonsterState.UNTOUCHED;
 
 	private String monsterTypeStr;
@@ -43,6 +45,9 @@ public class Monster {
 		this.deathResource = resourceEarn;
 		this.monsterTypeStr=monsterType;
 	}
+
+
+
 
 	public String getMonsterType(){
 		return this.monsterTypeStr;

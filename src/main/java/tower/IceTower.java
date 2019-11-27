@@ -43,12 +43,10 @@ public class IceTower extends Tower {
 			hp-=this.getPower();
 			this.setCooldown(this.initialCDTimer);
 			this.setTowerState(TowerState.ATTACK);
-			System.out.println("IceTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
+			//System.out.println("IceTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
 			return hp;
 		}
 		return hp;
 	}
-	public String getTowerType() {
-		return "iceTower";
-    }
+
 }

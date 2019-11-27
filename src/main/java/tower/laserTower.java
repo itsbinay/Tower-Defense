@@ -34,14 +34,12 @@ public class laserTower extends Tower {
 			hp-=this.getPower();
 			this.setCooldown(this.initialCDTimer);
 			this.setTowerState(TowerState.ATTACK);
-			System.out.println("laserTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
+			//System.out.println("laserTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
 			return hp;
 		}
 		return hp;
 	}
-	public String getTowerType() {
-		return towerType;
-	}
+
 	public int getRangeIncrement() {
 		return rangeIncrement;
 	}

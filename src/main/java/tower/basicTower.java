@@ -80,7 +80,12 @@ public class basicTower extends Tower {
 		}
 		return hp;
 	}
-	public String getTowerType() {
-		return towerType;
+
+	@Override
+	public void updateTowerState() {
+		if(this.getTowerState()==TowerState.ATTACK) {	//If you have attacked recently
+			this.setTowerState(TowerState.READY);
+		}
+		return;
 	}
 }

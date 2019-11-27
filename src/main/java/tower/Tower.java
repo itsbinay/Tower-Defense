@@ -151,8 +151,8 @@ public abstract class Tower {
         int [] towerCoord = this.getCoord();
         
         double distance = Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2);
-        System.out.println("Distance:"+distance+" Range:"+this.getRange());
-        return (distance<Math.pow(this.getRange(),2))?true:false;
+        //System.out.println("Distance:"+distance+" Range:"+this.getRange());
+        return (distance<=Math.pow(this.getRange(),2))?true:false;
     }
 	public String getStateStr() {
 		switch(this.curState) {

@@ -82,16 +82,26 @@ public class MyController {
     private static final int laserCost = 180;
     private static final int iceCost = 90;
     
-    int amountResources = 200;
+    public static int amountResources = 200; 
 	private static final int laserHurt = 20;
+	
 	
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
     private List<Tower> towers = new ArrayList<>();
     private int x = -1, y = 0; // where is my monster
-     
+    
     private Label invisibleLabel = new Label();
     private boolean circleShown = false;
-    //List<Label> invisibleLabel = new ArrayList<>();
+    
+    // needed for ui unit testing:
+    public static boolean redCircle = false; 
+    public static boolean upgradeClicked = false;
+    public static boolean destroyClicked = false;
+    public static List<Tower> towersUT = new ArrayList<>();
+    public static void setResourcesForTesting() {
+    	amountResources = 1000;
+    }
+    
     private boolean clicked = false;
     private int numClicks = 0;
     private boolean upgraded = false;
@@ -122,6 +132,7 @@ public class MyController {
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
 	private static int perFrame = 3;
+	
     /**
      * Returns the index of the tower in the towers list, given the coordinate
      * if tower doesn't exist 0 is returned 
@@ -931,6 +942,7 @@ public class MyController {
 	}
 
 	private void initEachInvisibleLabel() {
+		invisibleLabel.setId("inviLabel");
 		invisibleLabel.setMinWidth(GRID_WIDTH);
 		invisibleLabel.setMaxWidth(GRID_WIDTH);
 		invisibleLabel.setMinHeight(GRID_HEIGHT);
@@ -1099,7 +1111,7 @@ public class MyController {
 								alert.setHeaderText("Cannot place tower here");
 								alert.show();
 							}
-
+							towersUT.addAll(towers);
 							updateResourceText();
 							event.setDropCompleted(true);
 
@@ -1178,6 +1190,7 @@ public class MyController {
 									invisibleLabel.setLayoutX(target.getLayoutX());
 									paneArena.getChildren().add(invisibleLabel);
 									circleShown = true;
+									redCircle = true;
 									// Pop-up info
 
 									String towername = Helper.space(target.getId());
@@ -1206,6 +1219,7 @@ public class MyController {
 							paneArena.getChildren().remove(rangeCircle);
 							paneArena.getChildren().remove(invisibleLabel);
 							circleShown = false;
+							redCircle = false;
 							// System.out.println("Invisible label exit called");
 						}
 					});
@@ -1217,8 +1231,11 @@ public class MyController {
 								//System.out.println("Clicked1:" + clicked);
 								ToolBar toolbar = new ToolBar();
 								Button destroyButton = new Button("Destroy Tower");
+								
 								Button upgradeButton = new Button("Upgrade Tower");
+								
 								toolbar.getItems().addAll(destroyButton, upgradeButton);
+								
 								VBox vbox = new VBox(toolbar);
 								Scene scene = new Scene(vbox);
 								Stage stage = new Stage();
@@ -1227,6 +1244,7 @@ public class MyController {
 								//System.out.println("TOWER SIZE BEFORRE: " + towers.size());				
 								destroyButton.setOnAction(new EventHandler<ActionEvent>() {
 									public void handle(ActionEvent e) {
+										destroyClicked = true;
 										int[] towerCoords = { (int) invisibleLabel.getLayoutX(),
 												(int) invisibleLabel.getLayoutY() };
 										int towerIndex = getTowerIndex(towerCoords);
@@ -1242,6 +1260,7 @@ public class MyController {
 								});
 								upgradeButton.setOnAction(new EventHandler<ActionEvent>() {
 							   		public void handle(ActionEvent e) {
+							   			upgradeClicked = true;
 								   		int[] towerCoords = {(int) invisibleLabel.getLayoutX(), (int) invisibleLabel.getLayoutY()};
 								   		//System.out.println("xUpgrade: " + towerCoords[0]);
 								   		//System.out.println("yUpgrade: " + towerCoords[1]);
@@ -1268,6 +1287,8 @@ public class MyController {
 								});
 								stage.setOnHidden(new EventHandler<WindowEvent>() {
 									public void handle(WindowEvent a) {
+										upgradeClicked = false;
+										destroyClicked = false;
 										clicked = false;
 										numClicks = 0;
 										//System.out.println("Clicked2:" + clicked);

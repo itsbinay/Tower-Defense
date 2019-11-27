@@ -53,6 +53,15 @@ public class Helper {
 		}
 		return null;
 	}
+	
+	public static int getTowerIndex(int[] coord, List<Tower> towers) {
+        for (int i = 0; i < towers.size(); i++) {
+            if (towers.get(i).getCoord()[0] == coord[0] && towers.get(i).getCoord()[1] == coord[1])
+                return i;
+        }
+        return 0;
+    }
+	
 	public static String space(String name) {			
 		if(!name.equals("catapult")) {
 			String k;

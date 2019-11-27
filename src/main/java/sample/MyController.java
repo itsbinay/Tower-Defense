@@ -472,6 +472,7 @@ public class MyController {
 		System.out.println("Drew a line " + laserLines.size());
 	}
 
+
 	void attackAllMonsterNearLine() {
 		int count = 0;
 		for (int i = 0; i < laserLines.size(); i++) {
@@ -586,8 +587,8 @@ public class MyController {
 
 		
 		for (int i = 0; i < collisionX.size(); i++) {
-			grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
-
+			//grids[collisionX.get(i)][collisionX.get(i)].setGraphic(null);
+			System.out.println("Entered in MonsterFSM, collision Clear");
 			collisionX.remove(i);
 			collisionY.remove(i);
 		}

@@ -125,7 +125,7 @@ public abstract class Tower {
 	 * @return the coordinate of the tower
 	 */
 	public int [] getCoord(){
-		return coord;
+		return this.coord;
 	}
 	/**
 	 * Sets the power variable of the base class according to the given parameter "power".

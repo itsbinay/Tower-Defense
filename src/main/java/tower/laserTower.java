@@ -2,7 +2,7 @@ package tower;
 
 public class laserTower extends Tower {
 	private static final int upgradeCost = 120;
-	private static final int powerIncrement = 120;
+	private static final int powerIncrement = 30;
 	private static final int rangeIncrement = 50;
 
 	private static final int attackCost = 20;

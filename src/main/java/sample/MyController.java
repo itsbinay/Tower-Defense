@@ -220,8 +220,10 @@ public class MyController {
 	}
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-
+		System.out.println("hey1 " + x  + "yo"+ y);
 		if (x + 1 > 11) {
+			System.out.println("hey " + x  + "yo"+ y);
+			grids[y][x].setGraphic(null);
 			System.out.println("Game over");
 			perFrame = 100;
 			return;

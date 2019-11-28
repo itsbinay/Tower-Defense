@@ -52,6 +52,7 @@ public abstract class Tower {
 		this.cooldownTimer=1;
 		this.maxcdTimer=cdTimer;
 		this.upgradeCost=UpgradeCost;
+		this.towerType = towerType;
 	}
 	
 	public int getUpgradeCost() {
@@ -68,7 +69,7 @@ public abstract class Tower {
 	public void updateTowerState() {
 		if(this.curState==TowerState.ATTACK) {	//If you have attacked recently
 			this.curState=TowerState.COOLDOWN;
-			this.cooldownTimer=this.maxcdTimer-1;
+			this.cooldownTimer=this.maxcdTimer;
 			return;
 		}
 		this.cooldownTimer--;
@@ -150,15 +151,15 @@ public abstract class Tower {
         int [] towerCoord = this.getCoord();
         
         double distance = Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2);
-        System.out.println("Distance:"+distance+" Range:"+this.getRange());
+        //System.out.println("Distance:"+distance+" Range:"+this.getRange());
         return (distance<Math.pow(this.getRange(),2))?true:false;
     }
 	public String getStateStr() {
 		switch(this.curState) {
-	case READY: return "Ready";
-	case COOLDOWN:return "Cooldown";
-	case ATTACK:return "Attack";
-	default: return "Cant find state";
+			case READY: return "Ready";
+			case COOLDOWN:return "Cooldown";
+			case ATTACK:return "Attack";
+			default: return "Cant find state";
 		}
 	}
 	/**

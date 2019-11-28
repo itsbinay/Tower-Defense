@@ -21,8 +21,12 @@ public class Monster {
 	private String img;
 	private int deathResource;
 	private int[] coord = { 0, 0 };
+	private int[] nextCoord = {0,0};
+
+
 	private MonsterState curState= MonsterState.UNTOUCHED;
 
+	private String monsterTypeStr;
 	/**
 	 * @param coord         The x and y coordinates for each monster object.
 	 * @param hp            The health points that each monster obtains when
@@ -33,13 +37,27 @@ public class Monster {
 	 *                      frozen or not.
 	 */
 
-	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn) {
+	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn,String monsterType) {
 		this.movementSpeed = movementSpeed;
 		this.hp = hp;
 		this.frozen = frozen;
 		this.coord = coord;
 		this.img = img;
 		this.deathResource = resourceEarn;
+		this.monsterTypeStr=monsterType;
+	}
+
+	public void updateNextCoord(int[] newcoord){
+		this.nextCoord[0] = newcoord[0];
+		this.nextCoord[1] = newcoord[1];
+	}
+
+	public int [] getNextCoord(){
+		int [] newCoord = {this.nextCoord[1]*40,this.nextCoord[0]*40};
+		return newCoord;
+	}
+	public String getMonsterType(){
+		return this.monsterTypeStr;
 	}
 
 	public int getResourceEarned() {
@@ -73,6 +91,12 @@ public class Monster {
 		return coordinate;
 	}
 
+	public int getNextX(){
+		return this.nextCoord[1];
+	}
+	public int getNextY(){
+		return this.nextCoord[0];
+	}
 	/**
 	 * @return returns the x-coordinate of the monster.
 	 */

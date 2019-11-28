@@ -1,3 +1,4 @@
+
 package test;
 
 import static org.junit.Assert.*;
@@ -350,3 +351,4 @@ public class UITest extends ApplicationTest {
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 }
+

@@ -12,6 +12,7 @@ public class Fox extends Monster{
 	private int movementSpeed = 2;
 	private static String img = "fox.png";
 	private static final int resourceEarn = 50;
+
 	/**
 	 * @param coord The x and y coordinates for each monster object.
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
@@ -19,6 +20,7 @@ public class Fox extends Monster{
 	 * @param hp the current health point of the monster. 
 	 *  
 	 */
+
 	
 	public Fox(int [] coord,int hp, int movementSpeed, int frozen)  {
 		super(coord,hp, movementSpeed,img, frozen,resourceEarn,"Fox");

@@ -13,6 +13,7 @@ public class Unicorn extends Monster{
 	private static String img = "unicorn.png";
 	private static final int resourceEarn = 50;
 	
+
 	/**
 	 * @param coord The x and y coordinates for each monster object.
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
@@ -20,7 +21,7 @@ public class Unicorn extends Monster{
 	 * @param hp the current health point of the monster. 
 	 *  
 	 */
-	
+
 	public Unicorn(int [] coord,int hp, int movementSpeed, int frozen) {
 		super(coord,hp, movementSpeed,img, frozen,resourceEarn,"Unicorn");
 		

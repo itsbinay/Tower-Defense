@@ -26,6 +26,9 @@ public class Monster {
 	private MonsterState curState= MonsterState.UNTOUCHED;
 
 	private String monsterTypeStr;
+
+	
+
 	/**
 	 * @param coord         The x and y coordinates for each monster object.
 	 * @param hp            The health points that each monster obtains when
@@ -38,6 +41,7 @@ public class Monster {
 	 * @param monsterTypeStr The type of monster (fox, unicorn and penguin).
 	 * @param img 			The name of the .png file of the specific monster type.
 	 */
+
 
 	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn,String monsterType) {
 		this.movementSpeed = movementSpeed;

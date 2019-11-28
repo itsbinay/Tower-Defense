@@ -43,7 +43,7 @@ import sample.Helper;
 import tower.*;
 
 public class MyController {
-
+	
 	@FXML
 	private Button buttonNextFrame;
 
@@ -79,41 +79,73 @@ public class MyController {
 	private static final int MAX_V_NUM_GRID = 12;
 	private static final int catapultCost = 80;
 	private static final int catapultAOEDamage = 30;
-	private static final int basicCost = 60;
-	private static final int laserCost = 180;
-	private static final int iceCost = 90;
 
-	public static int amountResources = 200;
+    private static final int basicCost = 60;
+    private static final int laserCost = 180;
+    private static final int iceCost = 90;
+    
+    /**
+     * displays the amount of resources left for the player
+     */
+    public static int amountResources = 200;
 	private static final int laserHurt = 5;
+	
+	
+    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
+    private List<Tower> towers = new ArrayList<>();
+   
+    
+    private Label invisibleLabel = new Label();
+    /**
+     * indicates whether the shading representing the tower range is shown
+     */
+    public static boolean circleShown = false;
+    
+    // needed for ui unit testing:
+    /**
+     * indicates whether the upgrade button has been clicked (needed for unit testing)
+     */
+    public static boolean upgradeClicked = false;
+    /**
+     * indicates whether the destroy button has been clicked (needed for unit testing)
+     */
+    public static boolean destroyClicked = false;
+    /**
+     * a list of all towers built on the map (needed for unit testing)
+     */
+    public static List<Tower> towersUT = new ArrayList<>();
+    /**
+     * indicates whether a tower is built over another tower on a particular grid on the map (needed for unit testing)
+     */
+    public static boolean doubleBuilt = false;
+    /**
+     * indicates whether there are enough resources to upgrade a tower
+     */
+    public static boolean notEnoughToUpgrade = false;
+    
+    /**
+     * a function that resets the amountResources to its original value (needed for unit testing)
+     */
+    public static void resetResourcesForTesting() {
+    	amountResources = 200;
+    }
+    /**
+     * a function that sets the amountResources to 1000(needed for unit testing)
+     */
+    public static void setResourcesForTesting() {
+    	amountResources = 2000;
+    }
+    
+    private boolean clicked = false;
+    private int numClicks = 0;
+    private boolean upgraded = false;
 
-	private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
-	private List<Tower> towers = new ArrayList<>();
-
-	private Label invisibleLabel = new Label();
-	public static boolean circleShown = false;
-
-	// needed for ui unit testing:
-
-	public static boolean upgradeClicked = false;
-	public static boolean destroyClicked = false;
-	public static List<Tower> towersUT = new ArrayList<>();
-	public static boolean doubleBuilt = false;
-	public static boolean notEnoughToUpgrade = false;
-
-	public static void resetResourcesForTesting() {
-		amountResources = 200;
-	}
-
-	public static void setResourcesForTesting() {
-		amountResources = 2000;
-	}
-
-	private boolean clicked = false;
-	private int numClicks = 0;
-	private boolean upgraded = false;
 	private Shape rangeCircle = new Circle();
 
 	private List<Monster> monsterList = new ArrayList<>();
+	/**
+	 * a list of all monsters spawned on the map (needed for unit testing) 
+	 */
 	public static List<Monster> testMonsterList = new ArrayList<>();
 	private List<Integer> prevHp = new ArrayList<Integer>();
 
@@ -140,103 +172,114 @@ public class MyController {
 	private static int perFrame = 3;
 
 	/**
-	 * Returns the index of the tower in the towers list, given the coordinate if
-	 * tower doesn't exist 0 is returned
-	 * 
-	 * @param coord The Coordinate of the label
-	 * @return the index of where the Tower is
+	 * Default Constructor for MyController class
 	 */
-	private int getTowerIndex(int[] coord) {
-		for (int i = 0; i < towers.size(); i++) {
-			if (towers.get(i).getCoord()[0] == coord[0] && towers.get(i).getCoord()[1] == coord[1])
-				return i;
-		}
-		return 0;
+	public MyController() {
+		
 	}
+    /**
+     * Returns the index of the tower in the towers list, given the coordinate
+     * if tower doesn't exist 0 is returned 
+     * 
+     * @param coord The Coordinate of the label
+     * @return	the index of where the Tower is
+     */
+    private int getTowerIndex(int[] coord) {
+        for (int i = 0; i < towers.size(); i++) {
+            if (towers.get(i).getCoord()[0] == coord[0] && towers.get(i).getCoord()[1] == coord[1])
+                return i;
+        }
+        return 0;
+    }
 
+    /**
+     * A dummy function to show how button click works
+     */
+    @FXML
+    private void play() {
+        System.out.println("Play button clicked");
+        Label newLabel = new Label();
+        newLabel.setLayoutX(GRID_WIDTH / 4);
+        newLabel.setLayoutY(GRID_WIDTH / 4);
+        newLabel.setMinWidth(GRID_WIDTH / 2);
+        newLabel.setMaxWidth(GRID_WIDTH / 2);
+        newLabel.setMinHeight(GRID_WIDTH / 2);
+        newLabel.setMaxHeight(GRID_WIDTH / 2);
+        newLabel.setStyle("-fx-border-color: black;");
+        newLabel.setText("|-|");
+        newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+        paneArena.getChildren().addAll(newLabel);
+    }
+
+    /**
+     * A function that creates the Arena and sets up the spawn and endzone images
+     */
+    @FXML
+    public void createArena() {
+    	Tooltip basicInfo = new Tooltip();
+    	Tooltip iceInfo = new Tooltip();
+    	Tooltip catapultInfo = new Tooltip();
+    	Tooltip laserInfo = new Tooltip();
+    	
+    	basicInfo.setText(Helper.labelProcessing(labelBasicTower.getId()) + "\n" + "Cost: " + Integer.toString(basicCost));
+    	iceInfo.setText(Helper.labelProcessing(labelIceTower.getId()) + "\n" + "Cost: " + Integer.toString(iceCost));
+    	catapultInfo.setText(Helper.labelProcessing(labelCatapult.getId()) + "\n" + "Cost: " + Integer.toString(catapultCost));
+    	laserInfo.setText(Helper.labelProcessing(labelLaserTower.getId()) + "\n" + "Cost: " + Integer.toString(laserCost));
+    	
+    	labelBasicTower.setTooltip(basicInfo);
+    	labelIceTower.setTooltip(iceInfo);
+    	labelCatapult.setTooltip(catapultInfo);
+    	labelLaserTower.setTooltip(laserInfo);
+        if (grids[0][0] != null)
+            return; // created already
+        for (int i = 0; i < MAX_V_NUM_GRID; i++) {
+            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+                Label newLabel = new Label();
+                if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+                    newLabel.setBackground(
+                            new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+                else {
+                    newLabel.setBackground(
+                            new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+                    newLabel.setId("green");
+                }
+                newLabel.setLayoutX(j * GRID_WIDTH);
+                newLabel.setLayoutY(i * GRID_HEIGHT);
+                newLabel.setMinWidth(GRID_WIDTH);
+                newLabel.setMaxWidth(GRID_WIDTH);
+                newLabel.setMinHeight(GRID_HEIGHT);
+                newLabel.setMaxHeight(GRID_HEIGHT);
+                newLabel.setStyle("-fx-border-color: black;");                                                
+                grids[i][j] = newLabel;
+                paneArena.getChildren().addAll(newLabel); 
+            }
+        }
+        Image spawnImage = new Image("spawn.png", 38.0, 48.0, true,true);
+        BackgroundImage backgroundImage = new BackgroundImage(spawnImage, BackgroundRepeat.NO_REPEAT,  
+                BackgroundRepeat.NO_REPEAT,  
+                BackgroundPosition.DEFAULT,  
+                   BackgroundSize.DEFAULT);
+        Background background = new Background(backgroundImage);
+        grids[0][0].setBackground(background);
+        
+        
+        Image endImage = new Image("endzone.png", 38.0, 48.0, true,true);
+        BackgroundImage backgroundImage2 = new BackgroundImage(endImage, BackgroundRepeat.NO_REPEAT,  
+                BackgroundRepeat.NO_REPEAT,  
+                BackgroundPosition.DEFAULT,  
+                   BackgroundSize.DEFAULT);
+        Background background2 = new Background(backgroundImage2);
+        grids[0][11].setBackground(background2);
+        endZone = grids[0][11].getBackground().toString();
+        
+        
+        gameEvents();
+        
+	}
 	/**
-	 * A dummy function to show how button click works
+	 * A helper function that updates the label money to indicate the amount of resources left for the player
 	 */
-	@FXML
-	private void play() {
-		System.out.println("Play button clicked");
-		Label newLabel = new Label();
-		newLabel.setLayoutX(GRID_WIDTH / 4);
-		newLabel.setLayoutY(GRID_WIDTH / 4);
-		newLabel.setMinWidth(GRID_WIDTH / 2);
-		newLabel.setMaxWidth(GRID_WIDTH / 2);
-		newLabel.setMinHeight(GRID_WIDTH / 2);
-		newLabel.setMaxHeight(GRID_WIDTH / 2);
-		newLabel.setStyle("-fx-border-color: black;");
-		newLabel.setText("|-|");
-		newLabel.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-		paneArena.getChildren().addAll(newLabel);
-	}
-
-	/**
-	 * A function that create the Arena
-	 */
-	@FXML
-	public void createArena() {
-		Tooltip basicInfo = new Tooltip();
-		Tooltip iceInfo = new Tooltip();
-		Tooltip catapultInfo = new Tooltip();
-		Tooltip laserInfo = new Tooltip();
-
-		basicInfo.setText(
-				Helper.labelProcessing(labelBasicTower.getId()) + "\n" + "Cost: " + Integer.toString(basicCost));
-		iceInfo.setText(Helper.labelProcessing(labelIceTower.getId()) + "\n" + "Cost: " + Integer.toString(iceCost));
-		catapultInfo.setText(
-				Helper.labelProcessing(labelCatapult.getId()) + "\n" + "Cost: " + Integer.toString(catapultCost));
-		laserInfo.setText(
-				Helper.labelProcessing(labelLaserTower.getId()) + "\n" + "Cost: " + Integer.toString(laserCost));
-
-		labelBasicTower.setTooltip(basicInfo);
-		labelIceTower.setTooltip(iceInfo);
-		labelCatapult.setTooltip(catapultInfo);
-		labelLaserTower.setTooltip(laserInfo);
-		if (grids[0][0] != null)
-			return; // created already
-		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
-			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
-				Label newLabel = new Label();
-				if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
-					newLabel.setBackground(
-							new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-				else {
-					newLabel.setBackground(
-							new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-					newLabel.setId("green");
-				}
-				newLabel.setLayoutX(j * GRID_WIDTH);
-				newLabel.setLayoutY(i * GRID_HEIGHT);
-				newLabel.setMinWidth(GRID_WIDTH);
-				newLabel.setMaxWidth(GRID_WIDTH);
-				newLabel.setMinHeight(GRID_HEIGHT);
-				newLabel.setMaxHeight(GRID_HEIGHT);
-				newLabel.setStyle("-fx-border-color: black;");
-				grids[i][j] = newLabel;
-				paneArena.getChildren().addAll(newLabel);
-			}
-		}
-		Image spawnImage = new Image("spawn.png", 38.0, 48.0, true, true);
-		BackgroundImage backgroundImage = new BackgroundImage(spawnImage, BackgroundRepeat.NO_REPEAT,
-				BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-		Background background = new Background(backgroundImage);
-		grids[0][0].setBackground(background);
-
-		Image endImage = new Image("endzone.png", 38.0, 48.0, true, true);
-		BackgroundImage backgroundImage2 = new BackgroundImage(endImage, BackgroundRepeat.NO_REPEAT,
-				BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-		Background background2 = new Background(backgroundImage2);
-		grids[0][11].setBackground(background2);
-		endZone = grids[0][11].getBackground().toString();
-
-		gameEvents();
-
-	}
-
-	private void updateResourceText() {
+    private void updateResourceText() {
 		money.setText("Money Left: " + Integer.toString(amountResources));
 	}
 
@@ -330,10 +373,12 @@ public class MyController {
 			break;
 		}
 	}
+
 	
 	/**
-	 * prints out the information of the monster when it is generated
+	 * A function that prints out <monsterType>:<hp> every monster a monster is generated at spawn point
 	 */
+
 
 	void listLastGeneratedMonster() {
 		if (monsterList.size() == 0)
@@ -399,6 +444,7 @@ public class MyController {
 			}
 		}
 	}
+
 
 	private enum Laserdir {
 		LEFT, STRAIGHT, RIGHT
@@ -801,6 +847,11 @@ public class MyController {
 			collisionY.remove(i);
 		}
 	}
+	
+	/**
+	 * A function that resets the grid colors after every time a "Next Frame" button is clicked
+	 * It also resets the Spawn and Endzone images so it shows up every "Next Frame" click
+	 */
 
 	void resetAllMonsterGridColors() {
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -859,6 +910,12 @@ public class MyController {
 		// System.out.println("resources amount:" + amountResources);
 	}
 
+	/**
+	 * A function that returns an int array representing the values of the grid index 2D array 
+	 * @param coord of the tower in terms of pixels
+	 * @return the index of the grid 2D array, i.e. the i,j in grid[i][j] representing the (green and white) labels on the map
+	 */
+
 	public int[] getTowerCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++)
@@ -876,7 +933,10 @@ public class MyController {
 		return returnCoords;
 
 	}
-
+	
+	/**
+	 * A function that initializes the "invisible" label properties, which is put on top of the shaded area representing the tower's range 
+	 */
 	private void initEachInvisibleLabel() {
 		invisibleLabel.setId("inviLabel");
 		invisibleLabel.setMinWidth(GRID_WIDTH);
@@ -904,6 +964,10 @@ public class MyController {
 
 	}
 
+	/**
+	 * A function that creates a alert pop up box indicating to the player that he/she does not have enough resources to build the tower chosen
+	 * @param tower represents the type of tower (Basic, Ice, Laser, Catapult)
+	 */
 	void inadequateBuildError(String tower) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
@@ -913,7 +977,7 @@ public class MyController {
 	}
 
 	/**
-	 * A function that allows dragging of Towers
+	 * A function that combines all the JavaFX Event Handlers for Arena
 	 * 
 	 */
 	private void gameEvents() {
@@ -925,7 +989,7 @@ public class MyController {
 					Tooltip MonsterInfo = new Tooltip();
 
 					Label target = grids[i][j];
-
+					
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 

@@ -13,7 +13,6 @@ public class Fox extends Monster{
 	private static String img = "fox.png";
 	private static final int resourceEarn = 50;
 	/**
-	 * 
 	 * @param coord The x and y coordinates for each monster object.
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
 	 */

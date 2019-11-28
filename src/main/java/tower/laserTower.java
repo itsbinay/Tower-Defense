@@ -23,7 +23,7 @@ public class laserTower extends Tower {
 		if(!canUpgrade)return;
 		
 		this.setPower(this.getPower()+powerIncrement);
-		this.setRange(this.getPower()+rangeIncrement);
+		this.setRange(this.getRange()+rangeIncrement);
 	}
 	@Override
 	public int getAttackCost() {

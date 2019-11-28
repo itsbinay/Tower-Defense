@@ -1,26 +1,4 @@
-<<<<<<< HEAD
-//package TowerTest;
-//
-//import static org.junit.Assert.*;
-//import org.testfx.framework.junit.ApplicationTest;
-//import org.junit.Test;
-//import sample.MyController;
-//import javafx.scene.Parent;
-//import javafx.scene.Scene;
-//import javafx.scene.control.Label;
-//import javafx.scene.layout.AnchorPane;
-//import javafx.stage.Stage;
-//import javafx.fxml.FXMLLoader;
-//
-//public class TowerGamePlayTest extends ApplicationTest{
-//
-//	@Test
-//	public void test() {
-//		fail("Not yet implemented");
-//	}
-//
-//}
-=======
+
 package TowerTest;
 
 import static org.junit.Assert.*;
@@ -259,4 +237,4 @@ public class TowerGamePlayTest extends ApplicationTest{
 	
 	
 }
->>>>>>> 4c359d0eb9b47bf0aaebe5ef64626d132d17fbfa
+

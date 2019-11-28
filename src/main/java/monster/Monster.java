@@ -34,6 +34,9 @@ public class Monster {
 	 *                      can move.
 	 * @param frozen        The status of monster that illustrates if a monster is
 	 *                      frozen or not.
+	 * @param deathResource	The amount of resource given when the monster is killed.
+	 * @param monsterTypeStr The type of monster (fox, unicorn and penguin).
+	 * @param img 			The name of the .png file of the specific monster type.
 	 */
 
 	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn,String monsterType) {
@@ -48,17 +51,31 @@ public class Monster {
 
 
 
-
+/**
+ * @return returns the type of monster (fox,penguin and Unicorn).
+ */
 	public String getMonsterType(){
 		return this.monsterTypeStr;
 	}
 
+	/**
+	 * @return returns the resource gained from the monster dying.
+	 */
 	public int getResourceEarned() {
 		return this.deathResource;
 	}
+	/**
+	 * @return returns the current state of the monster.
+	 */
 	public MonsterState getMonsterState() {
 		return curState;
 	}
+	
+	/**
+	 * 
+	 * @param newState the new state of the monster.
+	 */
+	
 	public void setMonsterState(MonsterState newState) {
 		this.curState=newState;
 	}
@@ -71,6 +88,9 @@ public class Monster {
 		return this.movementSpeed;
 	}
 
+	/**
+	 * @return returns the name of .png file of the specific monster.
+	 */
 	public String getImg() {
 		return this.img;
 	}
@@ -91,6 +111,10 @@ public class Monster {
 		return this.coord[0];
 	}
 
+	
+	/**
+	 * increase the current hp by 10.
+	 */
 	public void regenerate() {
 
 		this.hp += 10;
@@ -119,6 +143,11 @@ public class Monster {
 		return this.hp;
 	}
 
+	/**
+	 * 
+	 * @param hp the new hp of the monster.
+	 */
+	
 	public void setHp(int hp) {
 		this.hp = hp;
 	}
@@ -131,7 +160,10 @@ public class Monster {
 	public int getFrozen() {
 		return this.frozen;
 	}
-
+/**
+ * 
+ * @param a the integer to represent if the monster  is frozen  or not. 
+ */
 	public void setFrozen(int a) {
 		this.frozen = a;
 	}
@@ -161,6 +193,10 @@ public class Monster {
 
 		}
 	}
+	
+	/**
+	 * returns the normal movement speed of the monster after being frozen.
+	 */
 
 	public void unFreeze() {
 

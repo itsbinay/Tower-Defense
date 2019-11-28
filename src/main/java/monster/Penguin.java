@@ -16,15 +16,17 @@ public class Penguin extends Monster{
 	/**
 	 * @param coord The x and y coordinates for each monster object.
 	 * @param frozen The status of monster that illustrates if a monster is frozen or not.
+	 * @param movementSpeed the number of grids the monster can move each turn.
+	 * @param hp the current health point of the monster. 
+	 *  
 	 */
+	
 	public Penguin(int [] coord,int hp, int movementSpeed, int frozen)  {
 		super(coord,hp, movementSpeed, img, frozen,resourceEarn,"Penguin");
-		// TODO Auto-generated constructor stub
+		
 	}
 
-	/**
-	 *  increases the health points of this monster(penguin) by 5 if its health points is below 100.
-	 */
+
 
 
 	

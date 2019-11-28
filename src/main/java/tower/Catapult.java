@@ -46,7 +46,7 @@ public class Catapult extends Tower {
 
         double distance = Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2);
 		//System.out.println("Distance:"+distance+" Range:"+this.getRange());
-		if(distance<maxRange && distance>minRange)return true;
+		if(distance<=maxRange && distance>=minRange)return true;
         return false;
 	}
 	/**
@@ -65,9 +65,7 @@ public class Catapult extends Tower {
 		}
 		return hp;
 	}
-	public String getTowerType() {
-		return towerType;
-	}
+
 //	public int getRangeIncrement() {
 //		return rangeIncrement;
 //	}

@@ -48,7 +48,5 @@ public class IceTower extends Tower {
 		}
 		return hp;
 	}
-	public String getTowerType() {
-		return "iceTower";
-    }
+
 }

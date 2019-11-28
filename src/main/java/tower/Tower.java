@@ -125,7 +125,7 @@ public abstract class Tower {
 	 * @return the coordinate of the tower
 	 */
 	public int [] getCoord(){
-		return coord;
+		return this.coord;
 	}
 	/**
 	 * Sets the power variable of the base class according to the given parameter "power".
@@ -152,7 +152,7 @@ public abstract class Tower {
         
         double distance = Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2);
         //System.out.println("Distance:"+distance+" Range:"+this.getRange());
-        return (distance<Math.pow(this.getRange(),2))?true:false;
+        return (distance<=Math.pow(this.getRange(),2))?true:false;
     }
 	public String getStateStr() {
 		switch(this.curState) {

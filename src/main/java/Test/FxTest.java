@@ -6,7 +6,7 @@
 //* You might want to uncomment the following code to learn testFX. Sorry, no tutorial session on this.
 //* 
 //*/
-package Test;
+//package Test;
 //
 //import org.junit.Assert;
 //import org.junit.Test;

@@ -161,7 +161,7 @@ public class UITest extends ApplicationTest {
 		}
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		moveTo(drop);
-		assertTrue(MyController.redCircle);		
+		assertTrue(MyController.circleShown);		
 		clickOn(drop);
 		clickOn(600,300);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);
@@ -180,7 +180,7 @@ public class UITest extends ApplicationTest {
 		}
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		moveTo(drop);
-		assertTrue(MyController.redCircle);	
+		assertTrue(MyController.circleShown);	
 		clickOn(drop);
 		clickOn(600,300);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);	
@@ -199,7 +199,7 @@ public class UITest extends ApplicationTest {
 		}
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		moveTo(drop);
-		assertTrue(MyController.redCircle);	
+		assertTrue(MyController.circleShown);	
 		clickOn(drop);
 		clickOn(600,300);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);	
@@ -218,7 +218,7 @@ public class UITest extends ApplicationTest {
 		}
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		moveTo(drop);
-		assertTrue(MyController.redCircle);	
+		assertTrue(MyController.circleShown);	
 		clickOn(drop);
 		clickOn(600,300);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);	
@@ -301,5 +301,4 @@ public class UITest extends ApplicationTest {
 		clickOn(600,300);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(index);
 	}
-	
 }

@@ -18,7 +18,7 @@ public class Unicorn extends Monster{
 	 */
 	public Unicorn(int [] coord,int hp, int movementSpeed, int frozen) {
 		super(coord,hp, movementSpeed,img, frozen,resourceEarn,"Unicorn");
-		// TODO Auto-generated constructor stub
+		
 	}
 
 

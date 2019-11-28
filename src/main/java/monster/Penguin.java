@@ -19,7 +19,7 @@ public class Penguin extends Monster{
 	 */
 	public Penguin(int [] coord,int hp, int movementSpeed, int frozen)  {
 		super(coord,hp, movementSpeed, img, frozen,resourceEarn,"Penguin");
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**

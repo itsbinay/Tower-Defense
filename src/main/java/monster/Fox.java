@@ -19,7 +19,7 @@ public class Fox extends Monster{
 	 */
 	public Fox(int [] coord,int hp, int movementSpeed, int frozen)  {
 		super(coord,hp, movementSpeed,img, frozen,resourceEarn,"Fox");
-		// TODO Auto-generated constructor stub
+		
 	}
 
 

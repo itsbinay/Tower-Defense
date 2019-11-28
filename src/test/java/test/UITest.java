@@ -84,7 +84,7 @@ public class UITest extends ApplicationTest {
 		clickOn(drop);
 		clickOn(600,300);
 		assertTrue(MyController.destroyClicked);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class UITest extends ApplicationTest {
 		clickOn(drop);
 		clickOn(600,300);
 		assertTrue(MyController.destroyClicked);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 	
 	@Test
@@ -124,7 +124,7 @@ public class UITest extends ApplicationTest {
 		clickOn(drop);
 		clickOn(600,300);
 		assertTrue(MyController.destroyClicked);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 	
 	@Test
@@ -144,7 +144,7 @@ public class UITest extends ApplicationTest {
 		clickOn(drop);
 		clickOn(600,300);
 		assertTrue(MyController.destroyClicked);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class UITest extends ApplicationTest {
 		assertTrue(MyController.circleShown);		
 		clickOn(drop);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}	
 	@Test
 	public void testRangeCircleIce() {
@@ -183,7 +183,7 @@ public class UITest extends ApplicationTest {
 		assertTrue(MyController.circleShown);	
 		clickOn(drop);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);	
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();	
 	}	
 	@Test
 	public void testRangeCircleLaser() {
@@ -202,7 +202,7 @@ public class UITest extends ApplicationTest {
 		assertTrue(MyController.circleShown);	
 		clickOn(drop);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);	
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();	
 	}	
 	@Test
 	public void testRangeCircleCatapult() {
@@ -221,7 +221,7 @@ public class UITest extends ApplicationTest {
 		assertTrue(MyController.circleShown);	
 		clickOn(drop);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(0);	
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();	
 	}
 	
 	@Test
@@ -247,7 +247,7 @@ public class UITest extends ApplicationTest {
 		assertEquals(MyController.towersUT.get(index).getRange(), 75);
 		assertTrue(MyController.upgradeClicked);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(index);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 	
 	
@@ -274,9 +274,8 @@ public class UITest extends ApplicationTest {
 		assertEquals(MyController.towersUT.get(index).getRange(), 110);
 		assertTrue(MyController.upgradeClicked);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(index);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
-	
 	@Test
 	public void testUpgradeCatapult() {
 		Label b = (Label)s.lookup("#labelCatapult");
@@ -299,6 +298,55 @@ public class UITest extends ApplicationTest {
 		assertEquals(MyController.towersUT.get(index).getRange(), 160);
 		assertTrue(MyController.upgradeClicked);
 		clickOn(600,300);
-		if(!MyController.towersUT.isEmpty()) MyController.towersUT.remove(index);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+	}
+	
+	@Test
+	public void testBuildingTowerTwiceOnSameGrid() {
+		MyController.resetResourcesForTesting();
+		Label b = (Label)s.lookup("#labelCatapult");
+		Label drop = null;
+		
+		AnchorPane a = (AnchorPane)s.lookup("#paneArena");
+		for (javafx.scene.Node i : a.getChildren()) {
+			if(i.getClass().getName().equals("javafx.scene.control.Label")) {
+				Label h = (Label)i;
+				if(h.getId()=="green") {
+					drop = h;
+					break;
+				}
+			}
+		}
+		drag(b,MouseButton.PRIMARY).dropTo(drop);
+		moveTo(drop);
+		drag(b,MouseButton.PRIMARY).dropTo(drop);
+		assertTrue(MyController.doubleBuilt);
+		int[] coord = { (int) drop.getLayoutX(), (int) drop.getLayoutY() };
+		int index = Helper.getTowerIndex(coord, MyController.towersUT);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+	}
+
+	@Test
+	public void upgradeNotEnoughResources() {
+		MyController.resetResourcesForTesting();
+		Label b = (Label)s.lookup("#labelLaserTower");
+		Label drop = null;
+		AnchorPane a = (AnchorPane)s.lookup("#paneArena");
+		for (javafx.scene.Node i : a.getChildren()) {
+			if(i.getClass().getName().equals("javafx.scene.control.Label")) {
+				Label h = (Label)i;
+				if(h.getId()=="green" && h.getLayoutX() == 40 && h.getLayoutY() == 40) {
+					drop = h;
+				}
+				
+			}
+		}		
+		drag(b,MouseButton.PRIMARY).dropTo(drop);
+		clickOn(drop);
+		clickOn(700,300);
+		assertTrue(MyController.notEnoughToUpgrade);
+		int[] coord = { (int) drop.getLayoutX(), (int) drop.getLayoutY() };
+		int index = Helper.getTowerIndex(coord, MyController.towersUT);
+		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
 	}
 }

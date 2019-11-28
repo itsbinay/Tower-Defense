@@ -82,8 +82,8 @@ public class MyController {
     private static final int laserCost = 180;
     private static final int iceCost = 90;
     
-    public static int amountResources = 200; 
-	private static final int laserHurt = 20;
+    public static int amountResources = 200;
+	private static final int laserHurt = 5;
 	
 	
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; // the grids on arena
@@ -113,6 +113,7 @@ public class MyController {
 	private Shape rangeCircle = new Circle();
 	
 	private List<Monster> monsterList = new ArrayList<>();
+	public static List<Monster> testMonsterList = new ArrayList<>();
 	private List<Integer> prevHp = new ArrayList<Integer>();
 
 	private List<Integer> collisionX = new ArrayList<Integer>();
@@ -247,25 +248,27 @@ public class MyController {
 
 	
 	public void monsterGenerate() {
-		System.out.println("Monster being generated");
+		//System.out.println("Monster being generated");
 		int result = r.nextInt(high - low + 1) + low + 1;
 
-		int nextCoord[] ={0,0};
+		int nextCoord[] ={0,0};	
+		//wait why????
 		switch (result) {
 		case 1:
-			monsterList.add(new Fox(startCoord, 100, 2, 0));
+			monsterList.add(new Fox(nextCoord, 100, 2, 0));
 			break;
 		case 2:
-			monsterList.add(new Unicorn(startCoord, 150, 1, 0));
+			monsterList.add(new Unicorn(nextCoord, 150, 1, 0));
 			break;
 		case 3:
-			monsterList.add(new Penguin(startCoord, 100, 1, 0));
+			monsterList.add(new Penguin(nextCoord, 100, 1, 0));
 			break;
 		default:
-			monsterList.add(new Fox(startCoord, 100, 2, 0));
+			monsterList.add(new Fox(nextCoord, 100, 2, 0));
 		}
 
 		prevHp.add(monsterList.get(monsterList.size() - 1).getHp());
+		
 
 	}
 
@@ -369,7 +372,7 @@ public class MyController {
 	boolean withinAOErange(int[] coord1, int[] coord2) {
 		double shortestDistance = (Math.pow((coord1[0] - coord2[0]), 2) + Math.pow(coord1[1] - coord2[1], 2));
 		if (shortestDistance <= (25 * 25)){
-			System.out.println("Monster in Catapult AOE range");
+			//System.out.println("Monster in Catapult AOE range");
 			return true; // Within the 25px radius
 		}
 		return false;
@@ -389,7 +392,7 @@ public class MyController {
 			if (targetNearby.size() == 0)
 				continue;
 			for (int j = 0; j < targetNearby.size(); j++) {
-				System.out.println("Attacking monster");
+				//System.out.println("Attacking monster");
 				monsterList.get(targetNearby.get(j)).setHp(monsterList.get(targetNearby.get(j)).getHp() - catapultAOEDamage);
 				//Hp Updated!
 			}
@@ -406,9 +409,15 @@ public class MyController {
 	boolean checkWithinLaserBeam(Line curLine, Monster monster) {
 		double[] lineStart = { curLine.getStartX(), curLine.getStartY() };
 		double[] lineEnd = { curLine.getEndX(), curLine.getEndY() };
-		int[] monsterCoord = monster.getCoord();
+		int[] monsCoord = monster.getCoord();
+		int[] monsterCoord = {monsCoord[0]+GRID_WIDTH/2,monsCoord[1]+GRID_HEIGHT/2};
 		boolean infSlope = false, zeroSlope = false;
 
+		if(lineEnd[0]<lineStart[0]){	//Monsters on leftside of the start (i.e. Tower) only
+			if(monsterCoord[0]>lineStart[0])return false;
+		}else if(lineEnd[0]>lineStart[0]){//Monsters on rightside of the start (i.e. Tower) only
+			if(monsterCoord[0]<lineStart[0])return false;
+		}
 		if (lineStart[0] - lineEnd[0] == 0)
 			infSlope = true; // Same X then infinity slope
 		if (lineStart[1] - lineEnd[1] == 0)
@@ -425,9 +434,7 @@ public class MyController {
 		} else {
 			double a = -(lineStart[1] - lineEnd[1]) / (lineStart[0] - lineEnd[0]); // -m
 			double b = 1.0;
-			double c = (-a * monsterCoord[0] - monsterCoord[1]);
-
-			// Distance between point and line Formula = Abs(Ax+By+C)/sqrt(A^2 + B^2);
+			double c = (-a * lineStart[0] - lineStart[1]);
 			double distance = Math.abs(a * monsterCoord[0] + b * monsterCoord[1] + c) / Math.sqrt(a * a + b * b);
 			if (distance < 3)
 				return true;
@@ -439,6 +446,8 @@ public class MyController {
 		Laserdir curDir;
 		boolean up = false;
 		int[] tarCoord = laserTarget.getCoord();
+		tarCoord[0] += GRID_WIDTH/2;
+		tarCoord[1] += GRID_HEIGHT/2;
 
 		double slope = 0;
 		if (start[0] - tarCoord[0] != 0) {
@@ -458,7 +467,7 @@ public class MyController {
 
 		switch (curDir) { // Adds the line
 			case LEFT: {
-				Line line1 = new Line((double) start[0] + GRID_WIDTH / 2, (double) start[1] + GRID_HEIGHT / 2, 0.0,
+				Line line1 = new Line((double) start[0] , (double) start[1], 0.0,
 						y_intercept_left);
 				line1.setStroke(Color.RED);
 				laserLines.add(line1);
@@ -466,7 +475,7 @@ public class MyController {
 				break;
 			}
 			case RIGHT: {
-				Line line1 = new Line((double) start[0] + GRID_WIDTH / 2, (double) start[1] + GRID_HEIGHT / 2, ARENA_WIDTH,
+				Line line1 = new Line((double) start[0] , (double) start[1] , ARENA_WIDTH,
 						y_intercept_right);
 				line1.setStroke(Color.RED);
 				laserLines.add(line1);
@@ -475,14 +484,14 @@ public class MyController {
 			}
 			case STRAIGHT: {
 				if (up) {
-					Line line1 = new Line((double) start[0] + GRID_WIDTH / 2, (double) start[1] + GRID_HEIGHT / 2,
-							(double) tarCoord[0] + GRID_WIDTH / 2, 0.0);
+					Line line1 = new Line((double) start[0] , (double) start[1] ,
+							(double) tarCoord[0] , 0.0);
 					line1.setStroke(Color.RED);
 					laserLines.add(line1);
 					paneArena.getChildren().add(line1);
 				} else {
-					Line line1 = new Line((double) start[0] + GRID_WIDTH / 2, (double) start[1] + GRID_HEIGHT / 2,
-							(double) tarCoord[0] + GRID_WIDTH / 2, (double) ARENA_HEIGHT);
+					Line line1 = new Line((double) start[0], (double) start[1],
+							(double) tarCoord[0] , (double) ARENA_HEIGHT);
 					line1.setStroke(Color.RED);
 					laserLines.add(line1);
 					paneArena.getChildren().add(line1);
@@ -490,8 +499,8 @@ public class MyController {
 				break;
 			}
 		}
-		System.out.println("Start:" + start[0] + "," + start[1] + "  End:" + tarCoord[0] + "," + tarCoord[1]);
-		System.out.println("Drew a line " + laserLines.size());
+		//System.out.println("Start:" + start[0] + "," + start[1] + "  End:" + tarCoord[0] + "," + tarCoord[1]);
+		//System.out.println("Drew a line " + laserLines.size());
 	}
 
 
@@ -583,7 +592,9 @@ public class MyController {
 					laserTarget = monsterInRange.get(index);
 					amountResources -= curTower.getAttackCost();
 					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));	//this called to reset the cooldown
-					drawLaserLine(curTower.getCoord());
+					int[] towercord = curTower.getCoord();
+					int[] towerCenter = {towercord[0]+GRID_HEIGHT/2,towercord[1]+GRID_WIDTH/2};
+					drawLaserLine(towerCenter);
 				}
 				break;
 			}
@@ -606,8 +617,7 @@ public class MyController {
 	private void MonsterFSM() {
 
 		numOfFrames++;
-
-
+		
 		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
@@ -730,6 +740,7 @@ public class MyController {
 		}
 
 		nextFrameCounter++;
+		testMonsterList = monsterList;
 	}
 	private void clearDeadMonster() {
 		if(gameOver)return;
@@ -742,7 +753,7 @@ public class MyController {
 				collisionX.add(monsterList.get(i).getX());
 				collisionY.add(monsterList.get(i).getY());
 
-				System.out.println("Getting resources:"+monsterList.get(i).getResourceEarned());
+				//System.out.println("Getting resources:"+monsterList.get(i).getResourceEarned());
 				amountResources+=monsterList.get(i).getResourceEarned();	//Resources Gained
 
 				monsterList.remove(i);
@@ -759,7 +770,7 @@ public class MyController {
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionY.get(i)][collisionX.get(i)].setGraphic(null);
-			System.out.println("Removing Collision: "+i);
+			//System.out.println("Removing Collision: "+i);
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			collisionX.remove(i);
@@ -826,7 +837,7 @@ public class MyController {
 		TowerAttackMonster(); // In charge of telling the Tower to Attack the Monster
 		clearDeadMonster(); // Sets the dead monster as Collision Image
 		updateResourceText(); // Update the text after earning some cash from the dead monster
-		System.out.println("resources amount:" + amountResources);
+		//System.out.println("resources amount:" + amountResources);
 	}
 
 

@@ -39,8 +39,8 @@ public class BasicTowerTest {
 		int[] tower1 = {testTower.getPower()+5,testTower.getRange()+5};
 		int[] tower2 = {((IceTower)testTower2).getFreezeTimer()+1,testTower2.getRange()+10};
 		int[] tower3 = {testTower3.getMaxCDTimer()-1,testTower3.getRange()+10};
-		int[] tower4 = {testTower4.getPower()+30,testTower4.getRange()+50};
-		
+		int[] tower4 = {testTower4.getPower()+30,(testTower4.getRange()+50)};
+
 		testTower.upgradeTower(true);
 		testTower2.upgradeTower(true);
 		testTower3.upgradeTower(true);

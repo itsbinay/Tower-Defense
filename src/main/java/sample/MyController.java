@@ -183,9 +183,11 @@ public class MyController {
                 if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
                     newLabel.setBackground(
                             new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-                else
+                else{
                     newLabel.setBackground(
-                            new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+							new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+					newLabel.setId("green");
+				}
                 newLabel.setLayoutX(j * GRID_WIDTH);
                 newLabel.setLayoutY(i * GRID_HEIGHT);
                 newLabel.setMinWidth(GRID_WIDTH);
@@ -593,14 +595,7 @@ public class MyController {
 	private void MonsterFSM() {
 
 		numOfFrames++;
-
 		
-		for (int i = 0; i < collisionX.size(); i++) {
-			collisionX.remove(i);
-			collisionY.remove(i);
-		}
-		
-
 		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);

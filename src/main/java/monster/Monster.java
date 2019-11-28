@@ -26,15 +26,7 @@ public class Monster {
 	private MonsterState curState= MonsterState.UNTOUCHED;
 
 	private String monsterTypeStr;
-	/**
-	 * @param coord         The x and y coordinates for each monster object.
-	 * @param hp            The health points that each monster obtains when
-	 *                      created.
-	 * @param movementSpeed The maximum number of squares on the grid the monster
-	 *                      can move.
-	 * @param frozen        The status of monster that illustrates if a monster is
-	 *                      frozen or not.
-	 */
+	
 
 	public Monster(int[] coord, int hp, int movementSpeed, String img, int frozen, int resourceEarn,String monsterType) {
 		this.movementSpeed = movementSpeed;

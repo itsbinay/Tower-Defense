@@ -42,7 +42,7 @@ import sample.Helper;
 import tower.*;
 
 public class MyController {
-
+	
 	@FXML
 	private Button buttonNextFrame;
 
@@ -82,6 +82,9 @@ public class MyController {
     private static final int laserCost = 180;
     private static final int iceCost = 90;
     
+    /**
+     * displays the amount of resources left for the player
+     */
     public static int amountResources = 200;
 	private static final int laserHurt = 5;
 	
@@ -91,18 +94,42 @@ public class MyController {
    
     
     private Label invisibleLabel = new Label();
+    /**
+     * indicates whether the shading representing the tower range is shown
+     */
     public static boolean circleShown = false;
     
     // needed for ui unit testing:
-    
+    /**
+     * indicates whether the upgrade button has been clicked (needed for unit testing)
+     */
     public static boolean upgradeClicked = false;
+    /**
+     * indicates whether the destroy button has been clicked (needed for unit testing)
+     */
     public static boolean destroyClicked = false;
+    /**
+     * a list of all towers built on the map (needed for unit testing)
+     */
     public static List<Tower> towersUT = new ArrayList<>();
+    /**
+     * indicates whether a tower is built over another tower on a particular grid on the map (needed for unit testing)
+     */
     public static boolean doubleBuilt = false;
+    /**
+     * indicates whether there are enough resources to upgrade a tower
+     */
     public static boolean notEnoughToUpgrade = false;
+    
+    /**
+     * a function that resets the amountResources to its original value (needed for unit testing)
+     */
     public static void resetResourcesForTesting() {
     	amountResources = 200;
     }
+    /**
+     * a function that sets the amountResources to 1000(needed for unit testing)
+     */
     public static void setResourcesForTesting() {
     	amountResources = 2000;
     }
@@ -113,6 +140,9 @@ public class MyController {
 	private Shape rangeCircle = new Circle();
 	
 	private List<Monster> monsterList = new ArrayList<>();
+	/**
+	 * a list of all monsters spawned on the map (needed for unit testing) 
+	 */
 	public static List<Monster> testMonsterList = new ArrayList<>();
 	private List<Integer> prevHp = new ArrayList<Integer>();
 
@@ -138,7 +168,12 @@ public class MyController {
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
 	private static int perFrame = 3;
-	
+	/**
+	 * Default Constructor for MyController class
+	 */
+	public MyController() {
+		
+	}
     /**
      * Returns the index of the tower in the towers list, given the coordinate
      * if tower doesn't exist 0 is returned 
@@ -174,7 +209,7 @@ public class MyController {
     }
 
     /**
-     * A function that create the Arena
+     * A function that creates the Arena and sets up the spawn and endzone images
      */
     @FXML
     public void createArena() {
@@ -238,7 +273,9 @@ public class MyController {
         gameEvents();
         
 	}
-	
+	/**
+	 * A helper function that updates the label money to indicate the amount of resources left for the player
+	 */
     private void updateResourceText() {
 		money.setText("Money Left: " + Integer.toString(amountResources));
 	}	
@@ -318,7 +355,10 @@ public class MyController {
 			break;
 		}
 	}
-
+	
+	/**
+	 * A function that prints out <monsterType>:<hp> every monster a monster is generated at spawn point
+	 */
 	
 	void listLastGeneratedMonster() {
 		if (monsterList.size() == 0)
@@ -384,9 +424,7 @@ public class MyController {
 		}
 	}
 
-	/*
-	 * Laser Tower Shit
-	 */
+	
 	private enum Laserdir {
 		LEFT, STRAIGHT, RIGHT
 	};
@@ -759,6 +797,11 @@ public class MyController {
 			collisionY.remove(i);
 		}
 	}
+	
+	/**
+	 * A function that resets the grid colors after every time a "Next Frame" button is clicked
+	 * It also resets the Spawn and Endzone images so it shows up every "Next Frame" click
+	 */
 
 	void resetAllMonsterGridColors() {
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -823,6 +866,11 @@ public class MyController {
 	}
 
 
+	/**
+	 * A function that returns an int array representing the values of the grid index 2D array 
+	 * @param coord of the tower in terms of pixels
+	 * @return the index of the grid 2D array, i.e. the i,j in grid[i][j] representing the (green and white) labels on the map
+	 */
 	public int[] getTowerCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++)
@@ -840,7 +888,10 @@ public class MyController {
 		return returnCoords;
 
 	}
-
+	
+	/**
+	 * A function that initializes the "invisible" label properties, which is put on top of the shaded area representing the tower's range 
+	 */
 	private void initEachInvisibleLabel() {
 		invisibleLabel.setId("inviLabel");
 		invisibleLabel.setMinWidth(GRID_WIDTH);
@@ -849,6 +900,7 @@ public class MyController {
 		invisibleLabel.setMinHeight(GRID_HEIGHT);
 		invisibleLabel.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
+	
 	public int[] getMonsterCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -866,6 +918,10 @@ public class MyController {
 
 	}
 
+	/**
+	 * A function that creates a alert pop up box indicating to the player that he/she does not have enough resources to build the tower chosen
+	 * @param tower represents the type of tower (Basic, Ice, Laser, Catapult)
+	 */
 	void inadequateBuildError(String tower) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
@@ -875,7 +931,7 @@ public class MyController {
 	}
 
 	/**
-	 * A function that allows dragging of Towers
+	 * A function that combines all the JavaFX Event Handlers for Arena
 	 * 
 	 */
 	private void gameEvents() {
@@ -887,7 +943,7 @@ public class MyController {
 					Tooltip MonsterInfo = new Tooltip();
 
 					Label target = grids[i][j];
-
+					
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 

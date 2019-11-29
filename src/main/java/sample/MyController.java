@@ -662,8 +662,7 @@ public class MyController {
 				}
 				break;
 			}
-			break;
-		}
+		
 		case "laserTower": {
 			if (curTower.getAttackCost() > amountResources)
 				return;
@@ -687,6 +686,7 @@ public class MyController {
 
 		}
 	}
+
 
 	void TowerAttackMonster() {
 		if (gameOver)

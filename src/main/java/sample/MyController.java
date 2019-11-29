@@ -337,6 +337,12 @@ public class MyController {
 			perFrame = 100;
 			monsterList.remove(monsterCount);
 			System.out.println("Game Over!");
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Game Over!");
+			alert.setHeaderText(null);
+			String message = "You have survived " + numOfFrames + " rounds!";
+			alert.setContentText(message);
+			alert.show();
 			return;
 		}
 		if (spaceLeft < 1) {
@@ -1342,8 +1348,7 @@ public class MyController {
 													// rangeCircle.setRadius(a.getRange());
 												} else if (amountResources < a.getUpgradeCost()) {
 													notEnoughToUpgrade = true;
-													System.out.println(
-															"not enough resources to upgrade " + a.getTowerType());
+													System.out.println("not enough resources to upgrade " + a.getTowerType());
 												}
 											}
 										}

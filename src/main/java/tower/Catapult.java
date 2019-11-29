@@ -66,7 +66,4 @@ public class Catapult extends Tower {
 		return hp;
 	}
 
-//	public int getRangeIncrement() {
-//		return rangeIncrement;
-//	}
 }

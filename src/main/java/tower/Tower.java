@@ -38,9 +38,12 @@ public abstract class Tower {
 	 * The Tower class helps to generalise and group all common attributes among all towers.
 	 * 
 	 * @param Coord	coordinate of basicTower where is created
-	 * @param cost	the cost of building the Tower
+	 * @param cost	the cost of building the tower
 	 * @param power	the initial power of the tower built
 	 * @param range	the initial range of the tower built
+	 * @param towerType the type of the tower in String value
+	 * @param UpgradeCost the cost to upgrade the tower
+	 * @cdTimer the maximum cooldown timer of the tower
 	 */
 	public Tower(int []Coord,int cost,int power, int range, String towerType,int UpgradeCost,int cdTimer) {
 		this.buildingCost = cost;
@@ -55,6 +58,11 @@ public abstract class Tower {
 		this.towerType = towerType;
 	}
 	
+	/**
+	 * Returns the upgrade cost of the tower
+	 * 
+	 * @return the upgrade cost of the Tower
+	 */
 	public int getUpgradeCost() {
 		return this.upgradeCost;
 	}
@@ -78,16 +86,32 @@ public abstract class Tower {
 			this.curState=TowerState.READY;
 		}
 	}
+	/**
+	 * Given a tower, the maximum cooldown timer is the cooldown time it takes after every tower attack
+	 * @return the maximum cooldownTimer
+	 */
 	public int getMaxCDTimer(){
 		return this.maxcdTimer;
 	}
+	/**
+	 * @return 
+	 */
 	public void setMaxCDTimer(int a){
 		if(a<=1)return;
 		this.maxcdTimer=a;
 	}
+	/**
+	 * Updates the cooldown timer value of the tower to "cd" parameter
+	 * 
+	 * @param cd the new cooldown timer value
+	 */
 	public void setCooldown(int cd) {
 		this.cooldownTimer=cd;
 	}
+	/**
+	 * Returns the current cooldown timer of the Tower
+	 * @return the current cooldown timer of the Tower
+	 */
 	public int getCooldown() {
 		return this.cooldownTimer;
 	}
@@ -153,7 +177,12 @@ public abstract class Tower {
         double distance = Math.pow((coord[0]-towerCoord[0]),2)+Math.pow((coord[1]-towerCoord[1]),2);
         //System.out.println("Distance:"+distance+" Range:"+this.getRange());
         return (distance<=Math.pow(this.getRange(),2))?true:false;
-    }
+	}
+	/**
+	 * Given the current state of the tower, return the string value of that state
+	 * 
+	 * @return the string value of the Tower State
+	 */
 	public String getStateStr() {
 		switch(this.curState) {
 			case READY: return "Ready";
@@ -185,12 +214,28 @@ public abstract class Tower {
 	 * @param canUpgrade canUpgrade this parameter indicates whether the basicTower can be upgraded
 	 */
 	public abstract void upgradeTower(boolean canUpgrade);
+	/**
+	 * Given a monster hp, it will return the new HP given the monster has been attacked by the Tower
+	 * 
+	 * @param hp the initial hp of the monster before being attacked
+	 * @return the new hp of the monster after the tower attacks the monster
+	 */
 	public abstract int attack(int hp);
-	//public abstract String getTowerType();
-	//public abstract int getUpgradeCost();
+
+	/**
+	 * If the tower has a cost to attack a monster, it will return the cost of the attack
+	 * 
+	 * @return the attack cost of a tower
+	 */
 	public int getAttackCost() {
 		return 0;
 	}
+	/**
+	 * Each tower has a range of [n,m] where n is less than or equal to 0 and n<m
+	 * This returns the minnimum range of a tower
+	 * 
+	 * @return the minimum range of a tower
+	 */
 	public int getMinRange(){
 		return 0;
 	}

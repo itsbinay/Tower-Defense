@@ -37,7 +37,12 @@ public class IceTower extends Tower {
     public int getFreezeTimer() {
     	return this.FreezeTimer;
     }
-    
+    /**
+	* Gets the hp of the monster, attacks it and then returns the new monster hp
+	* 
+	* @param hp initial hp of the monster before being attacked
+	* @return returns the the new HP of the monster attacked
+	*/
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();

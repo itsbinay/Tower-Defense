@@ -576,7 +576,18 @@ public class MyController {
 					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
 					//System.out.println("<basicTower>New Hp:"+monsterInRange.get(index).getHp());
 					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
-					grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.DARKGRAY,CornerRadii.EMPTY,Insets.EMPTY)));
+					
+					
+					//grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.DARKGRAY,CornerRadii.EMPTY,Insets.EMPTY)));
+					
+					Image arrowImage = new Image("arrow.png", 41.0, 43.0, true,true);
+				    BackgroundImage backgroundImage = new BackgroundImage(arrowImage, BackgroundRepeat.NO_REPEAT,  
+				              BackgroundRepeat.NO_REPEAT,  
+				              BackgroundPosition.CENTER,  
+				                 BackgroundSize.DEFAULT);
+				    Background arrowBackground = new Background(backgroundImage);
+				    grids[gridCoord[0]][gridCoord[1]].setBackground(arrowBackground);
+				    
 				break;
 			}
 			case "iceTower": {
@@ -587,7 +598,20 @@ public class MyController {
 					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
 					monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
 					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
-					grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.DARKBLUE,CornerRadii.EMPTY,Insets.EMPTY)));
+					
+					
+					
+					
+					//grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.DARKBLUE,CornerRadii.EMPTY,Insets.EMPTY)));					
+					
+					Image freezeImage = new Image("freeze.png", 38.0, 43.0, true,true);
+				    BackgroundImage backgroundImage = new BackgroundImage(freezeImage, BackgroundRepeat.NO_REPEAT,  
+				              BackgroundRepeat.NO_REPEAT,  
+				              BackgroundPosition.DEFAULT,  
+				                 BackgroundSize.DEFAULT);
+				    Background freezeBackground = new Background(backgroundImage);
+				    grids[gridCoord[0]][gridCoord[1]].setBackground(freezeBackground);
+				    
 				}
 				break;
 			}
@@ -601,7 +625,18 @@ public class MyController {
 					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
 					//System.out.println("<Catapult>New Hp:"+monsterInRange.get(index).getHp());
 					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
-					grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+					
+					
+					//grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+					
+					Image rockImage = new Image("rock.png", 38.0, 43.0, true,true);
+				    BackgroundImage backgroundImage = new BackgroundImage(rockImage, BackgroundRepeat.NO_REPEAT,  
+				              BackgroundRepeat.NO_REPEAT,  
+				              BackgroundPosition.DEFAULT,  
+				                 BackgroundSize.DEFAULT);
+				    Background rockBackground = new Background(backgroundImage);
+				    grids[gridCoord[0]][gridCoord[1]].setBackground(rockBackground);
+				    
 				}
 				break;
 			}

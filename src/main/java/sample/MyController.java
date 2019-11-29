@@ -135,6 +135,10 @@ public class MyController {
     public static void setResourcesForTesting() {
     	amountResources = 2000;
     }
+    /**
+     * variable containing the destroy and upgrade buttons(needed for unit testing)
+     */
+    public static ToolBar toolbarUT = new ToolBar();
     
     private boolean clicked = false;
     private int numClicks = 0;
@@ -732,7 +736,7 @@ public class MyController {
 
 			if (monsterList.get(i).getImg() == "penguin.png") {
 
-				if (numOfFrames < 30)
+				if (i < 9)
 
 				{
 					if (monsterList.get(i).getHp() < 100) {
@@ -1271,7 +1275,9 @@ public class MyController {
 								Button upgradeButton = new Button("Upgrade Tower");
 
 								toolbar.getItems().addAll(destroyButton, upgradeButton);
-
+								
+								toolbarUT.getItems().addAll(destroyButton, upgradeButton);
+								
 								VBox vbox = new VBox(toolbar);
 								Scene scene = new Scene(vbox);
 								Stage stage = new Stage();

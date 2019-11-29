@@ -1,3 +1,4 @@
+
 package sample;
 
 import javafx.scene.Scene;
@@ -78,6 +79,7 @@ public class MyController {
 	private static final int MAX_V_NUM_GRID = 12;
 	private static final int catapultCost = 80;
 	private static final int catapultAOEDamage = 30;
+
     private static final int basicCost = 60;
     private static final int laserCost = 180;
     private static final int iceCost = 90;
@@ -137,8 +139,9 @@ public class MyController {
     private boolean clicked = false;
     private int numClicks = 0;
     private boolean upgraded = false;
+
 	private Shape rangeCircle = new Circle();
-	
+
 	private List<Monster> monsterList = new ArrayList<>();
 	/**
 	 * a list of all monsters spawned on the map (needed for unit testing) 
@@ -152,7 +155,6 @@ public class MyController {
 	private List<Monster> catapultTarget = new ArrayList<>();
 	private Monster laserTarget;
 
-	
 	private List<Monster> monsterInRange = new ArrayList<>();
 	private static int monsterCounter = 0;
 	private static int nextFrameCounter = 0;
@@ -168,6 +170,7 @@ public class MyController {
 	private static int numOfFrames = 0;
 	private static int bonusHp = 50;
 	private static int perFrame = 3;
+
 	/**
 	 * Default Constructor for MyController class
 	 */
@@ -278,13 +281,17 @@ public class MyController {
 	 */
     private void updateResourceText() {
 		money.setText("Money Left: " + Integer.toString(amountResources));
-	}	
+	}
 
 	
+	/**
+	 * generates a monster but the type of monster is random, in the spawn point.
+	 * 
+	 */
 	public void monsterGenerate() {
 		int result = r.nextInt(high - low + 1) + low + 1;
 
-		int nextCoord[] ={0,0};	
+		int nextCoord[] = { 0, 0 };
 		switch (result) {
 		case 1:
 			monsterList.add(new Fox(nextCoord, 100, 2, 0));
@@ -300,16 +307,27 @@ public class MyController {
 		}
 
 		prevHp.add(monsterList.get(monsterList.size() - 1).getHp());
-		
 
 	}
+	
+	/**
+	 * 
+	 * @param op the operation of the movement if its going up,down,left or right.
+	 * @param x the x coordinates of the monster
+	 * @param y	the y coordinates of the monster
+	 * @param spaceLeft the remaining number of grids the monster can move. (number indicating the number of recursions)
+	 * @param monsterCount the index of the current monster in the monsterList array.
+	 * 
+	 * this function is recursively called, and is responsible for monsters moving correctly to the endzone.
+	 */
 
 	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
-		if(monsterList.get(monsterCount).getHp()<=0)return;
-		if (x + 1 >= 11 && y==0) {
+		if (monsterList.get(monsterCount).getHp() <= 0)
+			return;
+		if (x + 1 >= 11 && y == 0) {
 			gameOver = true;
-			perFrame = 100;		
-			monsterList.remove(monsterCount);			
+			perFrame = 100;
+			monsterList.remove(monsterCount);
 			return;
 		}
 		if (spaceLeft < 1) {
@@ -355,17 +373,20 @@ public class MyController {
 			break;
 		}
 	}
+
 	
 	/**
 	 * A function that prints out <monsterType>:<hp> every monster a monster is generated at spawn point
 	 */
-	
+
+
 	void listLastGeneratedMonster() {
 		if (monsterList.size() == 0)
 			return;
-		if(grids[0][0].getGraphic() != null) {
-			System.out.println("<" + monsterList.get(monsterList.size()-1).getMonsterType() + ">" + " : " + "<" + monsterList.get(monsterList.size()-1).getHp() + ">" + " generated");
-			
+		if (grids[0][0].getGraphic() != null) {
+			System.out.println("<" + monsterList.get(monsterList.size() - 1).getMonsterType() + ">" + " : " + "<"
+					+ monsterList.get(monsterList.size() - 1).getHp() + ">" + " generated");
+
 		}
 	}
 
@@ -396,11 +417,10 @@ public class MyController {
 		}
 	}
 
-	
 	boolean withinAOErange(int[] coord1, int[] coord2) {
 		double shortestDistance = (Math.pow((coord1[0] - coord2[0]), 2) + Math.pow(coord1[1] - coord2[1], 2));
-		if (shortestDistance <= (25 * 25)){
-			return true; 
+		if (shortestDistance <= (25 * 25)) {
+			return true;
 		}
 		return false;
 	}
@@ -412,19 +432,20 @@ public class MyController {
 			List<Integer> targetNearby = new ArrayList<Integer>();
 			for (int j = 0; j < monsterList.size(); j++) {
 				if (withinAOErange(catapultTarget.get(i).getCoord(), monsterList.get(j).getCoord())) {
-																										
+
 					targetNearby.add(j);
 				}
 			}
 			if (targetNearby.size() == 0)
 				continue;
 			for (int j = 0; j < targetNearby.size(); j++) {
-				monsterList.get(targetNearby.get(j)).setHp(monsterList.get(targetNearby.get(j)).getHp() - catapultAOEDamage);
+				monsterList.get(targetNearby.get(j))
+						.setHp(monsterList.get(targetNearby.get(j)).getHp() - catapultAOEDamage);
 			}
 		}
 	}
 
-	
+
 	private enum Laserdir {
 		LEFT, STRAIGHT, RIGHT
 	};
@@ -433,13 +454,15 @@ public class MyController {
 		double[] lineStart = { curLine.getStartX(), curLine.getStartY() };
 		double[] lineEnd = { curLine.getEndX(), curLine.getEndY() };
 		int[] monsCoord = monster.getCoord();
-		int[] monsterCoord = {monsCoord[0]+GRID_WIDTH/2,monsCoord[1]+GRID_HEIGHT/2};
+		int[] monsterCoord = { monsCoord[0] + GRID_WIDTH / 2, monsCoord[1] + GRID_HEIGHT / 2 };
 		boolean infSlope = false, zeroSlope = false;
 
-		if(lineEnd[0]<lineStart[0]){	//Monsters on leftside of the start (i.e. Tower) only
-			if(monsterCoord[0]>lineStart[0])return false;
-		}else if(lineEnd[0]>lineStart[0]){//Monsters on rightside of the start (i.e. Tower) only
-			if(monsterCoord[0]<lineStart[0])return false;
+		if (lineEnd[0] < lineStart[0]) { // Monsters on leftside of the start (i.e. Tower) only
+			if (monsterCoord[0] > lineStart[0])
+				return false;
+		} else if (lineEnd[0] > lineStart[0]) {// Monsters on rightside of the start (i.e. Tower) only
+			if (monsterCoord[0] < lineStart[0])
+				return false;
 		}
 		if (lineStart[0] - lineEnd[0] == 0)
 			infSlope = true; // Same X then infinity slope
@@ -469,8 +492,8 @@ public class MyController {
 		Laserdir curDir;
 		boolean up = false;
 		int[] tarCoord = laserTarget.getCoord();
-		tarCoord[0] += GRID_WIDTH/2;
-		tarCoord[1] += GRID_HEIGHT/2;
+		tarCoord[0] += GRID_WIDTH / 2;
+		tarCoord[1] += GRID_HEIGHT / 2;
 
 		double slope = 0;
 		if (start[0] - tarCoord[0] != 0) {
@@ -489,43 +512,40 @@ public class MyController {
 			up = true;
 
 		switch (curDir) { // Adds the line
-			case LEFT: {
-				Line line1 = new Line((double) start[0] , (double) start[1], 0.0,
-						y_intercept_left);
-				line1.setStroke(Color.RED);
-				laserLines.add(line1);
-				paneArena.getChildren().add(line1);
-				break;
-			}
-			case RIGHT: {
-				Line line1 = new Line((double) start[0] , (double) start[1] , ARENA_WIDTH,
-						y_intercept_right);
-				line1.setStroke(Color.RED);
-				laserLines.add(line1);
-				paneArena.getChildren().add(line1);
-				break;
-			}
-			case STRAIGHT: {
-				if (up) {
-					Line line1 = new Line((double) start[0] , (double) start[1] ,
-							(double) tarCoord[0] , 0.0);
-					line1.setStroke(Color.RED);
-					laserLines.add(line1);
-					paneArena.getChildren().add(line1);
-				} else {
-					Line line1 = new Line((double) start[0], (double) start[1],
-							(double) tarCoord[0] , (double) ARENA_HEIGHT);
-					line1.setStroke(Color.RED);
-					laserLines.add(line1);
-					paneArena.getChildren().add(line1);
-				}
-				break;
-			}
+		case LEFT: {
+			Line line1 = new Line((double) start[0], (double) start[1], 0.0, y_intercept_left);
+			line1.setStroke(Color.RED);
+			laserLines.add(line1);
+			paneArena.getChildren().add(line1);
+			break;
 		}
-		//System.out.println("Start:" + start[0] + "," + start[1] + "  End:" + tarCoord[0] + "," + tarCoord[1]);
-		//System.out.println("Drew a line " + laserLines.size());
+		case RIGHT: {
+			Line line1 = new Line((double) start[0], (double) start[1], ARENA_WIDTH, y_intercept_right);
+			line1.setStroke(Color.RED);
+			laserLines.add(line1);
+			paneArena.getChildren().add(line1);
+			break;
+		}
+		case STRAIGHT: {
+			if (up) {
+				Line line1 = new Line((double) start[0], (double) start[1], (double) tarCoord[0], 0.0);
+				line1.setStroke(Color.RED);
+				laserLines.add(line1);
+				paneArena.getChildren().add(line1);
+			} else {
+				Line line1 = new Line((double) start[0], (double) start[1], (double) tarCoord[0],
+						(double) ARENA_HEIGHT);
+				line1.setStroke(Color.RED);
+				laserLines.add(line1);
+				paneArena.getChildren().add(line1);
+			}
+			break;
+		}
+		}
+		// System.out.println("Start:" + start[0] + "," + start[1] + " End:" +
+		// tarCoord[0] + "," + tarCoord[1]);
+		// System.out.println("Drew a line " + laserLines.size());
 	}
-
 
 	void attackAllMonsterNearLine() {
 		int count = 0;
@@ -536,21 +556,22 @@ public class MyController {
 					count++;
 				}
 			}
-			//paneArena.getChildren().remove(laserLines.get(i));
+			// paneArena.getChildren().remove(laserLines.get(i));
 		}
-		//System.out.println("No. of monsters affectedd by laser beam: " + count);
-		//laserLines.clear(); // Clears the entire lsit
+		// System.out.println("No. of monsters affectedd by laser beam: " + count);
+		// laserLines.clear(); // Clears the entire lsit
 	}
-	void clearAllVisualLaserLines(){
-		for(int i=0;i<laserLines.size();i++){
+
+	void clearAllVisualLaserLines() {
+		for (int i = 0; i < laserLines.size(); i++) {
 			paneArena.getChildren().remove(laserLines.get(i));
 		}
 		laserLines.clear();
 	}
 
-
 	void attackClosestMonster(Tower curTower) {
-		if (monsterInRange.size() == 0)return;
+		if (monsterInRange.size() == 0)
+			return;
 		int[] coord = monsterInRange.get(0).getCoord();
 
 		double shortestDistance = (Math.pow((coord[0] - 440), 2) + Math.pow(coord[1], 2)); // Eucledian Distance with
@@ -558,7 +579,8 @@ public class MyController {
 
 		int index = 0;
 		for (int i = 1; i < monsterInRange.size(); i++) {
-			if(monsterInRange.get(i).getHp()<=0)continue;
+			if (monsterInRange.get(i).getHp() <= 0)
+				continue;
 			coord = monsterInRange.get(i).getCoord();
 			double dist = (Math.pow((coord[0] - 440), 2) + Math.pow(coord[1], 2));
 			if (shortestDistance > dist) {
@@ -640,29 +662,35 @@ public class MyController {
 				}
 				break;
 			}
-			case "laserTower":{
-				if(curTower.getAttackCost()>amountResources)return;
-				if(curTower.getTowerState()==Tower.TowerState.READY){
-					System.out.println(curTower.getTowerType()+" @("+curTower.getCoord()[0]+","+curTower.getCoord()[1]+") -> "+
-					monsterInRange.get(index).getMonsterType()+" @("+monsterInRange.get(index).getCoord()[0]+","+monsterInRange.get(index).getCoord()[1]+
-					")");
+			break;
+		}
+		case "laserTower": {
+			if (curTower.getAttackCost() > amountResources)
+				return;
+			if (curTower.getTowerState() == Tower.TowerState.READY) {
+				System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
+						+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
+						+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
+						+ ")");
 
-					laserTarget = monsterInRange.get(index);
-					amountResources -= curTower.getAttackCost();
-					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));	//this called to reset the cooldown
-					int[] towercord = curTower.getCoord();
-					int[] towerCenter = {towercord[0]+GRID_HEIGHT/2,towercord[1]+GRID_WIDTH/2};
-					drawLaserLine(towerCenter);
-				}
-				break;
+				laserTarget = monsterInRange.get(index);
+				amountResources -= curTower.getAttackCost();
+				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to
+																										// reset the
+																										// cooldown
+				int[] towercord = curTower.getCoord();
+				int[] towerCenter = { towercord[0] + GRID_HEIGHT / 2, towercord[1] + GRID_WIDTH / 2 };
+				drawLaserLine(towerCenter);
 			}
+			break;
+		}
 
 		}
 	}
-	
 
 	void TowerAttackMonster() {
-		if(gameOver)return;
+		if (gameOver)
+			return;
 		for (int i = 0; i < towers.size(); i++) {
 			getMonstersInRange(towers.get(i));
 			attackClosestMonster(towers.get(i));
@@ -672,10 +700,16 @@ public class MyController {
 		updateAllTowerState();
 	}
 
+	
+	/**
+	 * the function is called when next frame button is clicked.
+	 * holds all the functions related to monster, such as monsters moving, the generating process of the monster
+	 *  and the increase of hp and speed of the monsters over time.
+	 */
 	private void MonsterFSM() {
 
 		numOfFrames++;
-		
+
 		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
 			speedIncrease++;
 			speedIncrease = (int) Math.pow(2, speedIncrease);
@@ -700,7 +734,7 @@ public class MyController {
 
 			if (monsterList.get(i).getImg() == "penguin.png") {
 
-				if (numOfFrames < 10)
+				if (numOfFrames < 30)
 
 				{
 					if (monsterList.get(i).getHp() < 100) {
@@ -733,23 +767,25 @@ public class MyController {
 
 				if (x == allX && y == allY) {
 					monsterInSame++;
-					
+
 				}
 
 			}
-			
-			if (monsterInSame==1) 
-				
+
+			if (monsterInSame == 1)
+
 				grids[y][x].setGraphic(null);
-		
+
 			if (x % 4 == 0)
 				down = true;
 			else
 				down = false;
-			if(x+1 == 11 && y ==0) {
-				if(monsterList.get(i).getHp()<=0)gameOver=false;
-				else gameOver = true;
-				//System.out.print("ENTERS HERE");
+			if (x + 1 == 11 && y == 0) {
+				if (monsterList.get(i).getHp() <= 0)
+					gameOver = false;
+				else
+					gameOver = true;
+				// System.out.print("ENTERS HERE");
 				return;
 			}
 			if (grids[y][x + 1].getBackground().getFills().get(0).getFill() == Color.GREEN) {
@@ -770,7 +806,6 @@ public class MyController {
 				monsterList.get(i).unFreeze();
 
 		}
-
 
 		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
 
@@ -800,8 +835,15 @@ public class MyController {
 		nextFrameCounter++;
 		testMonsterList = monsterList;
 	}
+
+	
+	/**
+	 * when monsters are dead change the image of the monster to collision.png then increase 
+	 * the amount of resource and remove the monster from the monster array list. 
+	 */
 	private void clearDeadMonster() {
-		if(gameOver)return;
+		if (gameOver)
+			return;
 		for (int i = 0; i < monsterList.size(); i++) {
 			if (monsterList.get(i).getHp() <= 0) {
 				Image collisionImage = new Image("collision.png", 30.0, 30.0, true, true);
@@ -811,8 +853,9 @@ public class MyController {
 				collisionX.add(monsterList.get(i).getX());
 				collisionY.add(monsterList.get(i).getY());
 
-				//System.out.println("Getting resources:"+monsterList.get(i).getResourceEarned());
-				amountResources+=monsterList.get(i).getResourceEarned();	//Resources Gained
+				// System.out.println("Getting
+				// resources:"+monsterList.get(i).getResourceEarned());
+				amountResources += monsterList.get(i).getResourceEarned(); // Resources Gained
 
 				monsterList.remove(i);
 				prevHp.remove(i);
@@ -821,11 +864,14 @@ public class MyController {
 		}
 	}
 
+	/**
+	 * removes all collision.png images in the grid
+	 */
 	private void clearAllCollision() {
-		
+
 		for (int i = 0; i < collisionX.size(); i++) {
 			grids[collisionY.get(i)][collisionX.get(i)].setGraphic(null);
-			//System.out.println("Removing Collision: "+i);
+			// System.out.println("Removing Collision: "+i);
 		}
 		for (int i = 0; i < collisionX.size(); i++) {
 			collisionX.remove(i);
@@ -847,45 +893,40 @@ public class MyController {
 				}
 			}
 		}
-		
-	  Image spawnImage = new Image("spawn.png", 38.0, 43.0, true,true);
-      BackgroundImage backgroundImage = new BackgroundImage(spawnImage, BackgroundRepeat.NO_REPEAT,  
-              BackgroundRepeat.NO_REPEAT,  
-              BackgroundPosition.DEFAULT,  
-                 BackgroundSize.DEFAULT);
-      Background background = new Background(backgroundImage);
-      grids[0][0].setBackground(background);
 
-      
-      Image endImage = new Image("endzone.png", 38.0, 43.0, true,true);
-      BackgroundImage backgroundImage2 = new BackgroundImage(endImage, BackgroundRepeat.NO_REPEAT,  
-              BackgroundRepeat.NO_REPEAT,  
-              BackgroundPosition.DEFAULT,  
-                 BackgroundSize.DEFAULT);
-      Background background2 = new Background(backgroundImage2);
-      grids[0][11].setBackground(background2);
-    
+		Image spawnImage = new Image("spawn.png", 38.0, 43.0, true, true);
+		BackgroundImage backgroundImage = new BackgroundImage(spawnImage, BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+		Background background = new Background(backgroundImage);
+		grids[0][0].setBackground(background);
+
+		Image endImage = new Image("endzone.png", 38.0, 43.0, true, true);
+		BackgroundImage backgroundImage2 = new BackgroundImage(endImage, BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+		Background background2 = new Background(backgroundImage2);
+		grids[0][11].setBackground(background2);
+
 	}
-	
+
 	@FXML
 	private void nextFrame() {
-		//listAllMonster();
-		//listAllTower();
-		
-		if(gameOver){
+		// listAllMonster();
+		// listAllTower();
+
+		if (gameOver) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Game Over!");
 			alert.setHeaderText(null);
-			String message = "You have survived "+ numOfFrames+" rounds!";
+			String message = "You have survived " + numOfFrames + " rounds!";
 			alert.setContentText(message);
 			alert.show();
-			
+
 			labelBasicTower.setOnDragDetected(null);
 			labelIceTower.setOnDragDetected(null);
 			labelLaserTower.setOnDragDetected(null);
 			labelCatapult.setOnDragDetected(null);
 			invisibleLabel.setOnMouseClicked(null);
-			
+
 			return;
 		}
 		resetAllMonsterGridColors();
@@ -893,19 +934,19 @@ public class MyController {
 		clearAllCollision(); // Clears out all collision
 		MonsterFSM(); // In charge of how the monster moves on the arena
 		listLastGeneratedMonster(); //
-		
+
 		TowerAttackMonster(); // In charge of telling the Tower to Attack the Monster
 		clearDeadMonster(); // Sets the dead monster as Collision Image
 		updateResourceText(); // Update the text after earning some cash from the dead monster
-		//System.out.println("resources amount:" + amountResources);
+		// System.out.println("resources amount:" + amountResources);
 	}
-
 
 	/**
 	 * A function that returns an int array representing the values of the grid index 2D array 
 	 * @param coord of the tower in terms of pixels
 	 * @return the index of the grid 2D array, i.e. the i,j in grid[i][j] representing the (green and white) labels on the map
 	 */
+
 	public int[] getTowerCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++)
@@ -933,9 +974,10 @@ public class MyController {
 		invisibleLabel.setMaxWidth(GRID_WIDTH);
 		invisibleLabel.setMinHeight(GRID_HEIGHT);
 		invisibleLabel.setMinHeight(GRID_HEIGHT);
-		invisibleLabel.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+		invisibleLabel
+				.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
-	
+
 	public int[] getMonsterCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -982,7 +1024,6 @@ public class MyController {
 					target.setOnMouseEntered(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent event) {
 
-							
 							target.setTooltip(null);
 							String hpInfo = "";
 
@@ -1014,7 +1055,6 @@ public class MyController {
 									MonsterInfo.setText(hpInfo);
 
 									target.setTooltip(MonsterInfo);
-									
 
 								}
 
@@ -1034,7 +1074,7 @@ public class MyController {
 					source2.setOnDragDetected(new DragEventHandler(source2));
 					source3.setOnDragDetected(new DragEventHandler(source3));
 					source4.setOnDragDetected(new DragEventHandler(source4));
-					
+
 					target.setOnDragDropped(new DragDroppedEventHandler() {
 						public void handle(DragEvent event) {
 							// if(flagTower[i][j]== false) {
@@ -1048,7 +1088,7 @@ public class MyController {
 
 							int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
 							if (target.getGraphic() == null) {
-								//doubleBuilt = false;
+								// doubleBuilt = false;
 								String towerName = Helper.getTowerName(imageName); // This will give me the towerName
 								switch (towerName) {// Switch-case to instantiate a Tower object accordingly
 								case "basicTower": {
@@ -1115,7 +1155,7 @@ public class MyController {
 							event.consume();
 						}
 					});
-					
+
 					target.setOnDragOver(new EventHandler<DragEvent>() {
 						public void handle(DragEvent event) {
 							if (event.getGestureSource() != target && event.getDragboard().hasString()) {
@@ -1151,31 +1191,31 @@ public class MyController {
 								// System.out.println("There is no tower");
 							} else {
 								if (!circleShown) {
-									//System.out.println("There is tower");
+									// System.out.println("There is tower");
 
 									int[] coord = { (int) target.getLayoutX(), (int) target.getLayoutY() };
 									// Circle, Arc or Rectangle
 
 									switch (target.getId()) {
-										case "catapult": {
-											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-											Circle ringCircle = new Circle(towers.get(getTowerIndex(coord)).getMinRange());
-											rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
-											rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
-											ringCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
-											ringCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
-											ringCircle.setFill(Color.TRANSPARENT);
-											rangeCircle = rangeCircle.subtract(rangeCircle, ringCircle);
-											break;
-										}
-										case "basicTower":
-										case "laserTower":
-										case "iceTower": {
-											rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
-											rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
-											rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
-											break;
-										}
+									case "catapult": {
+										rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
+										Circle ringCircle = new Circle(towers.get(getTowerIndex(coord)).getMinRange());
+										rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+										rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+										ringCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+										ringCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+										ringCircle.setFill(Color.TRANSPARENT);
+										rangeCircle = rangeCircle.subtract(rangeCircle, ringCircle);
+										break;
+									}
+									case "basicTower":
+									case "laserTower":
+									case "iceTower": {
+										rangeCircle = new Circle(towers.get(getTowerIndex(coord)).getRange());
+										rangeCircle.setLayoutX(target.getLayoutX() + GRID_WIDTH / 2);
+										rangeCircle.setLayoutY(target.getLayoutY() + GRID_HEIGHT / 2);
+										break;
+									}
 									}
 
 									rangeCircle.setOpacity(0.3);
@@ -1187,7 +1227,7 @@ public class MyController {
 									invisibleLabel.setLayoutX(target.getLayoutX());
 									paneArena.getChildren().add(invisibleLabel);
 									circleShown = true;
-									//redCircle = true;
+									// redCircle = true;
 									// Pop-up info
 
 									String towername = Helper.space(target.getId());
@@ -1206,7 +1246,8 @@ public class MyController {
 									towerInfo.setText(towerStats);
 									invisibleLabel.setTooltip(towerInfo);
 
-									//towerInfo.show(invisibleLabel, invisibleLabel.getLayoutX(),invisibleLabel.getLayoutY());
+									// towerInfo.show(invisibleLabel,
+									// invisibleLabel.getLayoutX(),invisibleLabel.getLayoutY());
 								}
 							}
 						}
@@ -1216,7 +1257,7 @@ public class MyController {
 							paneArena.getChildren().remove(rangeCircle);
 							paneArena.getChildren().remove(invisibleLabel);
 							circleShown = false;
-							//redCircle = false;
+							// redCircle = false;
 							// System.out.println("Invisible label exit called");
 						}
 					});
@@ -1224,21 +1265,21 @@ public class MyController {
 						public void handle(MouseEvent event) {
 							numClicks++;
 							clicked = true;
-							if(clicked == true && numClicks < 2) {
-								//System.out.println("Clicked1:" + clicked);
+							if (clicked == true && numClicks < 2) {
+								// System.out.println("Clicked1:" + clicked);
 								ToolBar toolbar = new ToolBar();
 								Button destroyButton = new Button("Destroy Tower");
-								
+
 								Button upgradeButton = new Button("Upgrade Tower");
-								
+
 								toolbar.getItems().addAll(destroyButton, upgradeButton);
-								
+
 								VBox vbox = new VBox(toolbar);
 								Scene scene = new Scene(vbox);
 								Stage stage = new Stage();
 								stage.setScene(scene);
-								stage.show();    
-								//System.out.println("TOWER SIZE BEFORRE: " + towers.size());				
+								stage.show();
+								// System.out.println("TOWER SIZE BEFORRE: " + towers.size());
 								destroyButton.setOnAction(new EventHandler<ActionEvent>() {
 									public void handle(ActionEvent e) {
 										destroyClicked = true;
@@ -1256,33 +1297,34 @@ public class MyController {
 									}
 								});
 								upgradeButton.setOnAction(new EventHandler<ActionEvent>() {
-							   		public void handle(ActionEvent e) {
-							   			upgradeClicked = true;
-								   		int[] towerCoords = {(int) invisibleLabel.getLayoutX(), (int) invisibleLabel.getLayoutY()};
-								   		//System.out.println("xUpgrade: " + towerCoords[0]);
-								   		//System.out.println("yUpgrade: " + towerCoords[1]);
-								   		for(Tower a : towers) {
-									   		int[]aCoor = a.getCoord();
-									   		int aX = aCoor[0];
-									   		int aY = aCoor[1];
-									   		if(towerCoords[0] == aX && towerCoords[1] == aY) {
-											   	if(amountResources >= a.getUpgradeCost() && upgraded == false) {
-											   		notEnoughToUpgrade = false;
-												   	a.upgradeTower(true);
-												   	amountResources -= a.getUpgradeCost();
-												   	updateResourceText();
-									   				System.out.println(a.getTowerType() + " is being upgraded.");
-												   	upgraded = true;
-												   	//rangeCircle.setRadius(a.getRange());
-											   	}
-											   	else if (amountResources < a.getUpgradeCost()) {
-											   		notEnoughToUpgrade = true;
-									   				System.out.println("not enough resources to upgrade " + a.getTowerType());		
-											   	}
-									   		}
-								   		}
-								   		upgraded = false;
-							   		}
+									public void handle(ActionEvent e) {
+										upgradeClicked = true;
+										int[] towerCoords = { (int) invisibleLabel.getLayoutX(),
+												(int) invisibleLabel.getLayoutY() };
+										// System.out.println("xUpgrade: " + towerCoords[0]);
+										// System.out.println("yUpgrade: " + towerCoords[1]);
+										for (Tower a : towers) {
+											int[] aCoor = a.getCoord();
+											int aX = aCoor[0];
+											int aY = aCoor[1];
+											if (towerCoords[0] == aX && towerCoords[1] == aY) {
+												if (amountResources >= a.getUpgradeCost() && upgraded == false) {
+													notEnoughToUpgrade = false;
+													a.upgradeTower(true);
+													amountResources -= a.getUpgradeCost();
+													updateResourceText();
+													System.out.println(a.getTowerType() + " is being upgraded.");
+													upgraded = true;
+													// rangeCircle.setRadius(a.getRange());
+												} else if (amountResources < a.getUpgradeCost()) {
+													notEnoughToUpgrade = true;
+													System.out.println(
+															"not enough resources to upgrade " + a.getTowerType());
+												}
+											}
+										}
+										upgraded = false;
+									}
 								});
 								stage.setOnHidden(new EventHandler<WindowEvent>() {
 									public void handle(WindowEvent a) {
@@ -1290,8 +1332,8 @@ public class MyController {
 										destroyClicked = false;
 										clicked = false;
 										numClicks = 0;
-										//System.out.println("Clicked2:" + clicked);
-								   	}
+										// System.out.println("Clicked2:" + clicked);
+									}
 								});
 							}
 						}
@@ -1299,7 +1341,7 @@ public class MyController {
 				}
 			} // inner for-loop
 		} // outer for-loop
-	  
+
 	} // gameEvents
 
 }// MyController class

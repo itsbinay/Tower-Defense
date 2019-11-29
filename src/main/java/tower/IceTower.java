@@ -17,7 +17,9 @@ public class IceTower extends Tower {
     
     private static final String towerType = "iceTower";
     private int FreezeTimer = 3;	//This is in terms of frames
-    
+    private static final int MAXUpgradeLimit = 4;
+	
+	private int upgradeCount = 0;
     /**
      * Constructor of the IceTower
      * @param Coord coordinate of where the Catapult is built (the top left corner of the grid)
@@ -28,8 +30,9 @@ public class IceTower extends Tower {
     
     @Override
     public void upgradeTower(boolean canUpgrade) {	
-    	if(!canUpgrade)return;
-    	
+    	if(!canUpgrade || upgradeCount>=MAXUpgradeLimit)return;
+        
+        upgradeCount++;
         this.setRange(this.getRange() + rangeIncrement);
         this.FreezeTimer +=  freezeIncrement;
     }
@@ -48,6 +51,7 @@ public class IceTower extends Tower {
 	* @param hp initial hp of the monster before being attacked
 	* @return returns the the new HP of the monster attacked
 	*/
+ @Override
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();

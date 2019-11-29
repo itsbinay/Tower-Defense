@@ -739,8 +739,9 @@ public class MyController {
 		numOfFrames++;
 
 		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
-			speedIncrease++;
-			speedIncrease = (int) Math.pow(2, speedIncrease);
+			if(speedIncrease<5){
+				speedIncrease++;
+			}
 		}
 
 		for (int i = 0; i < monsterList.size(); i++) {

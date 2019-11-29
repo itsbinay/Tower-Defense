@@ -16,6 +16,9 @@ public class laserTower extends Tower {
 	private static final int initialRange = 80;
 	private static final String towerType = "laserTower";
 	private static final int initialCDTimer=5;
+	private static final int MAXUpgradeLimit = 4;
+	
+	private int upgradeCount = 0;
 	/**
 	 * Constructor of the laserTower
 	 * @param Coord coordinate of where the Catapult is built (the top left corner of the grid)
@@ -25,8 +28,9 @@ public class laserTower extends Tower {
 	}
 	@Override
 	public void upgradeTower(boolean canUpgrade){
-		if(!canUpgrade)return;
+		if(!canUpgrade || upgradeCount>=MAXUpgradeLimit)return;
 		
+		upgradeCount++;
 		this.setPower(this.getPower()+powerIncrement);
 		this.setRange(this.getRange()+rangeIncrement);
 	}
@@ -40,6 +44,7 @@ public class laserTower extends Tower {
 	* @param hp initial hp of the monster before being attacked
 	* @return returns the the new HP of the monster attacked
 	*/
+ @Override
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();

@@ -1,4 +1,6 @@
-
+/**
+ * Contains the classes necessary to construct Arena
+ */
 package sample;
 
 import javafx.scene.Scene;
@@ -42,6 +44,9 @@ import monster.Unicorn;
 import sample.Helper;
 import tower.*;
 
+/**
+ * interacts point with other classes
+ */
 public class MyController {
 	
 	@FXML
@@ -135,6 +140,10 @@ public class MyController {
     public static void setResourcesForTesting() {
     	amountResources = 2000;
     }
+    /**
+     * variable containing the destroy and upgrade buttons(needed for unit testing)
+     */
+    public static ToolBar toolbarUT = new ToolBar();
     
     private boolean clicked = false;
     private int numClicks = 0;
@@ -311,6 +320,7 @@ public class MyController {
 	}
 	
 	/**
+	 * this function is recursively called, and is responsible for monsters moving correctly to the endzone.
 	 * 
 	 * @param op the operation of the movement if its going up,down,left or right.
 	 * @param x the x coordinates of the monster
@@ -318,16 +328,21 @@ public class MyController {
 	 * @param spaceLeft the remaining number of grids the monster can move. (number indicating the number of recursions)
 	 * @param monsterCount the index of the current monster in the monsterList array.
 	 * 
-	 * this function is recursively called, and is responsible for monsters moving correctly to the endzone.
 	 */
-
-	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
+	public void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
 		if (monsterList.get(monsterCount).getHp() <= 0)
 			return;
 		if (x + 1 >= 11 && y == 0) {
 			gameOver = true;
 			perFrame = 100;
 			monsterList.remove(monsterCount);
+			System.out.println("Game Over!");
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Game Over!");
+			alert.setHeaderText(null);
+			String message = "You have survived " + numOfFrames + " rounds!";
+			alert.setContentText(message);
+			alert.show();
 			return;
 		}
 		if (spaceLeft < 1) {
@@ -425,7 +440,10 @@ public class MyController {
 		return false;
 	}
 
-	void catapultAOE() {
+	/**
+	 * A function call to damage all monsters that have been affected by the AreaOfEffect (AOE)
+	 */
+	public void catapultAOE() {
 		if (catapultTarget.size() == 0)
 			return;
 		for (int i = 0; i < catapultTarget.size(); i++) {
@@ -547,7 +565,10 @@ public class MyController {
 		// System.out.println("Drew a line " + laserLines.size());
 	}
 
-	void attackAllMonsterNearLine() {
+	/**
+	 * Deal "hurt" damage to all monsters within 3px away from the Laser Beam
+	 */
+	public void attackAllMonsterNearLine() {
 		int count = 0;
 		for (int i = 0; i < laserLines.size(); i++) {
 			for (int j = 0; j < monsterList.size(); j++) {
@@ -569,6 +590,12 @@ public class MyController {
 		laserLines.clear();
 	}
 
+	/**
+	 * Given the current tower passed into the function, it will attack the closest monster in range
+	 * Function has already been included in TowerAttackMonster function.
+	 * 
+	 * @param curTower the Tower that will attack the closest monster
+	 */
 	void attackClosestMonster(Tower curTower) {
 		if (monsterInRange.size() == 0)
 			return;
@@ -589,75 +616,107 @@ public class MyController {
 			}
 		}
 		switch (curTower.getTowerType()) {
-		case "basicTower": {
-			if (curTower.getTowerState() == Tower.TowerState.READY)
-				System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
-						+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
-						+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
-						+ ")");
-			// System.out.println("<basicTower>Old Hp:"+monsterInRange.get(index).getHp());
-			monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
-			// System.out.println("<basicTower>New Hp:"+monsterInRange.get(index).getHp());
-			int[] gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
-			grids[gridCoord[0]][gridCoord[1]]
-					.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-			break;
-		}
-		case "iceTower": {
-			if (curTower.getTowerState() == Tower.TowerState.READY) {
-				System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
-						+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
-						+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
-						+ ")");
-				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
-				monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
-				int[] gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
-				grids[gridCoord[0]][gridCoord[1]].setBackground(
-						new Background(new BackgroundFill(Color.DARKBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+			case "basicTower": {
+				if(curTower.getTowerState()==Tower.TowerState.READY)
+					System.out.println(curTower.getTowerType()+" @("+curTower.getCoord()[0]+","+curTower.getCoord()[1]+") -> "+
+						monsterInRange.get(index).getMonsterType()+" @("+monsterInRange.get(index).getCoord()[0]+","+monsterInRange.get(index).getCoord()[1]+
+						")");
+					//System.out.println("<basicTower>Old Hp:"+monsterInRange.get(index).getHp());
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+					//System.out.println("<basicTower>New Hp:"+monsterInRange.get(index).getHp());
+					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
+					
+					
+					//grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.DARKGRAY,CornerRadii.EMPTY,Insets.EMPTY)));
+					
+					Image arrowImage = new Image("arrow.png", 41.0, 43.0, true,true);
+				    BackgroundImage backgroundImage = new BackgroundImage(arrowImage, BackgroundRepeat.NO_REPEAT,  
+				              BackgroundRepeat.NO_REPEAT,  
+				              BackgroundPosition.CENTER,  
+				                 BackgroundSize.DEFAULT);
+				    Background arrowBackground = new Background(backgroundImage);
+				    grids[gridCoord[0]][gridCoord[1]].setBackground(arrowBackground);
+				    
+				break;
 			}
-			break;
-		}
-		case "catapult": {
-			if (curTower.getTowerState() == Tower.TowerState.READY) { // Only if Tower is In Ready State
-				System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
-						+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
-						+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
-						+ ")");
-				catapultTarget.add(monsterInRange.get(index));
-				// System.out.println("<Catapult>Old Hp:"+monsterInRange.get(index).getHp());
-				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
-				// System.out.println("<Catapult>New Hp:"+monsterInRange.get(index).getHp());
-				int[] gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
-				grids[gridCoord[0]][gridCoord[1]].setBackground(
-						new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+			case "iceTower": {
+				if(curTower.getTowerState()==Tower.TowerState.READY){
+					System.out.println(curTower.getTowerType()+" @("+curTower.getCoord()[0]+","+curTower.getCoord()[1]+") -> "+
+					monsterInRange.get(index).getMonsterType()+" @("+monsterInRange.get(index).getCoord()[0]+","+monsterInRange.get(index).getCoord()[1]+
+					")");
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+					monsterInRange.get(index).setFrozen(((IceTower) curTower).getFreezeTimer());
+					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
+					
+					
+					
+					
+					//grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.DARKBLUE,CornerRadii.EMPTY,Insets.EMPTY)));					
+					
+					Image freezeImage = new Image("freeze.png", 38.0, 43.0, true,true);
+				    BackgroundImage backgroundImage = new BackgroundImage(freezeImage, BackgroundRepeat.NO_REPEAT,  
+				              BackgroundRepeat.NO_REPEAT,  
+				              BackgroundPosition.DEFAULT,  
+				                 BackgroundSize.DEFAULT);
+				    Background freezeBackground = new Background(backgroundImage);
+				    grids[gridCoord[0]][gridCoord[1]].setBackground(freezeBackground);
+				    
+				}
+				break;
 			}
-			break;
-		}
-		case "laserTower": {
-			if (curTower.getAttackCost() > amountResources)
-				return;
-			if (curTower.getTowerState() == Tower.TowerState.READY) {
-				System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
-						+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
-						+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
-						+ ")");
-
-				laserTarget = monsterInRange.get(index);
-				amountResources -= curTower.getAttackCost();
-				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to
-																										// reset the
-																										// cooldown
-				int[] towercord = curTower.getCoord();
-				int[] towerCenter = { towercord[0] + GRID_HEIGHT / 2, towercord[1] + GRID_WIDTH / 2 };
-				drawLaserLine(towerCenter);
+			case "catapult": {
+				if(curTower.getTowerState()==Tower.TowerState.READY){	//Only if Tower is In Ready State
+					System.out.println(curTower.getTowerType()+" @("+curTower.getCoord()[0]+","+curTower.getCoord()[1]+") -> "+
+					monsterInRange.get(index).getMonsterType()+" @("+monsterInRange.get(index).getCoord()[0]+","+monsterInRange.get(index).getCoord()[1]+
+					")");
+					catapultTarget.add(monsterInRange.get(index));
+					//System.out.println("<Catapult>Old Hp:"+monsterInRange.get(index).getHp());
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp()));
+					//System.out.println("<Catapult>New Hp:"+monsterInRange.get(index).getHp());
+					int []gridCoord = getMonsterCoords(monsterInRange.get(index).getCoord());
+					
+					
+					//grids[gridCoord[0]][gridCoord[1]].setBackground(new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+					
+					Image rockImage = new Image("rock.png", 38.0, 43.0, true,true);
+				    BackgroundImage backgroundImage = new BackgroundImage(rockImage, BackgroundRepeat.NO_REPEAT,  
+				              BackgroundRepeat.NO_REPEAT,  
+				              BackgroundPosition.DEFAULT,  
+				                 BackgroundSize.DEFAULT);
+				    Background rockBackground = new Background(backgroundImage);
+				    grids[gridCoord[0]][gridCoord[1]].setBackground(rockBackground);
+				    
+				}
+				break;
 			}
-			break;
-		}
-
+			case "laserTower": {
+				if (curTower.getAttackCost() > amountResources)
+					return;
+				if (curTower.getTowerState() == Tower.TowerState.READY) {
+					System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
+							+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
+							+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
+							+ ")");
+	
+					laserTarget = monsterInRange.get(index);
+					amountResources -= curTower.getAttackCost();
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to
+																											// reset the
+																											// cooldown
+					int[] towercord = curTower.getCoord();
+					int[] towerCenter = { towercord[0] + GRID_HEIGHT / 2, towercord[1] + GRID_WIDTH / 2 };
+					drawLaserLine(towerCenter);
+				}
+				break;
+			}
 		}
 	}
 
-	void TowerAttackMonster() {
+
+	/**
+	 * Call the function to make the Tower Attack Monster
+	 */
+	public void TowerAttackMonster() {
 		if (gameOver)
 			return;
 		for (int i = 0; i < towers.size(); i++) {
@@ -675,13 +734,14 @@ public class MyController {
 	 * holds all the functions related to monster, such as monsters moving, the generating process of the monster
 	 *  and the increase of hp and speed of the monsters over time.
 	 */
-	private void MonsterFSM() {
+	public void MonsterFSM() {
 
 		numOfFrames++;
 
 		if (numOfFrames % 50 == 0 && numOfFrames != 0) {
-			speedIncrease++;
-			speedIncrease = (int) Math.pow(2, speedIncrease);
+			if(speedIncrease<5){
+				speedIncrease++;
+			}
 		}
 
 		for (int i = 0; i < monsterList.size(); i++) {
@@ -703,7 +763,7 @@ public class MyController {
 
 			if (monsterList.get(i).getImg() == "penguin.png") {
 
-				if (numOfFrames < 30)
+				if (i < 9)
 
 				{
 					if (monsterList.get(i).getHp() < 100) {
@@ -877,11 +937,11 @@ public class MyController {
 
 	}
 
+	/**
+	 * the function call when nextFrame button is pressed
+	 */
 	@FXML
-	private void nextFrame() {
-		// listAllMonster();
-		// listAllTower();
-
+	public void nextFrame() {
 		if (gameOver) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Game Over!");
@@ -890,6 +950,7 @@ public class MyController {
 			alert.setContentText(message);
 			alert.show();
 
+			System.out.println("Game Over!");
 			labelBasicTower.setOnDragDetected(null);
 			labelIceTower.setOnDragDetected(null);
 			labelLaserTower.setOnDragDetected(null);
@@ -907,7 +968,6 @@ public class MyController {
 		TowerAttackMonster(); // In charge of telling the Tower to Attack the Monster
 		clearDeadMonster(); // Sets the dead monster as Collision Image
 		updateResourceText(); // Update the text after earning some cash from the dead monster
-		// System.out.println("resources amount:" + amountResources);
 	}
 
 	/**
@@ -915,8 +975,7 @@ public class MyController {
 	 * @param coord of the tower in terms of pixels
 	 * @return the index of the grid 2D array, i.e. the i,j in grid[i][j] representing the (green and white) labels on the map
 	 */
-
-	public int[] getTowerCoords(int[] coord) {
+	private int[] getTowerCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++)
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
@@ -947,7 +1006,8 @@ public class MyController {
 				.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
-	public int[] getMonsterCoords(int[] coord) {
+
+	private int[] getMonsterCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
@@ -980,7 +1040,7 @@ public class MyController {
 	 * A function that combines all the JavaFX Event Handlers for Arena
 	 * 
 	 */
-	private void gameEvents() {
+	public void gameEvents() {
 		// where on the x by y grid to put the text "Drop Here"
 		// target.setText("Drop\nHere");
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -1242,7 +1302,9 @@ public class MyController {
 								Button upgradeButton = new Button("Upgrade Tower");
 
 								toolbar.getItems().addAll(destroyButton, upgradeButton);
-
+								
+								toolbarUT.getItems().addAll(destroyButton, upgradeButton);
+								
 								VBox vbox = new VBox(toolbar);
 								Scene scene = new Scene(vbox);
 								Stage stage = new Stage();
@@ -1287,8 +1349,7 @@ public class MyController {
 													// rangeCircle.setRadius(a.getRange());
 												} else if (amountResources < a.getUpgradeCost()) {
 													notEnoughToUpgrade = true;
-													System.out.println(
-															"not enough resources to upgrade " + a.getTowerType());
+													System.out.println("not enough resources to upgrade " + a.getTowerType());
 												}
 											}
 										}

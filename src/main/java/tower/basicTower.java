@@ -2,8 +2,8 @@ package tower;
 
 /**
  * This is a basicTower class to model a basic-type Tower
- * 
- * @author binay
+ * This class inherits the abstract class Tower
+ * @author Binay
  *
  */
 public class basicTower extends Tower {
@@ -39,7 +39,9 @@ public class basicTower extends Tower {
 	private static final int initialCDTimer=1;
 	
 	private static final String towerType = "basicTower";
-
+	private static final int MAXUpgradeLimit = 4;
+	
+	private int upgradeCount = 0;
 	/**
 	 * Constructor of the basicTower
 	 * 
@@ -59,23 +61,24 @@ public class basicTower extends Tower {
 	 *                   upgraded
 	 */
 	public void upgradeTower(boolean canUpgrade) {
-		if (!canUpgrade)
-			return;
+		if (!canUpgrade || upgradeCount>=MAXUpgradeLimit)return;
 
+		upgradeCount++;
 		this.setPower(this.getPower() + powerIncrement);
 		this.setRange(this.getRange() + rangeIncrement);
 	}
-	/**
-	 * Returns the updated hp of the monster given it was attacked.
-	 * @param hp the current hp of the monster
-	 * @return the updated hp of the monster
-	 */
+    /**
+	* Gets the hp of the monster, attacks it and then returns the new monster hp
+	* 
+	* @param hp initial hp of the monster before being attacked
+	* @return returns the the new HP of the monster attacked
+	*/
+ @Override
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();
 			this.setCooldown(this.initialCDTimer);
 			this.setTowerState(TowerState.ATTACK);
-			System.out.println("basicTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
 			return hp;
 		}
 		return hp;

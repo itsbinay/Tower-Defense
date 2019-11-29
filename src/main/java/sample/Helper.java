@@ -9,6 +9,9 @@ import tower.Tower;
 import tower.basicTower;
 import tower.laserTower;
 
+/**
+ * helper functions class
+ */
 public class Helper {
 	/**
 	 * Default Constructor for Helper class

@@ -1,5 +1,10 @@
 package tower;
  
+/**
+ * This is a Catapult class to model a catapult-type Tower
+ * This class inherits the abstract class Tower
+ * @author Binay 
+ */
 public class Catapult extends Tower {
 	private static final int upgradeCost = 100;
 	
@@ -10,6 +15,9 @@ public class Catapult extends Tower {
 	private static final int rangeIncrement = 10;
 	private static final String towerType = "catapult";
 	private static final int initialCDTimer=3;
+	private static final int MAXUpgradeLimit = 4;
+	
+	private int upgradeCount = 0;
 	/**
 	 * Constructor of Catapult
 	 * @param Coord coordinate of where the Catapult is built (the top left corner of the grid)
@@ -21,8 +29,9 @@ public class Catapult extends Tower {
 	
 	@Override
 	public void upgradeTower(boolean canUpgrade) {
-		if(!canUpgrade)return;
+		if(!canUpgrade || upgradeCount>=MAXUpgradeLimit)return;
 		
+		upgradeCount++;
 		this.setRange(this.getRange()+rangeIncrement);
 		if(this.getMaxCDTimer()>1){
 			this.setMaxCDTimer(this.getMaxCDTimer()-1);
@@ -55,6 +64,7 @@ public class Catapult extends Tower {
 	 * @param hp initial hp of the monster before being attacked
 	 * @return returns the the new HP of the monster attacked
 	 */
+ @Override
 	public int attack(int hp) {
 		if(this.getTowerState()==TowerState.READY) {
 			hp-=this.getPower();
@@ -66,7 +76,4 @@ public class Catapult extends Tower {
 		return hp;
 	}
 
-//	public int getRangeIncrement() {
-//		return rangeIncrement;
-//	}
 }

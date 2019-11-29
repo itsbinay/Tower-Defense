@@ -31,6 +31,7 @@ public abstract class Tower {
 	
 	private String towerType;
 	
+
 	/**
 	 * This is an abstract class constructor which will base structure that will be inherited 
 	 * by all of its children class. A "Tower" class object cannot be constructed.
@@ -45,6 +46,7 @@ public abstract class Tower {
 	 * @param UpgradeCost the cost to upgrade the tower
 	 * @cdTimer the maximum cooldown timer of the tower
 	 */
+
 	public Tower(int []Coord,int cost,int power, int range, String towerType,int UpgradeCost,int cdTimer) {
 		this.buildingCost = cost;
 		this.power = power;
@@ -72,7 +74,7 @@ public abstract class Tower {
 	 * The timer of the tower shall never be lower than 1.
 	 * cooldownTimer==1 indciates that the tower can attack in the next turn
 	 * 
-	 * @return the cooldown timer of the tower
+	 * 
 	 */
 	public void updateTowerState() {
 		if(this.curState==TowerState.ATTACK) {	//If you have attacked recently

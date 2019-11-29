@@ -10,8 +10,6 @@ public abstract class Tower {
 	
 	/**
 	 * an Enum to inidicate the current state of the Tower
-	 * @author binay
-	 *
 	 */
 
 	public enum TowerState{

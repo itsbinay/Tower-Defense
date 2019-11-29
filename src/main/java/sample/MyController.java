@@ -662,31 +662,29 @@ public class MyController {
 				}
 				break;
 			}
-			break;
-		}
-		case "laserTower": {
-			if (curTower.getAttackCost() > amountResources)
-				return;
-			if (curTower.getTowerState() == Tower.TowerState.READY) {
-				System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
-						+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
-						+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
-						+ ")");
-
-				laserTarget = monsterInRange.get(index);
-				amountResources -= curTower.getAttackCost();
-				monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to
-																										// reset the
-																										// cooldown
-				int[] towercord = curTower.getCoord();
-				int[] towerCenter = { towercord[0] + GRID_HEIGHT / 2, towercord[1] + GRID_WIDTH / 2 };
-				drawLaserLine(towerCenter);
+			case "laserTower": {
+				if (curTower.getAttackCost() > amountResources)
+					return;
+				if (curTower.getTowerState() == Tower.TowerState.READY) {
+					System.out.println(curTower.getTowerType() + " @(" + curTower.getCoord()[0] + ","
+							+ curTower.getCoord()[1] + ") -> " + monsterInRange.get(index).getMonsterType() + " @("
+							+ monsterInRange.get(index).getCoord()[0] + "," + monsterInRange.get(index).getCoord()[1]
+							+ ")");
+	
+					laserTarget = monsterInRange.get(index);
+					amountResources -= curTower.getAttackCost();
+					monsterInRange.get(index).setHp(curTower.attack(monsterInRange.get(index).getHp())); // this called to
+																											// reset the
+																											// cooldown
+					int[] towercord = curTower.getCoord();
+					int[] towerCenter = { towercord[0] + GRID_HEIGHT / 2, towercord[1] + GRID_WIDTH / 2 };
+					drawLaserLine(towerCenter);
+				}
+				break;
 			}
-			break;
-		}
-
 		}
 	}
+
 
 	void TowerAttackMonster() {
 		if (gameOver)

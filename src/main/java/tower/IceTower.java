@@ -1,5 +1,10 @@
 package tower;
 
+/**
+ * This is a IceTower class to model a IceTower-type Tower
+ * This class inherits the abstract class Tower
+ * @author Binay 
+ */
 public class IceTower extends Tower {
     private static final int upgradeCost = 100;
     private static final int freezeIncrement = 1;

@@ -1,5 +1,10 @@
 package tower;
 
+/**
+ * This is a laserTower class to model a laserTower-type Tower
+ * This class inherits the abstract class Tower
+ * @author Binay 
+ */
 public class laserTower extends Tower {
 	private static final int upgradeCost = 120;
 	private static final int powerIncrement = 30;
@@ -46,6 +51,10 @@ public class laserTower extends Tower {
 		return hp;
 	}
 
+	/**
+	 * Gets the rangeIncrement of the laserTower in every upgrade
+	 * @return the rangeIncrement of the lasertower in every upgrade
+	 */
 	public int getRangeIncrement() {
 		return rangeIncrement;
 	}

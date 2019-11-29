@@ -1,3 +1,6 @@
+/**
+ * Provides the classes necessary to construct monsters.
+ */
 package monster;
 
 
@@ -10,9 +13,27 @@ package monster;
  */
 
 public class Monster {
+	/**
+	 * an Enum to inidicate the current state of the Monster
+	 */
 
 	public enum MonsterState {
-		FROZEN, TARGETED, UNTOUCHED, DAMAGED,
+		/**
+		 * The monster is currently Frozen
+		 */
+		FROZEN, 
+		/**
+		 * The monster is currently Targeted
+		 */
+		TARGETED, 
+		/**
+		 * The monster is currently Untouched
+		 */
+		UNTOUCHED, 
+		/**
+		 * The monster is currently Damaged
+		 */
+		DAMAGED
 	}
 
 	private int movementSpeed;
@@ -56,6 +77,7 @@ public class Monster {
 
 
 /**
+ * Returns the type of monster (fox,penguin and Unicorn).
  * @return returns the type of monster (fox,penguin and Unicorn).
  */
 	public String getMonsterType(){
@@ -63,12 +85,14 @@ public class Monster {
 	}
 
 	/**
+	 * Returns the resource gained from the monster dying.
 	 * @return returns the resource gained from the monster dying.
 	 */
 	public int getResourceEarned() {
 		return this.deathResource;
 	}
 	/**
+	 * Returns the current state of the monster.
 	 * @return returns the current state of the monster.
 	 */
 	public MonsterState getMonsterState() {
@@ -76,7 +100,7 @@ public class Monster {
 	}
 	
 	/**
-	 * 
+	 * Set the new state of the monster
 	 * @param newState the new state of the monster.
 	 */
 	
@@ -85,6 +109,7 @@ public class Monster {
 	}
 	
 	/**
+	 * Returns the movement speed of the monster.
 	 * @return returns the movement speed of the monster.
 	 */
 
@@ -93,6 +118,7 @@ public class Monster {
 	}
 
 	/**
+	 * Returns the name of .png file of the specific monster
 	 * @return returns the name of .png file of the specific monster.
 	 */
 	public String getImg() {
@@ -100,7 +126,7 @@ public class Monster {
 	}
 
 	/**
-	 * 
+	 * Returns the coordinate of the monster
 	 * @return the coordinate of the monster
 	 */
 	public int[] getCoord() {
@@ -109,7 +135,8 @@ public class Monster {
 	}
 
 	/**
-	 * @return returns the x-coordinate of the monster.
+	 * Returns the y-coordinate of the monnster
+	 * @return returns the y-coordinate of the monster.
 	 */
 	public int getY() {
 		return this.coord[0];
@@ -117,7 +144,7 @@ public class Monster {
 
 	
 	/**
-	 * increase the current hp by 10.
+	 * Regenerate the current hp by 10 - only for the penguin, if injured
 	 */
 	public void regenerate() {
 
@@ -126,13 +153,15 @@ public class Monster {
 	}
 
 	/**
-	 * @return returns the y-coordinate of the monster.
+	 * Returns the x-coordinate of the monster
+	 * @return returns the x-coordinate of the monster.
 	 */
 	public int getX() {
 		return this.coord[1];
 	}
 
 	/**
+	 * Sets the coordinate of the monster with the given coordinate
 	 * @param coord The current coordinates of the monster.
 	 */
 	public void setYX(int[] coord) {
@@ -140,7 +169,7 @@ public class Monster {
 	}
 
 	/**
-	 * 
+	 * Returns the health point (hp) of the monster
 	 * @return returns the health point of the monster
 	 */
 	public int getHp() {
@@ -148,7 +177,7 @@ public class Monster {
 	}
 
 	/**
-	 * 
+	 * Sets the new hp of the monster
 	 * @param hp the new hp of the monster.
 	 */
 	
@@ -157,7 +186,7 @@ public class Monster {
 	}
 
 	/**
-	 * 
+	 * Returns the frozen status (int) of the monster
 	 * @return returns frozen status of the monster
 	 */
 
@@ -165,7 +194,7 @@ public class Monster {
 		return this.frozen;
 	}
 /**
- * 
+ * Sets the frozen state of the monster with the given int val
  * @param a the integer to represent if the monster  is frozen  or not. 
  */
 	public void setFrozen(int a) {
@@ -173,7 +202,7 @@ public class Monster {
 	}
 
 	/**
-	 * reduces the movement speed of the monster if its status is frozen.
+	 * Reduces the movement speed of the monster if its status is frozen.
 	 */
 	public void reduceSpeed() {
 
@@ -199,7 +228,7 @@ public class Monster {
 	}
 	
 	/**
-	 * returns the normal movement speed of the monster after being frozen.
+	 * Unfreezes the monster if it was previous frozen
 	 */
 
 	public void unFreeze() {

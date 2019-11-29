@@ -1,5 +1,10 @@
 package tower;
  
+/**
+ * This is a Catapult class to model a catapult-type Tower
+ * This class inherits the abstract class Tower
+ * @author Binay 
+ */
 public class Catapult extends Tower {
 	private static final int upgradeCost = 100;
 	

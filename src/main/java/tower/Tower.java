@@ -1,3 +1,6 @@
+/**
+ * Contains the classes necessary to construct Towers.
+ */
 package tower;
 import java.lang.Math;
 
@@ -13,8 +16,17 @@ public abstract class Tower {
 	 */
 
 	public enum TowerState{
+		/**
+		 * Tower is Ready to attack
+		 */
 		READY,
+		/**
+		 * Tower is in Cooldown
+		 */
 		COOLDOWN,
+		/**
+		 * Tower has just attacked 
+		 */
 		ATTACK
 	};
 	
@@ -117,6 +129,10 @@ public abstract class Tower {
 		return this.cooldownTimer;
 	}
 	
+	/**
+	 * Returns the towerType string
+	 * @return the towerType string
+	 */
 	public String getTowerType () {
 		return this.towerType;
 	}

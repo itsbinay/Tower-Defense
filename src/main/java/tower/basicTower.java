@@ -2,8 +2,8 @@ package tower;
 
 /**
  * This is a basicTower class to model a basic-type Tower
- * 
- * @author binay
+ * This class inherits the abstract class Tower
+ * @author Binay
  *
  */
 public class basicTower extends Tower {
@@ -76,7 +76,6 @@ public class basicTower extends Tower {
 			hp-=this.getPower();
 			this.setCooldown(this.initialCDTimer);
 			this.setTowerState(TowerState.ATTACK);
-			System.out.println("basicTower("+this.getCoord()[0]+","+this.getCoord()[1]+") attacked");
 			return hp;
 		}
 		return hp;

@@ -1,4 +1,6 @@
-
+/**
+ * Contains the classes necessary to construct Arena
+ */
 package sample;
 
 import javafx.scene.Scene;
@@ -42,6 +44,9 @@ import monster.Unicorn;
 import sample.Helper;
 import tower.*;
 
+/**
+ * interacts point with other classes
+ */
 public class MyController {
 	
 	@FXML
@@ -315,6 +320,7 @@ public class MyController {
 	}
 	
 	/**
+	 * this function is recursively called, and is responsible for monsters moving correctly to the endzone.
 	 * 
 	 * @param op the operation of the movement if its going up,down,left or right.
 	 * @param x the x coordinates of the monster
@@ -322,16 +328,15 @@ public class MyController {
 	 * @param spaceLeft the remaining number of grids the monster can move. (number indicating the number of recursions)
 	 * @param monsterCount the index of the current monster in the monsterList array.
 	 * 
-	 * this function is recursively called, and is responsible for monsters moving correctly to the endzone.
 	 */
-
-	private void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
+	public void Move(int op, int x, int y, int spaceLeft, int monsterCount) {
 		if (monsterList.get(monsterCount).getHp() <= 0)
 			return;
 		if (x + 1 >= 11 && y == 0) {
 			gameOver = true;
 			perFrame = 100;
 			monsterList.remove(monsterCount);
+			System.out.println("Game Over!");
 			return;
 		}
 		if (spaceLeft < 1) {
@@ -429,7 +434,10 @@ public class MyController {
 		return false;
 	}
 
-	void catapultAOE() {
+	/**
+	 * A function call to damage all monsters that have been affected by the AreaOfEffect (AOE)
+	 */
+	public void catapultAOE() {
 		if (catapultTarget.size() == 0)
 			return;
 		for (int i = 0; i < catapultTarget.size(); i++) {
@@ -551,7 +559,10 @@ public class MyController {
 		// System.out.println("Drew a line " + laserLines.size());
 	}
 
-	void attackAllMonsterNearLine() {
+	/**
+	 * Deal "hurt" damage to all monsters within 3px away from the Laser Beam
+	 */
+	public void attackAllMonsterNearLine() {
 		int count = 0;
 		for (int i = 0; i < laserLines.size(); i++) {
 			for (int j = 0; j < monsterList.size(); j++) {
@@ -573,6 +584,12 @@ public class MyController {
 		laserLines.clear();
 	}
 
+	/**
+	 * Given the current tower passed into the function, it will attack the closest monster in range
+	 * Function has already been included in TowerAttackMonster function.
+	 * 
+	 * @param curTower the Tower that will attack the closest monster
+	 */
 	void attackClosestMonster(Tower curTower) {
 		if (monsterInRange.size() == 0)
 			return;
@@ -690,7 +707,10 @@ public class MyController {
 	}
 
 
-	void TowerAttackMonster() {
+	/**
+	 * Call the function to make the Tower Attack Monster
+	 */
+	public void TowerAttackMonster() {
 		if (gameOver)
 			return;
 		for (int i = 0; i < towers.size(); i++) {
@@ -708,7 +728,7 @@ public class MyController {
 	 * holds all the functions related to monster, such as monsters moving, the generating process of the monster
 	 *  and the increase of hp and speed of the monsters over time.
 	 */
-	private void MonsterFSM() {
+	public void MonsterFSM() {
 
 		numOfFrames++;
 
@@ -910,11 +930,11 @@ public class MyController {
 
 	}
 
+	/**
+	 * the function call when nextFrame button is pressed
+	 */
 	@FXML
-	private void nextFrame() {
-		// listAllMonster();
-		// listAllTower();
-
+	public void nextFrame() {
 		if (gameOver) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Game Over!");
@@ -923,6 +943,7 @@ public class MyController {
 			alert.setContentText(message);
 			alert.show();
 
+			System.out.println("Game Over!");
 			labelBasicTower.setOnDragDetected(null);
 			labelIceTower.setOnDragDetected(null);
 			labelLaserTower.setOnDragDetected(null);
@@ -940,7 +961,6 @@ public class MyController {
 		TowerAttackMonster(); // In charge of telling the Tower to Attack the Monster
 		clearDeadMonster(); // Sets the dead monster as Collision Image
 		updateResourceText(); // Update the text after earning some cash from the dead monster
-		// System.out.println("resources amount:" + amountResources);
 	}
 
 	/**
@@ -948,8 +968,7 @@ public class MyController {
 	 * @param coord of the tower in terms of pixels
 	 * @return the index of the grid 2D array, i.e. the i,j in grid[i][j] representing the (green and white) labels on the map
 	 */
-
-	public int[] getTowerCoords(int[] coord) {
+	private int[] getTowerCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++)
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
@@ -980,7 +999,8 @@ public class MyController {
 				.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
 
-	public int[] getMonsterCoords(int[] coord) {
+
+	private int[] getMonsterCoords(int[] coord) {
 		int[] returnCoords = { 0, 0 };
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {
 			for (int j = 0; j < MAX_H_NUM_GRID; j++) {
@@ -1013,7 +1033,7 @@ public class MyController {
 	 * A function that combines all the JavaFX Event Handlers for Arena
 	 * 
 	 */
-	private void gameEvents() {
+	public void gameEvents() {
 		// where on the x by y grid to put the text "Drop Here"
 		// target.setText("Drop\nHere");
 		for (int i = 0; i < MAX_V_NUM_GRID; i++) {

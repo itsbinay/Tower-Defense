@@ -43,6 +43,7 @@ import monster.Penguin;
 import monster.Unicorn;
 import sample.Helper;
 import tower.*;
+import monster.MonsterFactory;
 
 /**
  * interacts point with other classes
@@ -88,7 +89,8 @@ public class MyController {
     private static final int basicCost = 60;
     private static final int laserCost = 180;
     private static final int iceCost = 90;
-    
+	
+	private MonsterFactory monsterFactory = new MonsterFactory();
     /**
      * displays the amount of resources left for the player
      */
@@ -294,9 +296,13 @@ public class MyController {
 
 	
 	/**
-	 * generates a monster but the type of monster is random, in the spawn point.
-	 * 
+	 * Generates a monster but the type of monster is random, in the spawn point.
 	 */
+	public void addNewMonster(){
+		monsterList.add(monsterFactory.generateMonster());
+		prevHp.add((monsterList.get(monsterList.size()-1)).getHp());
+	}
+	/*
 	public void monsterGenerate() {
 		int result = r.nextInt(high - low + 1) + low + 1;
 
@@ -318,7 +324,7 @@ public class MyController {
 		prevHp.add(monsterList.get(monsterList.size() - 1).getHp());
 
 	}
-	
+	*/
 	/**
 	 * this function is recursively called, and is responsible for monsters moving correctly to the endzone.
 	 * 
@@ -838,7 +844,8 @@ public class MyController {
 
 		if (grids[0][0].getGraphic() == null && nextFrameCounter % perFrame == 0) {
 
-			monsterGenerate();
+			addNewMonster();
+			//monsterGenerate();
 
 			if (numOfFrames > 30) {
 

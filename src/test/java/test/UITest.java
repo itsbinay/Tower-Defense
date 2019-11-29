@@ -21,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -68,6 +69,8 @@ public class UITest extends ApplicationTest {
 		MyController.setResourcesForTesting();
 	}
 	
+	
+	
 	@Test
 	public void testDragAndDeleteBasicTower() {
 		Label b = (Label)s.lookup("#labelBasicTower");
@@ -83,9 +86,12 @@ public class UITest extends ApplicationTest {
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		assertEquals(drop.getId(), "basicTower");
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		assertTrue(MyController.destroyClicked);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
 	
 	@Test
@@ -103,9 +109,12 @@ public class UITest extends ApplicationTest {
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		assertEquals(drop.getId(), "iceTower");
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		assertTrue(MyController.destroyClicked);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
 	
 	@Test
@@ -123,9 +132,12 @@ public class UITest extends ApplicationTest {
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		assertEquals(drop.getId(), "laserTower");
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		assertTrue(MyController.destroyClicked);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
 	
 	@Test
@@ -143,11 +155,14 @@ public class UITest extends ApplicationTest {
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		assertEquals(drop.getId(), "catapult");
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		assertTrue(MyController.destroyClicked);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
-
+	
 	@Test
 	public void testRangeCircleBasic() {
 		Label b = (Label)s.lookup("#labelBasicTower");
@@ -164,9 +179,13 @@ public class UITest extends ApplicationTest {
 		moveTo(drop);
 		assertTrue(MyController.circleShown);		
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}	
+	
 	@Test
 	public void testRangeCircleIce() {
 		Label b = (Label)s.lookup("#labelIceTower");
@@ -183,9 +202,13 @@ public class UITest extends ApplicationTest {
 		moveTo(drop);
 		assertTrue(MyController.circleShown);	
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();	
-	}	
+		MyController.toolbarUT = new ToolBar();
+	}
+	
 	@Test
 	public void testRangeCircleLaser() {
 		Label b = (Label)s.lookup("#labelLaserTower");
@@ -202,9 +225,13 @@ public class UITest extends ApplicationTest {
 		moveTo(drop);
 		assertTrue(MyController.circleShown);	
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();	
+		MyController.toolbarUT = new ToolBar();
 	}	
+	
 	@Test
 	public void testRangeCircleCatapult() {
 		Label b = (Label)s.lookup("#labelCatapult");
@@ -221,8 +248,11 @@ public class UITest extends ApplicationTest {
 		moveTo(drop);
 		assertTrue(MyController.circleShown);	
 		clickOn(drop);
-		clickOn(600,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();	
+		MyController.toolbarUT = new ToolBar();
 	}
 	
 	@Test
@@ -243,12 +273,16 @@ public class UITest extends ApplicationTest {
 		int index = Helper.getTowerIndex(coord, MyController.towersUT);
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		clickOn(drop);
-		clickOn(700,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickUpgrade = (Button) buttons.get(1);
+		clickOn(clickUpgrade);
 		assertEquals(MyController.towersUT.get(index).getPower(), 55);
 		assertEquals(MyController.towersUT.get(index).getRange(), 75);
 		assertTrue(MyController.upgradeClicked);
-		clickOn(600,300);
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
 	
 	
@@ -271,12 +305,18 @@ public class UITest extends ApplicationTest {
 		int index = Helper.getTowerIndex(coord, MyController.towersUT);
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		clickOn(drop);
-		clickOn(700,300);
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickUpgrade = (Button) buttons.get(1);
+		clickOn(clickUpgrade);
 		assertEquals(MyController.towersUT.get(index).getRange(), 110);
 		assertTrue(MyController.upgradeClicked);
-		clickOn(600,300);
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
+	
+	
 	@Test
 	public void testUpgradeCatapult() {
 		Label b = (Label)s.lookup("#labelCatapult");
@@ -295,11 +335,19 @@ public class UITest extends ApplicationTest {
 		int index = Helper.getTowerIndex(coord, MyController.towersUT);
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		clickOn(drop);
-		clickOn(700,300);
+		//clickOn(700,300);
+		
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickUpgrade = (Button) buttons.get(1);
+		clickOn(clickUpgrade);
+		
 		assertEquals(MyController.towersUT.get(index).getRange(), 160);
 		assertTrue(MyController.upgradeClicked);
-		clickOn(600,300);
+		
+		Button clickDestroy = (Button) buttons.get(0);
+		clickOn(clickDestroy);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
 	
 	@Test
@@ -344,11 +392,17 @@ public class UITest extends ApplicationTest {
 		}		
 		drag(b,MouseButton.PRIMARY).dropTo(drop);
 		clickOn(drop);
-		clickOn(700,300);
+		
+		List<Node> buttons =  MyController.toolbarUT.getItems();
+		Button clickUpgrade = (Button) buttons.get(1);
+		clickOn(clickUpgrade);
+		
 		assertTrue(MyController.notEnoughToUpgrade);
 		int[] coord = { (int) drop.getLayoutX(), (int) drop.getLayoutY() };
 		int index = Helper.getTowerIndex(coord, MyController.towersUT);
 		if(!MyController.towersUT.isEmpty()) MyController.towersUT.clear();
+		MyController.toolbarUT = new ToolBar();
 	}
+	
 }
 

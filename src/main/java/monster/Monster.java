@@ -37,8 +37,8 @@ public class Monster {
 	 *                      can move.
 	 * @param frozen        The status of monster that illustrates if a monster is
 	 *                      frozen or not.
-	 * @param deathResource	The amount of resource given when the monster is killed.
-	 * @param monsterTypeStr The type of monster (fox, unicorn and penguin).
+	 * @param resourceEarn	The amount of resource given when the monster is killed.
+	 * @param monsterType The type of monster (fox, unicorn and penguin).
 	 * @param img 			The name of the .png file of the specific monster type.
 	 */
 

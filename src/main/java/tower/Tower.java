@@ -42,7 +42,7 @@ public abstract class Tower {
 	 * @param range	the initial range of the tower built
 	 * @param towerType the type of the tower in String value
 	 * @param UpgradeCost the cost to upgrade the tower
-	 * @cdTimer the maximum cooldown timer of the tower
+	 * @param cdTimer the maximum cooldown timer of the tower
 	 */
 
 	public Tower(int []Coord,int cost,int power, int range, String towerType,int UpgradeCost,int cdTimer) {
@@ -94,7 +94,8 @@ public abstract class Tower {
 		return this.maxcdTimer;
 	}
 	/**
-	 * @return 
+	 * Given a tower, set the new maximum cooldown timer 
+	 * @param a the new maximum cooldownTimer
 	 */
 	public void setMaxCDTimer(int a){
 		if(a<=1)return;
@@ -231,7 +232,7 @@ public abstract class Tower {
 		return 0;
 	}
 	/**
-	 * Each tower has a range of [n,m] where n is less than or equal to 0 and n<m
+	 * Each tower has a range of [n,m] where n is less than or equal to 0 and n is less than m
 	 * This returns the minnimum range of a tower
 	 * 
 	 * @return the minimum range of a tower
